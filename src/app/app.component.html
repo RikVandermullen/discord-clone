@@ -1,1 +1,19 @@
-<discord-clone-nx-welcome></discord-clone-nx-welcome>
+<main class="m-0 p-0 bg-main-gray min-h-screen max-h-screen text-white">
+    <div class="grid grid-cols-24">
+        <section class="col-span-1 min-h-screen bg-main-gray-darkest">
+            <discord-clone-server></discord-clone-server>
+        </section>
+        <section class="col-span-3 min-h-screen bg-main-gray-darker">Channels</section>
+        <section class="col-span-17 min-h-screen bg-main-gray">
+            <div class="border min-h-[500px]">
+                <discord-clone-message *ngFor="let message of messages" [message]="message"></discord-clone-message>
+            </div>
+
+            <div class="mt-2 p-3 min-w-full">
+                <textarea id="input" type="text" name="content" [(ngModel)]="message!.content" #content="ngModel" class="text-black"></textarea>
+                <button class="" (click)="sendMessage()">Send</button>
+            </div>
+        </section>
+        <section class="col-span-3 min-h-screen bg-main-gray-darker">Users</section>
+    </div>
+</main>
