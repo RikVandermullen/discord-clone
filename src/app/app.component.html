@@ -1,13 +1,17 @@
 <main class="m-0 p-0 bg-main-gray min-h-screen max-h-screen text-white">
     <div class="grid grid-cols-24">
-        <section class="col-span-1 min-h-screen bg-main-gray-darkest">
+        <section
+            class="hidden md:block col-span-1 min-h-screen bg-main-gray-darkest"
+        >
             <discord-clone-server></discord-clone-server>
         </section>
-        <section class="col-span-3 min-h-screen bg-main-gray-darker">
+        <section
+            class="hidden md:block col-span-3 min-h-screen bg-main-gray-darker"
+        >
             Channels
         </section>
         <section
-            class="flex flex-col justify-between col-span-17 min-h-screen max-h-screen bg-main-gray"
+            class="flex flex-col justify-between col-span-24 md:col-span-17 min-h-screen max-h-screen bg-main-gray"
         >
             <div
                 #messageContainer
@@ -24,7 +28,9 @@
                 <discord-clone-input></discord-clone-input>
             </div>
         </section>
-        <section class="col-span-3 min-h-screen bg-main-gray-darker">
+        <section
+            class="hidden md:block col-span-3 min-h-screen bg-main-gray-darker"
+        >
             Users
         </section>
     </div>
