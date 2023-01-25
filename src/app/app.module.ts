@@ -9,6 +9,7 @@ import { FormsModule } from "@angular/forms";
 import { MessageComponent } from "./core/message/message.component";
 import { InputComponent } from "./core/input/input.component";
 import { MembersComponent } from "./core/members/members.component";
+import { DatePipe } from "@angular/common";
 
 @NgModule({
     declarations: [
@@ -19,7 +20,7 @@ import { MembersComponent } from "./core/members/members.component";
         MembersComponent
     ],
     imports: [BrowserModule, NgbModule, FormsModule],
-    providers: [WebsocketService],
+    providers: [WebsocketService, DatePipe],
     bootstrap: [AppComponent]
 })
 export class AppModule {}

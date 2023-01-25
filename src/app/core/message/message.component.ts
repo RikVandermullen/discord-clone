@@ -1,3 +1,4 @@
+import { DatePipe } from "@angular/common";
 import { Component, Input, OnInit } from "@angular/core";
 import { Message } from "../../models/Message";
 
@@ -11,6 +12,8 @@ export class MessageComponent implements OnInit {
     currentDate: number = Date.now();
     formattedDate: string;
 
+    constructor(private datePipe: DatePipe) {}
+
     ngOnInit() {
         this.formattedDate = this.formatDate();
     }
@@ -22,25 +25,16 @@ export class MessageComponent implements OnInit {
         const currentDate = new Date(this.currentDate).getDate();
         if (date == currentDate) {
             return (
-                "Today at " +
-                dateToDisplay.getHours() +
-                ":" +
-                dateToDisplay.getMinutes()
+                "Today at " + this.datePipe.transform(dateToDisplay, "HH:mm")
             );
         } else if (date == currentDate - 1) {
             return (
                 "Yesterday at " +
-                dateToDisplay.getHours() +
-                ":" +
-                dateToDisplay.getMinutes()
+                this.datePipe.transform(dateToDisplay, "HH:mm")
             );
         } else {
             return (
-                dateToDisplay.toLocaleDateString() +
-                " " +
-                dateToDisplay.getHours() +
-                ":" +
-                dateToDisplay.getMinutes()
+                "" + this.datePipe.transform(dateToDisplay, "dd-MM-yyyy HH:mm")
             );
         }
     }
