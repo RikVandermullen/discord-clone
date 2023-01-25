@@ -29,6 +29,7 @@
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.0.0",
     "socket.io-client": "^4.5.4",
+    "tailwind-scrollbar-hide": "^1.1.7",
     "tslib": "^2.3.0",
     "zone.js": "~0.11.4"
   },
@@ -51,6 +52,7 @@
     "@nrwl/node": "15.5.3",
     "@nrwl/webpack": "15.5.3",
     "@nrwl/workspace": "15.5.3",
+    "@tailwindcss/forms": "^0.5.3",
     "@types/jest": "28.1.1",
     "@types/node": "18.7.1",
     "@typescript-eslint/eslint-plugin": "^5.36.1",
@@ -66,6 +68,7 @@
     "nx": "15.5.3",
     "postcss": "^8.4.5",
     "prettier": "^2.6.2",
+    "tailwind-scrollbar": "^2.1.0",
     "tailwindcss": "^3.0.2",
     "ts-jest": "28.0.5",
     "ts-node": "10.9.1",

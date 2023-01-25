@@ -3,17 +3,29 @@
         <section class="col-span-1 min-h-screen bg-main-gray-darkest">
             <discord-clone-server></discord-clone-server>
         </section>
-        <section class="col-span-3 min-h-screen bg-main-gray-darker">Channels</section>
-        <section class="col-span-17 min-h-screen bg-main-gray">
-            <div class="border min-h-[500px]">
-                <discord-clone-message *ngFor="let message of messages" [message]="message"></discord-clone-message>
+        <section class="col-span-3 min-h-screen bg-main-gray-darker">
+            Channels
+        </section>
+        <section
+            class="flex flex-col justify-between col-span-17 min-h-screen max-h-screen bg-main-gray"
+        >
+            <div
+                #messageContainer
+                id="messages"
+                class="min-h-[500px] max-h-[90vh] overflow-y-scroll scrollbar-thin scrollbar-track-rounded-full scrollbar-thumb-rounded-full scrollbar-thumb-main-gray-darkest scrollbar-track-main-gray-darker mr-1 mt-2"
+            >
+                <discord-clone-message
+                    *ngFor="let message of messages"
+                    [message]="message"
+                ></discord-clone-message>
             </div>
 
             <div class="mt-2 p-3 min-w-full">
-                <textarea id="input" type="text" name="content" [(ngModel)]="message!.content" #content="ngModel" class="text-black"></textarea>
-                <button class="" (click)="sendMessage()">Send</button>
+                <discord-clone-input></discord-clone-input>
             </div>
         </section>
-        <section class="col-span-3 min-h-screen bg-main-gray-darker">Users</section>
+        <section class="col-span-3 min-h-screen bg-main-gray-darker">
+            Users
+        </section>
     </div>
 </main>

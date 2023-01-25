@@ -11,7 +11,7 @@ export class WebsocketService {
         this.socket = io('http://localhost:3333');
     }
 
-    onNewMessage() {
+    onNewMessage() : Observable<Message> {
         return new Observable((observer) => {
             this.socket.on('onMessage', (data: Message) => {                               
                 observer.next(data);

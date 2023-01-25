@@ -1,12 +1,25 @@
 <div class="flex flex-row p-3">
-    <img src="https://api.dicebear.com/5.x/identicon/svg?seed={{message.author}}" alt="Avatar" class="w-11 h-11 rounded-full hover:cursor-pointer">
+    <img
+        src="https://api.dicebear.com/5.x/identicon/svg?seed={{
+            message.author
+        }}"
+        alt="Avatar"
+        class="w-11 h-11 rounded-full hover:cursor-pointer"
+    />
     <div class="flex flex-col ml-5 max-w-full">
         <div class="flex flex-row">
             <p class="text-white">
-                <span class="font-semibold hover:underline hover:cursor-pointer">{{message.author}}</span>
-                <span class="text-gray-400 text-sm ml-2 hover:no-underline">{{message.date | date: 'dd-MM-yyyy hh:mm'}}</span>
+                <span
+                    class="font-semibold hover:underline hover:cursor-pointer"
+                    >{{ message.author }}</span
+                >
+                <span class="text-gray-400 text-sm ml-2 hover:no-underline">{{
+                    message.date | date : "dd-MM-yyyy hh:mm"
+                }}</span>
             </p>
         </div>
-        <span class="text-white max-w-[90%] break-words whitespace-pre-wrap">{{message.content}}</span>
+        <span class="text-white break-words whitespace-pre-wrap">{{
+            message.content
+        }}</span>
     </div>
 </div>

@@ -1,9 +1,28 @@
 <div class="flex flex-col items-center align-top mt-3 gap-3">
-    <div placement="end" ngbTooltip="Direct Messages" tooltipClass="ms-2 font-semibold text-md" class="flex flex-col items-center justify-center bg-main-gray-darker rounded-full">
-        <img src="../../../assets/discord.png" alt="avatar" class="bg-white w-12 h-12 rounded-full transition hover:cursor-pointer hover:rounded-xl">
+    <div
+        placement="end"
+        ngbTooltip="Direct Messages"
+        tooltipClass="ms-2 font-semibold text-md"
+        class="flex flex-col items-center justify-center bg-main-gray-darker rounded-full"
+    >
+        <img
+            src="../../../assets/discord.png"
+            alt="avatar"
+            class="bg-white w-12 h-12 rounded-full transition hover:cursor-pointer hover:rounded-xl"
+        />
     </div>
-    <hr class="bg-main-gray-dark min-h-[5px] min-w-[60%]">
-    <div *ngFor="let server of servers" placement="end" ngbTooltip="{{server}}" tooltipClass="ms-2 font-semibold" class="flex flex-col items-center justify-center bg-main-gray-darker rounded-full">
-        <img src="https://api.dicebear.com/5.x/identicon/svg?seed={{server}}" alt="avatar" class="w-12 h-12 rounded-full transition hover:cursor-pointer hover:rounded-xl">
+    <hr class="bg-main-gray-dark min-h-[5px] min-w-[60%]" />
+    <div
+        *ngFor="let server of servers"
+        placement="end"
+        ngbTooltip="{{ server }}"
+        tooltipClass="ms-2 font-semibold"
+        class="flex flex-col items-center justify-center bg-main-gray-darker rounded-full"
+    >
+        <img
+            src="https://api.dicebear.com/5.x/identicon/svg?seed={{ server }}"
+            alt="avatar"
+            class="w-12 h-12 rounded-full transition hover:cursor-pointer hover:rounded-xl"
+        />
     </div>
 </div>

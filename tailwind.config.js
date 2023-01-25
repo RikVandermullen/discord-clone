@@ -13,6 +13,7 @@ module.exports = {
         'main-gray': '#36393f',
         'main-gray-darker': '#2f3136',
         'main-gray-darkest': '#202225',
+        'main-gray-light': '#40444b',
         'white-light': '#dcddde',
       },
       gridTemplateColumns: {
@@ -23,5 +24,12 @@ module.exports = {
       }
     },
   },
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/forms'),
+    require('tailwind-scrollbar-hide'),
+    require('tailwind-scrollbar'),
+  ],
+  variants: {
+    scrollbar: ['rounded']
+  }
 };
