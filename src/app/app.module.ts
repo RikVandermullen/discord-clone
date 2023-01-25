@@ -8,13 +8,15 @@ import { ServerComponent } from "./core/server/server.component";
 import { FormsModule } from "@angular/forms";
 import { MessageComponent } from "./core/message/message.component";
 import { InputComponent } from "./core/input/input.component";
+import { MembersComponent } from "./core/members/members.component";
 
 @NgModule({
     declarations: [
         AppComponent,
         ServerComponent,
         MessageComponent,
-        InputComponent
+        InputComponent,
+        MembersComponent
     ],
     imports: [BrowserModule, NgbModule, FormsModule],
     providers: [WebsocketService],

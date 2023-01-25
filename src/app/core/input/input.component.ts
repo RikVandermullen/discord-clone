@@ -39,9 +39,14 @@ export class InputComponent implements OnInit {
     }
 
     sendMessage() {
-        if (this.message.content == "") return;
-        this.WebsocketService.sendMessage(this.message);
-        this.message.content = "";
+        if (document.getElementById("input")?.textContent === "") {
+            this.clearContent();
+            this.message.content = "";
+            return;
+        } else {
+            this.WebsocketService.sendMessage(this.message);
+            this.message.content = "";
+        }
     }
 
     getContent() {
