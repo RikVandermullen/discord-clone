@@ -13,6 +13,10 @@ export class LoginComponent {
     constructor(private authService: AuthService) {}
 
     onSubmit() {
+        /** 
+         @todo: Add validation
+         @todo: Add error handling
+        */
         this.authService.login(this.userCredentials).subscribe((token) => {
             if (token === undefined) {
                 console.log("Login failed");

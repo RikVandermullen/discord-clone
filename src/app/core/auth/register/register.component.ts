@@ -54,7 +54,10 @@ export class RegisterComponent {
             this.birthday.month,
             this.birthday.day
         );
-
+        /** 
+         @todo: Add validation
+         @todo: Add error handling
+        */
         this.authSerivce.register(this.user).subscribe((response: any) => {
             console.log(response);
         });

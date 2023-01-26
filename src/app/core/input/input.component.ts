@@ -1,6 +1,9 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { Component, Input, OnChanges, OnInit } from "@angular/core";
 import { Message } from "../../models/Message";
 import { WebsocketService } from "../../context/WebsocketService";
+import { JwtPayload } from "jwt-decode";
+import jwt_decode from "jwt-decode";
 
 @Component({
     selector: "discord-clone-input",
@@ -15,6 +18,13 @@ export class InputComponent implements OnInit, OnChanges {
     constructor(private WebsocketService: WebsocketService) {}
 
     ngOnInit() {
+        const decodedToken = jwt_decode<JwtPayload>(
+            localStorage.getItem("currentuser")!
+        );
+        this.message.author = JSON.parse(
+            JSON.stringify(decodedToken)
+        ).user.userName;
+
         const length = document.getElementsByClassName("line").length;
         if (length == 0) {
             this.addLine();

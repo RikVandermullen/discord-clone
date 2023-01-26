@@ -47,9 +47,6 @@ export class AuthController {
                 token: await this.authService.generateToken(
                     credentials.emailAddress,
                     credentials.password
-                ),
-                user: await this.authService.getUserByEmailAddress(
-                    credentials.emailAddress
                 )
             };
         } catch (e) {

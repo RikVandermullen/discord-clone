@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import {
     AfterViewChecked,
     Component,
@@ -11,6 +12,8 @@ import { User } from "../../models/User";
 import { Message } from "../../models/Message";
 import { Status } from "../../models/Status";
 import { Subscription } from "rxjs";
+import { JwtPayload } from "jwt-decode";
+import jwt_decode from "jwt-decode";
 
 @Component({
     selector: "discord-clone-server",
@@ -78,6 +81,11 @@ export class ServerComponent implements OnInit, AfterViewChecked {
     constructor(private websocketService: WebsocketService) {}
 
     ngOnInit() {
+        const decodedToken = jwt_decode<JwtPayload>(
+            localStorage.getItem("currentuser")!
+        );
+        this.user = JSON.parse(JSON.stringify(decodedToken)).user;
+
         this.servers.forEach((server) => {
             this.websocketService.joinRoom(server.name, this.user.userName);
         });
