@@ -64,7 +64,7 @@ export class ServerComponent implements OnInit, AfterViewChecked {
     }
 
     createServer() {
-        const server: Server = new Server(3, "Server 4", [], []);
+        const server: Server = new Server(3, "Server 4", [this.user], []);
         this.websocketService.createRoom(server.name, this.user.userName);
         this.servers.push(server);
     }
