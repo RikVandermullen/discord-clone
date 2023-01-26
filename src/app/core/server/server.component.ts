@@ -14,6 +14,7 @@ import { Status } from "../../models/Status";
 import { Subscription } from "rxjs";
 import { JwtPayload } from "jwt-decode";
 import jwt_decode from "jwt-decode";
+import { ServerService } from "./server.service";
 
 @Component({
     selector: "discord-clone-server",
@@ -25,11 +26,11 @@ export class ServerComponent implements OnInit, AfterViewChecked {
 
     servers: Server[] = [
         new Server(
-            0,
+            "63d2d639abaa37742196819b",
             "Server 1",
             [
                 new User(
-                    0,
+                    "0",
                     "chihi@mail.com",
                     "Chihi",
                     "Secret",
@@ -37,7 +38,7 @@ export class ServerComponent implements OnInit, AfterViewChecked {
                     Status.Idle
                 ),
                 new User(
-                    0,
+                    "0",
                     "chihi@mail.com",
                     "Chihi2",
                     "Secret",
@@ -45,17 +46,14 @@ export class ServerComponent implements OnInit, AfterViewChecked {
                     Status.Offline
                 )
             ],
-            [
-                new Message(0, "Hello", new Date(), "Chihi"),
-                new Message(1, "Hi", new Date(), "Chihi 2")
-            ]
+            []
         ),
         new Server(
-            1,
+            "63d2d639abaa37742196819a",
             "Server 2",
             [
                 new User(
-                    0,
+                    "0",
                     "chihi@mail.com",
                     "Chihi",
                     "Secret",
@@ -65,11 +63,11 @@ export class ServerComponent implements OnInit, AfterViewChecked {
             ],
             []
         ),
-        new Server(2, "Server 3", [], [])
+        new Server("63d2d639abaa37742196819c", "Server 3", [], [])
     ];
     selectedServer: Server = this.servers[0];
     user: User = new User(
-        0,
+        "0",
         "chihi@mail.com",
         "Chihi",
         "Secret",
@@ -78,7 +76,10 @@ export class ServerComponent implements OnInit, AfterViewChecked {
     );
     subscription: Subscription;
 
-    constructor(private websocketService: WebsocketService) {}
+    constructor(
+        private websocketService: WebsocketService,
+        private serverService: ServerService
+    ) {}
 
     ngOnInit() {
         const decodedToken = jwt_decode<JwtPayload>(
@@ -87,14 +88,19 @@ export class ServerComponent implements OnInit, AfterViewChecked {
         this.user = JSON.parse(JSON.stringify(decodedToken)).user;
 
         this.servers.forEach((server) => {
-            this.websocketService.joinRoom(server.name, this.user.userName);
+            this.serverService
+                .getMessagesByServerId(server._id)
+                .subscribe((messages: Message[]) => {
+                    server.messages = messages;
+                });
+            this.websocketService.joinServer(server._id, this.user.userName);
         });
 
         this.subscription = this.websocketService
             .onNewMessage()
             .subscribe((data) => {
                 this.servers.forEach((server) => {
-                    if (server.name === data.room) {
+                    if (server._id === data.server) {
                         server.messages.push(data);
                     }
                 });
@@ -102,8 +108,8 @@ export class ServerComponent implements OnInit, AfterViewChecked {
     }
 
     createServer() {
-        const server: Server = new Server(3, "Server 4", [this.user], []);
-        this.websocketService.createRoom(server.name, this.user.userName);
+        const server: Server = new Server("3", "Server 4", [this.user], []);
+        this.websocketService.createServer(server.name, this.user.userName);
         this.servers.push(server);
     }
 

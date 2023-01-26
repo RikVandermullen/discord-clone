@@ -16,6 +16,7 @@ module.exports = {
                 "main-gray-darkest": "#202225",
                 "main-gray-light": "#40444b",
                 "main-gray-hover": "#3b3e45",
+                "main-gray-hover2": "#32353b",
                 "white-light": "#dcddde"
             },
             gridTemplateColumns: {

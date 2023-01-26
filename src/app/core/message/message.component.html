@@ -1,4 +1,4 @@
-<div class="flex flex-row px-3 py-2 hover:bg-main-gray-darker">
+<div class="flex flex-row px-3 py-2 hover:bg-main-gray-hover2">
     <img
         src="https://api.dicebear.com/5.x/identicon/svg?seed={{
             message.author
@@ -11,7 +11,7 @@
             <p class="m-0 p-0">
                 <span
                     class="font-semibold hover:underline hover:cursor-pointer"
-                    >{{ message.author }}</span
+                    >{{ message.author.userName }}</span
                 >
                 <span class="text-gray-400 text-sm ml-2 hover:no-underline">{{
                     formattedDate

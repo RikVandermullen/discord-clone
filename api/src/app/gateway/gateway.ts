@@ -7,6 +7,7 @@ import {
     WsResponse
 } from "@nestjs/websockets";
 import { Server, Socket } from "socket.io";
+import { MessageService } from "../message/message.service";
 
 @WebSocketGateway({
     cors: {
@@ -17,6 +18,8 @@ export class Gateway implements OnModuleInit {
     @WebSocketServer()
     server: Server | undefined;
 
+    constructor(private messageService: MessageService) {}
+
     onModuleInit() {
         this.server?.on("connection", (socket) => {
             console.log(socket.id);
@@ -26,40 +29,50 @@ export class Gateway implements OnModuleInit {
     @SubscribeMessage("newMessage")
     onNewMessage(@MessageBody() body: any) {
         console.log(body);
-        if (body.room) {
-            this.server?.to(body.room).emit("onMessage", body);
+        if (body.server) {
+            this.messageService.addMessage(
+                body.author._id,
+                body.date_created,
+                body.content,
+                body.server
+            );
+            this.server?.to(body.server).emit("onMessage", body);
         } else {
             this.server?.emit("onMessage", body);
         }
     }
 
-    @SubscribeMessage("createRoom")
-    createRoom(socket: Socket, data: any): WsResponse<unknown> {
-        console.log("room created: ", data.room);
+    @SubscribeMessage("createServer")
+    createServer(socket: Socket, data: any): WsResponse<unknown> {
+        console.log("Server created: ", data.server);
 
-        socket.join(data.room);
-        socket.to(data.room).emit("roomCreated", { room: data.room });
-        return { event: "roomCreated", data: { room: data.room } };
+        socket.join(data.server);
+        socket.to(data.server).emit("serverCreated", { server: data.server });
+        return { event: "serverCreated", data: { server: data.server } };
     }
 
-    @SubscribeMessage("joinRoom")
-    joinRoom(socket: Socket, data: any): WsResponse<unknown> {
-        console.log("room joined: ", data.room, data.user);
+    @SubscribeMessage("joinServer")
+    joinServer(socket: Socket, data: any): WsResponse<unknown> {
+        console.log(
+            "Server joined: ",
+            "serverId: " + data.server,
+            "userId: " + data.user
+        );
 
-        socket.join(data.room);
+        socket.join(data.server);
         socket
-            .to(data.room)
-            .emit("roomJoined", { room: data.room, user: data.user });
-        return { event: "roomJoined", data: { room: data.room } };
+            .to(data.server)
+            .emit("serverJoined", { server: data.server, user: data.user });
+        return { event: "serverJoined", data: { server: data.server } };
     }
 
-    @SubscribeMessage("leaveRoom")
-    leaveRoom(socket: Socket, data: any): WsResponse<unknown> {
-        console.log("room left: ", data.room, data.user);
-        socket.leave(data.room);
+    @SubscribeMessage("leaveServer")
+    leaveServer(socket: Socket, data: any): WsResponse<unknown> {
+        console.log("Server left: ", data.server, data.user);
+        socket.leave(data.server);
         socket
-            .to(data.room)
-            .emit("roomLeft", { room: data.room, user: data.user });
-        return { event: "roomLeft", data: { room: data.room } };
+            .to(data.server)
+            .emit("serverLeft", { server: data.server, user: data.user });
+        return { event: "serverLeft", data: { server: data.server } };
     }
 }

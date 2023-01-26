@@ -1,7 +1,7 @@
 import { Status } from "./Status";
 
 export class User {
-    _id: number;
+    _id: string;
     emailAddress: string;
     userName: string;
     password: string;
@@ -9,7 +9,7 @@ export class User {
     status: Status;
 
     constructor(
-        _id: number,
+        _id: string,
         emailAddress: string,
         userName: string,
         password: string,

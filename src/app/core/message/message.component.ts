@@ -19,7 +19,7 @@ export class MessageComponent implements OnInit {
     }
 
     formatDate(): string {
-        const dateToFormat = new Date(this.message.date).valueOf();
+        const dateToFormat = new Date(this.message.date_created).valueOf();
         const date = new Date(dateToFormat).getDate();
         const dateToDisplay = new Date(dateToFormat);
         const currentDate = new Date(this.currentDate).getDate();

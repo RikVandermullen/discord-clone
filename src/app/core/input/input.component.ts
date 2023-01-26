@@ -4,6 +4,9 @@ import { Message } from "../../models/Message";
 import { WebsocketService } from "../../context/WebsocketService";
 import { JwtPayload } from "jwt-decode";
 import jwt_decode from "jwt-decode";
+import { User } from "../../models/User";
+import { Status } from "../../models/Status";
+import { ServerService } from "../server/server.service";
 
 @Component({
     selector: "discord-clone-input",
@@ -11,8 +14,13 @@ import jwt_decode from "jwt-decode";
     styleUrls: ["./input.component.css"]
 })
 export class InputComponent implements OnInit, OnChanges {
-    @Input() currentRoom: string | null;
-    message: Message = new Message(1, "", new Date(), "Chihi");
+    @Input() currentServer: string | null;
+    message: Message = new Message(
+        1,
+        "",
+        new Date(),
+        new User("0", "", "", "", new Date(), Status.Online)
+    );
     content: string | null | undefined;
 
     constructor(private WebsocketService: WebsocketService) {}
@@ -21,16 +29,14 @@ export class InputComponent implements OnInit, OnChanges {
         const decodedToken = jwt_decode<JwtPayload>(
             localStorage.getItem("currentuser")!
         );
-        this.message.author = JSON.parse(
-            JSON.stringify(decodedToken)
-        ).user.userName;
+        this.message.author = JSON.parse(JSON.stringify(decodedToken)).user;
 
         const length = document.getElementsByClassName("line").length;
         if (length == 0) {
             this.addLine();
         }
 
-        this.setRoom();
+        this.setServer();
 
         document.getElementById("input")?.addEventListener("keydown", (evt) => {
             /**
@@ -61,7 +67,7 @@ export class InputComponent implements OnInit, OnChanges {
             /**
              @todo: Error handling
             **/
-            this.setRoom();
+            this.setServer();
             this.WebsocketService.sendMessage(this.message);
             this.message.content = "";
         }
@@ -98,17 +104,13 @@ export class InputComponent implements OnInit, OnChanges {
         document.getElementById("input")?.appendChild(div);
     }
 
-    setRoom() {
-        if (this.currentRoom) {
-            this.message.room = this.currentRoom;
-            this.WebsocketService.joinRoom(
-                this.currentRoom,
-                this.message.author
-            );
+    setServer() {
+        if (this.currentServer) {
+            this.message.server = this.currentServer;
         }
     }
 
     ngOnChanges() {
-        this.setRoom();
+        this.setServer();
     }
 }

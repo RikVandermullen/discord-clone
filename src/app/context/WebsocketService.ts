@@ -24,23 +24,23 @@ export class WebsocketService {
         this.socket.emit("newMessage", message);
     }
 
-    createRoom(room: string, userId: string) {
-        this.socket.emit("createRoom", {
-            room: room,
+    createServer(server: string, userId: string) {
+        this.socket.emit("createServer", {
+            server: server,
             user: userId
         });
     }
 
-    joinRoom(room: string, userId: string) {
-        this.socket.emit("joinRoom", {
-            room: room,
+    joinServer(server: string, userId: string) {
+        this.socket.emit("joinServer", {
+            server: server,
             user: userId
         });
     }
 
-    leaveRoom(room: string, userId: string) {
-        this.socket.emit("leaveRoom", {
-            room: room,
+    leaveServer(server: string, userId: string) {
+        this.socket.emit("leaveServer", {
+            server: server,
             user: userId
         });
     }
