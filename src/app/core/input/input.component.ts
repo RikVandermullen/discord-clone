@@ -22,6 +22,7 @@ export class InputComponent implements OnInit {
         document.getElementById("input")?.addEventListener("keydown", (evt) => {
             /**
              @todo: Fix copy pasting and focus on new line
+             @todo: Add file support
             **/
 
             if (evt.shiftKey && evt.key === "Enter") {
@@ -44,6 +45,9 @@ export class InputComponent implements OnInit {
             this.message.content = "";
             return;
         } else {
+            /**
+             @todo: Error handling
+            **/
             this.WebsocketService.sendMessage(this.message);
             this.message.content = "";
         }

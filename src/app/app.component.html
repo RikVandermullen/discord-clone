@@ -33,11 +33,11 @@
                 <h1 class="text-white font-semibold ml-2">welcome</h1>
             </div>
         </div>
-        <div class="flex flex-col justify-between">
+        <div class="flex flex-col justify-between min-h-[94vh] max-h-[94vh]">
             <div
                 #messageContainer
                 id="messages"
-                class="min-h-[85vh] max-h-[85vh] overflow-y-scroll scrollbar-thin scrollbar-track-rounded-full scrollbar-thumb-rounded-full scrollbar-thumb-main-gray-darkest scrollbar-track-main-gray-darker mr-1 mt-2"
+                class="max-h-[85vh] overflow-y-scroll scrollbar-thin scrollbar-track-rounded-full scrollbar-thumb-rounded-full scrollbar-thumb-main-gray-darkest scrollbar-track-main-gray-darker mr-1 mt-2"
             >
                 <discord-clone-message
                     *ngFor="let message of messages"
