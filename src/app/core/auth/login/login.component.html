@@ -1,0 +1,68 @@
+<div class="flex flex-col justify-center items-center min-w-full min-h-full">
+    <div class="px-[10vw] md:px-[30vw] min-w-full">
+        <div class="flex flex-row justify-center">
+            <img src="../assets/logo.webp" alt="logo" class="max-w-[80%]" />
+        </div>
+
+        <div class="flex flex-col justify-center text-center p-3">
+            <h1 class="text-white text-4xl font-semibold">Welcome back!</h1>
+            <p class="text-md text-gray-300">We are glad to see you again!</p>
+        </div>
+        <form
+            #userLoginForm="ngForm"
+            name="form"
+            (ngSubmit)="onSubmit()"
+            novalidate
+        >
+            <div class="flex flex-col mt-2">
+                <label
+                    for="emailadress"
+                    class="font-bold text-xs mb-2 text-gray-400 uppercase"
+                    >E-mail <span class="text-red-500 text-xs">*</span></label
+                >
+                <input
+                    type="text"
+                    id="emailadress"
+                    name="emailadress"
+                    [(ngModel)]="userCredentials!.emailAddress"
+                    #emailAddress="ngModel"
+                    required
+                    class="bg-main-gray-darkest text-gray-300 border-none rounded-sm focus:outline-none focus:ring-0 focus:border-none"
+                />
+            </div>
+
+            <div class="flex flex-col mt-3 mb-5">
+                <label
+                    for="password"
+                    class="font-bold text-xs mb-2 text-gray-400 uppercase"
+                    >Password <span class="text-red-500 text-xs">*</span></label
+                >
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    [(ngModel)]="userCredentials!.password"
+                    #password="ngModel"
+                    required
+                    class="bg-main-gray-darkest text-gray-300 border-none rounded-sm focus:outline-none focus:ring-0 focus:border-none"
+                />
+            </div>
+
+            <button
+                type="submit"
+                class="min-w-full min-h-[44px] bg-indigo-500 rounded-sm font-semibold hover:bg-indigo-600"
+            >
+                Sign in
+            </button>
+        </form>
+
+        <p class="text-sm text-gray-300 mt-2">
+            Need an account?
+            <a
+                routerLink="../register"
+                class="text-blue-400 hover:text-blue-400 hover:underline"
+                >Register</a
+            >
+        </p>
+    </div>
+</div>

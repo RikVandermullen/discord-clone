@@ -25,8 +25,22 @@ export class ServerComponent implements OnInit, AfterViewChecked {
             0,
             "Server 1",
             [
-                new User(0, "Chihi", "Secret", new Date(), Status.Idle),
-                new User(0, "Chihi2", "Secret", new Date(), Status.Offline)
+                new User(
+                    0,
+                    "chihi@mail.com",
+                    "Chihi",
+                    "Secret",
+                    new Date(),
+                    Status.Idle
+                ),
+                new User(
+                    0,
+                    "chihi@mail.com",
+                    "Chihi2",
+                    "Secret",
+                    new Date(),
+                    Status.Offline
+                )
             ],
             [
                 new Message(0, "Hello", new Date(), "Chihi"),
@@ -36,13 +50,29 @@ export class ServerComponent implements OnInit, AfterViewChecked {
         new Server(
             1,
             "Server 2",
-            [new User(0, "Chihi", "Secret", new Date(), Status.Idle)],
+            [
+                new User(
+                    0,
+                    "chihi@mail.com",
+                    "Chihi",
+                    "Secret",
+                    new Date(),
+                    Status.Idle
+                )
+            ],
             []
         ),
         new Server(2, "Server 3", [], [])
     ];
     selectedServer: Server = this.servers[0];
-    user: User = new User(0, "Chihi", "Secret", new Date(), Status.Online);
+    user: User = new User(
+        0,
+        "chihi@mail.com",
+        "Chihi",
+        "Secret",
+        new Date(),
+        Status.Online
+    );
     subscription: Subscription;
 
     constructor(private websocketService: WebsocketService) {}

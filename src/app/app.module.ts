@@ -11,6 +11,10 @@ import { MessageComponent } from "./core/message/message.component";
 import { InputComponent } from "./core/input/input.component";
 import { MembersComponent } from "./core/members/members.component";
 import { DatePipe } from "@angular/common";
+import { LoginComponent } from "./core/auth/login/login.component";
+import { RegisterComponent } from "./core/auth/register/register.component";
+import { HttpClientModule } from "@angular/common/http";
+import { httpInterceptorProviders } from "./core/auth/auth.interceptor";
 
 @NgModule({
     declarations: [
@@ -18,10 +22,18 @@ import { DatePipe } from "@angular/common";
         ServerComponent,
         MessageComponent,
         InputComponent,
-        MembersComponent
+        MembersComponent,
+        LoginComponent,
+        RegisterComponent
     ],
-    imports: [BrowserModule, NgbModule, AppRoutingModule, FormsModule],
-    providers: [WebsocketService, DatePipe],
+    imports: [
+        BrowserModule,
+        NgbModule,
+        AppRoutingModule,
+        FormsModule,
+        HttpClientModule
+    ],
+    providers: [WebsocketService, DatePipe, httpInterceptorProviders],
     bootstrap: [AppComponent]
 })
 export class AppModule {}
