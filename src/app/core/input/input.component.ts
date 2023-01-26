@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, Input, OnChanges, OnInit } from "@angular/core";
 import { Message } from "../../models/Message";
 import { WebsocketService } from "../../context/WebsocketService";
 
@@ -7,7 +7,8 @@ import { WebsocketService } from "../../context/WebsocketService";
     templateUrl: "./input.component.html",
     styleUrls: ["./input.component.css"]
 })
-export class InputComponent implements OnInit {
+export class InputComponent implements OnInit, OnChanges {
+    @Input() currentRoom: string | null;
     message: Message = new Message(1, "", new Date(), "Chihi");
     content: string | null | undefined;
 
@@ -18,6 +19,8 @@ export class InputComponent implements OnInit {
         if (length == 0) {
             this.addLine();
         }
+
+        this.setRoom();
 
         document.getElementById("input")?.addEventListener("keydown", (evt) => {
             /**
@@ -48,6 +51,7 @@ export class InputComponent implements OnInit {
             /**
              @todo: Error handling
             **/
+            this.setRoom();
             this.WebsocketService.sendMessage(this.message);
             this.message.content = "";
         }
@@ -82,5 +86,19 @@ export class InputComponent implements OnInit {
         div.setAttribute("contenteditable", "true");
 
         document.getElementById("input")?.appendChild(div);
+    }
+
+    setRoom() {
+        if (this.currentRoom) {
+            this.message.room = this.currentRoom;
+            this.WebsocketService.joinRoom(
+                this.currentRoom,
+                this.message.author
+            );
+        }
+    }
+
+    ngOnChanges() {
+        this.setRoom();
     }
 }

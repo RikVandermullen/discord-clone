@@ -1,5 +1,6 @@
 import { NgModule } from "@angular/core";
 import { BrowserModule } from "@angular/platform-browser";
+import { AppRoutingModule } from "./app-routing.module";
 
 import { AppComponent } from "./app.component";
 import { WebsocketService } from "./context/WebsocketService";
@@ -19,7 +20,7 @@ import { DatePipe } from "@angular/common";
         InputComponent,
         MembersComponent
     ],
-    imports: [BrowserModule, NgbModule, FormsModule],
+    imports: [BrowserModule, NgbModule, AppRoutingModule, FormsModule],
     providers: [WebsocketService, DatePipe],
     bootstrap: [AppComponent]
 })

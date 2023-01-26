@@ -3,6 +3,7 @@ export class Message {
     content: string;
     date: Date;
     author: string;
+    room: string | null;
 
     constructor(_id: number, content: string, date: Date, author: string) {
         this._id = _id;
