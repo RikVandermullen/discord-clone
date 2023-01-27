@@ -27,19 +27,43 @@ export class Gateway implements OnModuleInit {
     }
 
     @SubscribeMessage("newMessage")
-    onNewMessage(@MessageBody() body: any) {
+    async onNewMessage(@MessageBody() body: any) {
         console.log(body);
         if (body.server) {
-            this.messageService.addMessage(
+            const message = await this.messageService.addMessage(
                 body.author._id,
                 body.date_created,
                 body.content,
-                body.server
+                body.server,
+                body.isEdited
             );
+            body._id = message._id;
             this.server?.to(body.server).emit("onMessage", body);
         } else {
             this.server?.emit("onMessage", body);
         }
+    }
+
+    @SubscribeMessage("deleteMessage")
+    onDeleteMessage(socket: Socket, body: any): WsResponse<unknown> {
+        console.log("Deleting message: ", body._id);
+
+        this.messageService.deleteMessage(body._id);
+
+        socket.join(body.server);
+        socket.to(body.server).emit("onDeletedMessage", body);
+        return { event: "onDeletedMessage", data: body };
+    }
+
+    @SubscribeMessage("editMessage")
+    onEditMessage(socket: Socket, body: any): WsResponse<unknown> {
+        console.log("Editing message: ", body._id);
+
+        this.messageService.editMessage(body._id, body.content);
+        body.isEdited = true;
+        socket.join(body.server);
+        socket.to(body.server).emit("onEditedMessage", body);
+        return { event: "onEditedMessage", data: body };
     }
 
     @SubscribeMessage("createServer")

@@ -16,10 +16,11 @@ import { ServerService } from "../server/server.service";
 export class InputComponent implements OnInit, OnChanges {
     @Input() currentServer: string | null;
     message: Message = new Message(
-        1,
+        "1",
         "",
         new Date(),
-        new User("0", "", "", "", new Date(), Status.Online)
+        new User("0", "", "", "", new Date(), Status.Online),
+        false
     );
     content: string | null | undefined;
 

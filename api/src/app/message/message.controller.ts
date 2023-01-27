@@ -28,12 +28,8 @@ export class MessageController {
             message.author._id,
             message.date_created,
             message.content,
-            message.server!
+            message.server!,
+            message.isEdited
         );
-    }
-
-    @Delete(":messageId")
-    async deleteMessage(@Param("messageId") messageId: string) {
-        return this.messageService.deleteMessage(messageId);
     }
 }

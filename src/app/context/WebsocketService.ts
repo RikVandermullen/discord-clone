@@ -20,8 +20,32 @@ export class WebsocketService {
         });
     }
 
+    onDeletedMessage(): Observable<Message> {
+        return new Observable((observer) => {
+            this.socket.on("onDeletedMessage", (data: Message) => {
+                observer.next(data);
+            });
+        });
+    }
+
+    onEditedMessage(): Observable<Message> {
+        return new Observable((observer) => {
+            this.socket.on("onEditedMessage", (data: Message) => {
+                observer.next(data);
+            });
+        });
+    }
+
     sendMessage(message: Message) {
         this.socket.emit("newMessage", message);
+    }
+
+    deleteMessage(message: Message) {
+        this.socket.emit("deleteMessage", message);
+    }
+
+    editMessage(message: Message) {
+        this.socket.emit("editMessage", message);
     }
 
     createServer(server: string, userId: string) {

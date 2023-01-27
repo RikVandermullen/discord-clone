@@ -1,5 +1,16 @@
+/* eslint-disable @typescript-eslint/no-inferrable-types */
 import { DatePipe } from "@angular/common";
-import { Component, Input, OnInit } from "@angular/core";
+import {
+    AfterViewChecked,
+    AfterViewInit,
+    Component,
+    ElementRef,
+    Input,
+    OnChanges,
+    OnInit,
+    ViewChild
+} from "@angular/core";
+import { WebsocketService } from "../../context/WebsocketService";
 import { Message } from "../../models/Message";
 
 @Component({
@@ -9,10 +20,15 @@ import { Message } from "../../models/Message";
 })
 export class MessageComponent implements OnInit {
     @Input() message: Message;
+    @ViewChild("messageId") messageId: ElementRef;
     currentDate: number = Date.now();
     formattedDate: string;
+    editMode: boolean = false;
 
-    constructor(private datePipe: DatePipe) {}
+    constructor(
+        private datePipe: DatePipe,
+        private websocketService: WebsocketService
+    ) {}
 
     ngOnInit() {
         this.formattedDate = this.formatDate();
@@ -37,5 +53,30 @@ export class MessageComponent implements OnInit {
                 "" + this.datePipe.transform(dateToDisplay, "dd-MM-yyyy HH:mm")
             );
         }
+    }
+
+    deleteMessage() {
+        this.websocketService.deleteMessage(this.message);
+    }
+
+    editMessage() {
+        this.editMode = true;
+        setTimeout(() => {
+            this.messageId.nativeElement.addEventListener(
+                "keydown",
+                (evt: any) => {
+                    if (evt.key === "Enter") {
+                        this.saveMessage();
+                    }
+                    if (evt.key === "Escape") {
+                        this.editMode = false;
+                    }
+                }
+            );
+        }, 100);
+    }
+
+    saveMessage() {
+        this.websocketService.editMessage(this.message);
     }
 }

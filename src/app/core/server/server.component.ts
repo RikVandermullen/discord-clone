@@ -3,6 +3,7 @@ import {
     AfterViewChecked,
     Component,
     ElementRef,
+    OnChanges,
     OnInit,
     ViewChild
 } from "@angular/core";
@@ -102,6 +103,34 @@ export class ServerComponent implements OnInit, AfterViewChecked {
                 this.servers.forEach((server) => {
                     if (server._id === data.server) {
                         server.messages.push(data);
+                    }
+                });
+            });
+
+        this.subscription = this.websocketService
+            .onDeletedMessage()
+            .subscribe((data) => {
+                console.log("Deleted message: " + data._id);
+
+                this.servers.forEach((server) => {
+                    if (server._id === data.server) {
+                        server.messages = server.messages.filter(
+                            (message) => message._id !== data._id
+                        );
+                    }
+                });
+            });
+
+        this.subscription = this.websocketService
+            .onEditedMessage()
+            .subscribe((data) => {
+                console.log("Edited message: " + data._id);
+
+                this.servers.forEach((server) => {
+                    if (server._id === data.server) {
+                        server.messages = server.messages.map((message) =>
+                            message._id === data._id ? data : message
+                        );
                     }
                 });
             });

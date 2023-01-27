@@ -19,9 +19,4 @@ export class ServerService {
             })
         );
     }
-
-    deleteMessage(messageId: string) {
-        const url = environment.apiUrl + "/api/messages/" + messageId;
-        return this.http.delete(url);
-    }
 }

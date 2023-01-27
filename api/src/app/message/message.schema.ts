@@ -22,7 +22,10 @@ export class Message {
     content?: number;
 
     @Prop({ required: true, type: mongoose.Types.ObjectId })
-    serverId?: ObjectId;
+    server?: ObjectId;
+
+    @Prop({ required: true, type: Boolean })
+    isEdited?: boolean;
 }
 
 export const MessageSchema = SchemaFactory.createForClass(Message);

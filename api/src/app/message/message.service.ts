@@ -5,7 +5,6 @@ import mongoose, { Model, Mongoose, ObjectId } from "mongoose";
 import { InjectModel } from "@nestjs/mongoose";
 
 import { Message as MessageModel, MessageDocument } from "./message.schema";
-import { User } from "../../../../src/app/models/User";
 
 @Injectable()
 export class MessageService {
@@ -18,20 +17,23 @@ export class MessageService {
         author: string,
         date_created: Date,
         content: string,
-        serverId: string
+        server: string,
+        isEdited: boolean
     ) {
         const message = new this.messageModel({
             author: new mongoose.Types.ObjectId(author),
             date_created: date_created,
             content: content,
-            serverId: new mongoose.Types.ObjectId(serverId)
+            server: new mongoose.Types.ObjectId(server),
+            isEdited: isEdited
         });
         await message.save();
+        return message;
     }
 
-    async getMessagesByServerId(serverId: string) {
+    async getMessagesByServerId(server: string) {
         const messages = await this.messageModel.aggregate([
-            { $match: { serverId: new mongoose.Types.ObjectId(serverId) } },
+            { $match: { server: new mongoose.Types.ObjectId(server) } },
             {
                 $lookup: {
                     from: "users",
@@ -49,5 +51,12 @@ export class MessageService {
         await this.messageModel.deleteOne({
             _id: new mongoose.Types.ObjectId(messageId)
         });
+    }
+
+    async editMessage(messageId: string, content: string) {
+        await this.messageModel.updateOne(
+            { _id: new mongoose.Types.ObjectId(messageId) },
+            { $set: { content: content, isEdited: true } }
+        );
     }
 }
