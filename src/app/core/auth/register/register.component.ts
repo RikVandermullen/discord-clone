@@ -43,7 +43,15 @@ export class RegisterComponent {
         1900
     ];
 
-    user: User = new User("0", "", "", "", new Date(), Status.Online);
+    user: User = new User(
+        "0",
+        "",
+        "",
+        "",
+        new Date(),
+        new Date(),
+        Status.Online
+    );
     birthday: any = { day: 0, month: 0, year: 0 };
 
     constructor(private authSerivce: AuthService) {}

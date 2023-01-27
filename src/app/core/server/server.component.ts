@@ -29,7 +29,7 @@ export class ServerComponent implements OnInit {
     newServer: Server = new Server(
         "",
         "",
-        new User("0", "", "", "", new Date(), Status.Idle),
+        new User("0", "", "", "", new Date(), new Date(), Status.Idle),
         new Date(),
         [],
         []
@@ -38,7 +38,7 @@ export class ServerComponent implements OnInit {
     serverToJoin: Server = new Server(
         "",
         "",
-        new User("0", "", "", "", new Date(), Status.Idle),
+        new User("0", "", "", "", new Date(), new Date(), Status.Idle),
         new Date(),
         [],
         []
@@ -46,12 +46,21 @@ export class ServerComponent implements OnInit {
     selectedServer: Server = new Server(
         "",
         "",
-        new User("0", "", "", "", new Date(), Status.Idle),
+        new User("0", "", "", "", new Date(), new Date(), Status.Idle),
         new Date(),
+
         [],
         []
     );
-    user: User = new User("", "", "", "", new Date(), Status.Online);
+    user: User = new User(
+        "",
+        "",
+        "",
+        "",
+        new Date(),
+        new Date(),
+        Status.Online
+    );
     hideMemberPanel: boolean = false;
     hideProfilePanel: boolean = false;
     subscription: Subscription;

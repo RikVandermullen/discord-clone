@@ -21,6 +21,9 @@ export class User {
     @Prop({ required: true, type: Date })
     dateOfBirth?: Date;
 
+    @Prop({ required: true, type: Date })
+    date_created?: Date;
+
     @Prop({ required: true, type: String, enum: Status })
     status?: Status;
 }

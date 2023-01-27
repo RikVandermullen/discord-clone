@@ -353,7 +353,7 @@
                             </div>
                             <div
                                 *ngIf="hideProfilePanel"
-                                class="absolute bottom-12 -left-7 min-h-[395px] min-w-[340px] bg-main-gray-darker2 rounded-md"
+                                class="absolute bottom-12 -left-10 min-h-[395px] min-w-[340px] bg-main-gray-darker2 shadow-md rounded-md"
                             >
                                 <div
                                     class="min-h-[60px] bg-main-gray-dark rounded-md relative"
@@ -398,7 +398,7 @@
                                 </div>
 
                                 <div
-                                    class="bg-main-black min-h-[265px] mx-3 mt-5 rounded-md"
+                                    class="bg-main-black min-h-[265px] mx-3 mt-5 mb-3 rounded-md"
                                 >
                                     <div
                                         class="px-3 pt-2 pb-3 text-white font-semibold"
@@ -413,7 +413,10 @@
                                         <p
                                             class="text-gray-400 font-normal font-sm mt-1"
                                         >
-                                            Apr, 2021
+                                            {{
+                                                user.date_created
+                                                    | date : "longDate"
+                                            }}
                                         </p>
                                         <hr class="mt-2 mb-2" />
                                         <p class="text-sm uppercase">Status</p>

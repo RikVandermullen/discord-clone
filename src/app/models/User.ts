@@ -5,6 +5,7 @@ export class User {
     emailAddress: string;
     userName: string;
     password: string;
+    date_created: Date;
     dateOfBirth: Date;
     status: Status;
 
@@ -14,6 +15,7 @@ export class User {
         userName: string,
         password: string,
         dateOfBirth: Date,
+        date_created: Date,
         status: Status
     ) {
         this._id = _id;
@@ -21,6 +23,7 @@ export class User {
         this.userName = userName;
         this.password = password;
         this.dateOfBirth = dateOfBirth;
+        this.date_created = date_created;
         this.status = status;
     }
 }

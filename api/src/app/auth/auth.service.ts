@@ -33,6 +33,7 @@ export class AuthService {
         userName: string,
         password: string,
         dateOfBirth: Date,
+        date_created: Date,
         status: Status
     ): Promise<string> {
         const user = new this.userModel({
@@ -40,6 +41,7 @@ export class AuthService {
             userName: userName,
             password: password,
             dateOfBirth: dateOfBirth,
+            date_created: date_created,
             status: status
         });
         console.log(user);
@@ -84,12 +86,5 @@ export class AuthService {
                 else resolve(token);
             });
         });
-    }
-
-    async setUserStatus(userId: string, status: Status) {
-        return await this.userModel.updateOne(
-            { _id: new mongoose.Types.ObjectId(userId) },
-            { $set: { status: status } }
-        );
     }
 }

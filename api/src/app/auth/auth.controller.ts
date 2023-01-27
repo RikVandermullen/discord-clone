@@ -31,6 +31,7 @@ export class AuthController {
                     credentials.userName,
                     credentials.password,
                     credentials.dateOfBirth,
+                    credentials.date_created,
                     credentials.status
                 )
             };
