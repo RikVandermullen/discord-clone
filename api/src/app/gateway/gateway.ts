@@ -7,9 +7,7 @@ import {
     WsResponse
 } from "@nestjs/websockets";
 import { Server, Socket } from "socket.io";
-import { AuthService } from "../auth/auth.service";
 import { MessageService } from "../message/message.service";
-import { ServerService } from "../server/server.service";
 
 @WebSocketGateway({
     cors: {
@@ -102,15 +100,6 @@ export class Gateway implements OnModuleInit {
         return { event: "serverLeft", data: { server: data.server } };
     }
 
-    // @SubscribeMessage("setStatus")
-    // setStatus(socket: Socket, data: any): WsResponse<unknown> {
-    //     console.log("Status set: ", data._id, " Status: ", data.status);
-    //     socket.emit("onStatusChange", data);
-    //     return {
-    //         event: "onStatusChange",
-    //         data: data
-    //     };
-    // }
     @SubscribeMessage("setStatus")
     async setStatus(@MessageBody() data: any) {
         console.log("Status set: ", data._id, " Status: ", data.status);
