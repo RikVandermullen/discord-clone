@@ -1,7 +1,7 @@
 <div
     class="flex flex-row justify-between px-3 py-2 hover:bg-main-gray-hover2 group"
 >
-    <div class="flex flex-row px-3 py-1">
+    <div class="flex flex-row px-3 py-1 min-w-[95%] max-w-[95%]">
         <img
             src="https://api.dicebear.com/5.x/identicon/svg?seed={{
                 message.author
@@ -9,10 +9,10 @@
             alt="Avatar"
             class="w-8 h-8 md:w-10 md:h-10 rounded-full hover:cursor-pointer mt-1"
         />
-        <div class="flex flex-col justify-between">
+        <div class="flex flex-col justify-between min-w-full">
             <div class="flex flex-col ml-5">
                 <div class="flex flex-row justify-between">
-                    <div>
+                    <div class="flex flex-grow">
                         <p class="m-0 p-0">
                             <span
                                 class="font-semibold hover:underline hover:cursor-pointer"
@@ -24,8 +24,8 @@
                             >
                         </p>
                     </div>
-
-                    <div class="flex flex-row gap-1">
+                    <!-- ICONS -->
+                    <div *ngIf="!editMode" class="flex flex-row gap-1">
                         <svg
                             class="hover:cursor-pointer hover:scale-110 hidden group-hover:block"
                             aria-hidden="true"
@@ -66,11 +66,11 @@
             </div>
             <div *ngIf="!editMode" class="ml-5">
                 <div>
-                    <p
-                        class="text-white-light break-normal break-all whitespace-pre-wrap"
+                    <span
+                        class="text-white-light m-0 p-0 break-normal break-all whitespace-pre-line"
                     >
                         {{ message.content }}
-                    </p>
+                    </span>
                     <p *ngIf="message.isEdited" class="text-gray-500 text-xs">
                         (edited)
                     </p>
@@ -78,16 +78,14 @@
             </div>
             <div
                 *ngIf="editMode"
-                class="flex flex-col min-w-full max-w-full ml-5"
+                class="flex flex-col grow min-w-full max-w-full ml-5"
             >
-                <input
-                    type="text"
-                    name="edit-{{ message._id }}"
+                <div
                     id="edit-{{ message._id }}"
                     #messageId
-                    class="bg-main-gray-light text-gray-200 rounded-md outline-none border-none ring-transparent focus:outline-none focus:border-none focus:ring-transparent"
-                    [(ngModel)]="message.content"
-                />
+                    [contentEditable]="true"
+                    class="bg-main-gray-light text-gray-200 rounded-lg p-3 mt-2 mr-3 outline-none border-none ring-transparent focus:outline-none focus:border-none focus:ring-transparent"
+                ></div>
                 <div class="inline">
                     <span class="text-xs">escape to </span
                     ><span class="text-xs text-blue-400">cancel</span

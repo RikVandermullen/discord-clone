@@ -62,14 +62,33 @@ export class MessageComponent implements OnInit {
     editMessage() {
         this.editMode = true;
         setTimeout(() => {
+            const content: string[] = this.message.content.split("\n");
+            content.forEach((line, index) => {
+                if (index !== content.length - 1) {
+                    this.messageId.nativeElement.appendChild(
+                        this.addLine(line)
+                    );
+                }
+            });
+
             this.messageId.nativeElement.addEventListener(
                 "keydown",
                 (evt: any) => {
-                    if (evt.key === "Enter") {
-                        this.saveMessage();
-                    }
                     if (evt.key === "Escape") {
                         this.editMode = false;
+                    }
+
+                    if (evt.shiftKey && evt.key === "Enter") {
+                        evt.preventDefault();
+                        this.messageId.nativeElement.appendChild(
+                            this.addLine("")
+                        );
+                    }
+
+                    if (evt.key === "Enter" && !evt.shiftKey) {
+                        this.formatContent();
+                        this.saveMessage();
+                        evt.preventDefault();
                     }
                 }
             );
@@ -78,5 +97,29 @@ export class MessageComponent implements OnInit {
 
     saveMessage() {
         this.websocketService.editMessage(this.message);
+    }
+
+    addLine(content: string) {
+        const div = document.createElement("div");
+        const br = document.createElement("br");
+
+        div.textContent = content;
+        div.appendChild(br);
+
+        div.classList.add("line");
+        div.setAttribute("contenteditable", "true");
+        return div;
+    }
+
+    formatContent() {
+        this.message.content = "";
+        const elements = document.getElementsByClassName("line");
+        Array.from(elements).forEach((element: Element, index) => {
+            if (index !== elements.length - 1) {
+                this.message.content += element.textContent + "\n";
+            } else {
+                this.message.content += element.textContent;
+            }
+        });
     }
 }

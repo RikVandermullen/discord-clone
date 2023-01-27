@@ -22,7 +22,7 @@ import { ServerService } from "./server.service";
     templateUrl: "./server.component.html",
     styleUrls: ["./server.component.css"]
 })
-export class ServerComponent implements OnInit, AfterViewChecked {
+export class ServerComponent implements OnInit {
     @ViewChild("messageContainer") private messageContainer: ElementRef;
 
     servers: Server[] = [
@@ -145,10 +145,12 @@ export class ServerComponent implements OnInit, AfterViewChecked {
     selectServer(server: Server) {
         this.selectedServer = server;
     }
-
-    ngAfterViewChecked() {
-        this.scrollToBottom();
-    }
+    /**
+     @todo: Fix scroll to bottom to work with updated messages
+    **/
+    // ngAfterViewChecked() {
+    //     this.scrollToBottom();
+    // }
 
     onDestroy() {
         this.subscription.unsubscribe();
