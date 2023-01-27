@@ -26,8 +26,23 @@ export class ServerController {
         );
     }
 
-    @Get(":userId")
+    @Post("/join")
+    async joinServer(@Body() body: string) {
+        const response = JSON.parse(JSON.stringify(body));
+
+        return this.serverService.addUserToServer(
+            response.serverId,
+            response.userId
+        );
+    }
+
+    @Get("users/:userId")
     async getServersByUserId(@Param("userId") userId: string) {
         return this.serverService.getServersByUserId(userId);
+    }
+
+    @Get(":serverId")
+    async getServerById(@Param("serverId") serverId: string) {
+        return this.serverService.getServerById(serverId);
     }
 }

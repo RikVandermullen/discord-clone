@@ -17,6 +17,7 @@ import { Subscription } from "rxjs";
 import { JwtPayload } from "jwt-decode";
 import jwt_decode from "jwt-decode";
 import { ServerService } from "./server.service";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
     selector: "discord-clone-server",
@@ -25,41 +26,23 @@ import { ServerService } from "./server.service";
 })
 export class ServerComponent implements OnInit {
     @ViewChild("messageContainer") private messageContainer: ElementRef;
-
-    servers: Server[] = [
-        new Server(
-            "",
-            "",
-            new User(
-                "0",
-                "chihi@mail.com",
-                "Chihi",
-                "Secret",
-                new Date(),
-                Status.Idle
-            ),
-            new Date(),
-            [
-                new User(
-                    "0",
-                    "chihi@mail.com",
-                    "Chihi",
-                    "Secret",
-                    new Date(),
-                    Status.Idle
-                ),
-                new User(
-                    "0",
-                    "chihi@mail.com",
-                    "Chihi2",
-                    "Secret",
-                    new Date(),
-                    Status.Offline
-                )
-            ],
-            []
-        )
-    ];
+    newServer: Server = new Server(
+        "",
+        "",
+        new User("0", "", "", "", new Date(), Status.Idle),
+        new Date(),
+        [],
+        []
+    );
+    servers: Server[] = [];
+    serverToJoin: Server = new Server(
+        "",
+        "",
+        new User("0", "", "", "", new Date(), Status.Idle),
+        new Date(),
+        [],
+        []
+    );
     selectedServer: Server = new Server(
         "",
         "",
@@ -74,7 +57,8 @@ export class ServerComponent implements OnInit {
 
     constructor(
         private websocketService: WebsocketService,
-        private serverService: ServerService
+        private serverService: ServerService,
+        private modalService: NgbModal
     ) {}
 
     ngOnInit() {
@@ -82,6 +66,7 @@ export class ServerComponent implements OnInit {
             localStorage.getItem("currentuser")!
         );
         this.user = JSON.parse(JSON.stringify(decodedToken)).user;
+        this.newServer.owner = this.user;
 
         this.subscription = this.serverService
             .getServerByUserId(this.user._id)
@@ -141,17 +126,43 @@ export class ServerComponent implements OnInit {
     }
 
     createServer() {
-        const server: Server = new Server(
-            "0",
-            "Test Server 2",
-            this.user,
-            new Date(),
-            [],
-            []
-        );
-        this.serverService.createServer(server).subscribe();
-        this.websocketService.createServer(server.name, this.user.userName);
-        this.servers.push(server);
+        this.serverService
+            .createServer(this.newServer)
+            .subscribe((response) => {
+                this.serverService
+                    .getServerById(response._id)
+                    .subscribe((server) => {
+                        this.websocketService.joinServer(
+                            server._id,
+                            this.user.userName
+                        );
+                        server.messages = [];
+                        this.servers.push(server);
+                        this.selectedServer = server;
+                    });
+            });
+        this.modalService.dismissAll();
+    }
+
+    joinServer() {
+        this.subscription = this.serverService
+            .joinServer(this.serverToJoin._id, this.user._id)
+            .subscribe();
+        this.serverService
+            .getServerById(this.serverToJoin._id)
+            .subscribe((server) => {
+                this.websocketService.joinServer(
+                    server._id,
+                    this.user.userName
+                );
+                this.serverService
+                    .getMessagesByServerId(server._id)
+                    .subscribe((messages: Message[]) => {
+                        server.messages = messages;
+                    });
+                this.servers.push(server);
+                this.selectedServer = server;
+            });
     }
 
     selectServer(server: Server) {
@@ -179,5 +190,17 @@ export class ServerComponent implements OnInit {
 
     hideMembers() {
         this.hideMemberPanel = !this.hideMemberPanel;
+    }
+
+    openCreate(content: any) {
+        this.modalService.open(content, {
+            ariaLabelledBy: "create-modal"
+        });
+    }
+
+    openJoin(content: any) {
+        this.modalService.open(content, {
+            ariaLabelledBy: "join-modal"
+        });
     }
 }

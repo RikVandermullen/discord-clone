@@ -32,7 +32,7 @@
                     tooltipClass="font-semibold text-md"
                     (click)="selectServer(server)"
                     routerLink="/server/{{ server._id }}"
-                    class="flex flex-col items-center justify-center bg-main-gray-darker rounded-full"
+                    class="flex flex-col items-center justify-center bg-main-gray-darker rounded-full hover:rounded-xl"
                 >
                     <img
                         src="https://api.dicebear.com/5.x/identicon/svg?seed={{
@@ -43,13 +43,189 @@
                     />
                 </div>
             </div>
+            <!-- CREATE SERVER -->
+            <ng-template #create let-createmodal>
+                <div class="rounded-md">
+                    <div class="flex flex-row justify-end mt-3 mr-5">
+                        <svg
+                            class="hover:cursor-pointer"
+                            aria-hidden="true"
+                            role="img"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            aria-label="Close"
+                            (click)="createmodal.dismiss()"
+                        >
+                            <path
+                                fill="currentColor"
+                                d="M18.4 4L12 10.4L5.6 4L4 5.6L10.4 12L4 18.4L5.6 20L12 13.6L18.4 20L20 18.4L13.6 12L20 5.6L18.4 4Z"
+                            ></path>
+                        </svg>
+                    </div>
+                    <div
+                        class="flex flex-col text-center px-5 justify-center mt-2"
+                    >
+                        <h4
+                            class="text-2xl text-black font-semibold"
+                            id="modal-basic-title"
+                        >
+                            Create a server
+                        </h4>
+                        <p class="text-md text-gray-600 mt-2">
+                            Your server is where you and your friends hang out.
+                            Make yours and start talking.
+                        </p>
+                    </div>
+                </div>
+                <div class="">
+                    <form>
+                        <div class="flex flex-col mt-3 p-3">
+                            <label
+                                for="password"
+                                class="font-bold text-xs mb-2 text-main-gray-darker uppercase"
+                                >Server Name</label
+                            >
+                            <input
+                                type="text"
+                                id="name"
+                                name="name"
+                                [(ngModel)]="newServer!.name"
+                                #name="ngModel"
+                                required
+                                class="bg-lightmode-grey text-main-gray-darker border-none rounded-sm focus:outline-none focus:ring-0 focus:border-none"
+                            />
+                            <p>
+                                <span class="text-xs text-gray-400"
+                                    >By creating a server, you agree to Scuffed
+                                    Discord's
+                                </span>
+                                <span class="text-xs text-blue-500"
+                                    >Community Guidelines</span
+                                >
+                                <span class="text-xs text-gray-400">.</span>
+                            </p>
+                        </div>
+                    </form>
+                </div>
+                <div
+                    class="flex flex-row justify-end items-center bg-lightmode-grey min-h-[70px] rounded-b-md"
+                >
+                    <button
+                        type="submit"
+                        (click)="createServer()"
+                        class="text-white text-sm min-w-[96px] min-h-[38px] bg-indigo-500 rounded-sm font-semibold hover:bg-indigo-600 mr-4"
+                    >
+                        Create
+                    </button>
+                </div>
+            </ng-template>
+
+            <!-- JOIN SERVER -->
+            <ng-template #join let-joinmodal>
+                <div class="rounded-md">
+                    <div class="flex flex-row justify-end mt-3 mr-5">
+                        <svg
+                            class="hover:cursor-pointer"
+                            aria-hidden="true"
+                            role="img"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            aria-label="Close"
+                            (click)="joinmodal.dismiss()"
+                        >
+                            <path
+                                fill="currentColor"
+                                d="M18.4 4L12 10.4L5.6 4L4 5.6L10.4 12L4 18.4L5.6 20L12 13.6L18.4 20L20 18.4L13.6 12L20 5.6L18.4 4Z"
+                            ></path>
+                        </svg>
+                    </div>
+                    <div
+                        class="flex flex-col text-center px-5 justify-center mt-2"
+                    >
+                        <h4
+                            class="text-2xl text-black font-semibold"
+                            id="modal-basic-title"
+                        >
+                            Join a server
+                        </h4>
+                        <p class="text-md text-gray-600 mt-2">
+                            Enter an invite below to join an existing server.
+                        </p>
+                    </div>
+                </div>
+                <div class="">
+                    <form #joinForm="ngForm">
+                        <div class="flex flex-col mt-3 p-3">
+                            <label
+                                for="join"
+                                class="font-bold text-xs mb-2 text-main-gray-darker uppercase"
+                                >Invite Link</label
+                            >
+                            <input
+                                type="text"
+                                id="join"
+                                name="join"
+                                [(ngModel)]="serverToJoin._id"
+                                #join="ngModel"
+                                required
+                                minlength="24"
+                                maxlength="24"
+                                class="bg-lightmode-grey text-main-gray-darker border-none rounded-sm focus:outline-none focus:ring-0 focus:border-none"
+                            />
+                            <p>
+                                <span class="text-xs text-gray-400"
+                                    >By joing a server, you agree to Scuffed
+                                    Discord's
+                                </span>
+                                <span class="text-xs text-blue-500"
+                                    >Community Guidelines</span
+                                >
+                                <span class="text-xs text-gray-400">.</span>
+                            </p>
+                        </div>
+                    </form>
+                </div>
+                <div
+                    class="flex flex-row justify-end items-center bg-lightmode-grey min-h-[70px] rounded-b-md"
+                >
+                    <button
+                        type="submit"
+                        (click)="joinServer()"
+                        [disabled]="!joinForm.valid"
+                        class="text-white text-sm min-w-[96px] min-h-[38px] bg-indigo-500 rounded-sm font-semibold hover:bg-indigo-600 mr-4 disabled:bg-indigo-300 disabled:hover:bg-indigo-300"
+                    >
+                        Join Server
+                    </button>
+                </div>
+            </ng-template>
 
             <div class="flex flex-col items-center gap-3 mb-3">
                 <div
                     placement="end"
-                    ngbTooltip="Create / Join Server"
+                    ngbTooltip="Join Server"
                     tooltipClass="font-semibold text-md"
-                    (click)="createServer()"
+                    (click)="openJoin(join)"
+                    class="flex flex-col items-center justify-center bg-main-gray-light rounded-full w-12 h-12 transition hover:cursor-pointer hover:rounded-xl hover:bg-green-600 group"
+                >
+                    <img
+                        src="../../../assets/link.png"
+                        alt=""
+                        class="block group-hover:hidden w-5 h-5"
+                    />
+                    <img
+                        src="../../../assets/link-hover.png"
+                        alt=""
+                        class="hidden group-hover:block w-5 h-5"
+                    />
+                </div>
+
+                <div
+                    placement="end"
+                    ngbTooltip="Create Server"
+                    tooltipClass="font-semibold text-md"
+                    (click)="openCreate(create)"
                     class="flex flex-col items-center justify-center bg-main-gray-light rounded-full w-12 h-12 transition hover:cursor-pointer hover:rounded-xl hover:bg-green-600 group"
                 >
                     <svg

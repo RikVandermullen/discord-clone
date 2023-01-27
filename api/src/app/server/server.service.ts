@@ -46,9 +46,23 @@ export class ServerService {
     }
 
     async addUserToServer(serverId: string, userId: string) {
-        return await this.serverModel.updateOne(
+        const result = await this.serverModel.updateOne(
             { _id: new mongoose.Types.ObjectId(serverId) },
-            { $addToSet: { users: new mongoose.Types.ObjectId(userId) } }
+            { $push: { users: new mongoose.Types.ObjectId(userId) } }
         );
+    }
+
+    async getServerById(serverId: string) {
+        return await this.serverModel.aggregate([
+            { $match: { _id: new mongoose.Types.ObjectId(serverId) } },
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "users",
+                    foreignField: "_id",
+                    as: "users"
+                }
+            }
+        ]);
     }
 }

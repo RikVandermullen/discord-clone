@@ -14,7 +14,7 @@ export class AuthGuard implements CanActivate {
                 if (token && token.token) {
                     const allowed = this.isAllowed(next);
                     if (!allowed) {
-                        this.router.navigate(["/games"]);
+                        this.router.navigate(["/server"]);
                         return false;
                     } else {
                         return true;
