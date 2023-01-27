@@ -4,7 +4,7 @@
     <div class="flex flex-row px-3 py-1 min-w-[95%] max-w-[95%]">
         <img
             src="https://api.dicebear.com/5.x/identicon/svg?seed={{
-                message.author
+                message.author._id
             }}"
             alt="Avatar"
             class="w-8 h-8 md:w-10 md:h-10 rounded-full hover:cursor-pointer mt-1"
@@ -25,7 +25,12 @@
                         </p>
                     </div>
                     <!-- ICONS -->
-                    <div *ngIf="!editMode" class="flex flex-row gap-1">
+                    <div
+                        *ngIf="
+                            !editMode && currentUser._id === message.author._id
+                        "
+                        class="flex flex-row gap-1"
+                    >
                         <svg
                             class="hover:cursor-pointer hover:scale-110 hidden group-hover:block"
                             aria-hidden="true"

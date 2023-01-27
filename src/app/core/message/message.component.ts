@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable @typescript-eslint/no-inferrable-types */
 import { DatePipe } from "@angular/common";
 import {
@@ -10,8 +11,11 @@ import {
     OnInit,
     ViewChild
 } from "@angular/core";
+import { User } from "../../models/User";
 import { WebsocketService } from "../../context/WebsocketService";
 import { Message } from "../../models/Message";
+import { JwtPayload } from "jwt-decode";
+import jwt_decode from "jwt-decode";
 
 @Component({
     selector: "discord-clone-message",
@@ -24,6 +28,7 @@ export class MessageComponent implements OnInit {
     currentDate: number = Date.now();
     formattedDate: string;
     editMode: boolean = false;
+    currentUser: User;
 
     constructor(
         private datePipe: DatePipe,
@@ -31,6 +36,11 @@ export class MessageComponent implements OnInit {
     ) {}
 
     ngOnInit() {
+        const decodedToken = jwt_decode<JwtPayload>(
+            localStorage.getItem("currentuser")!
+        );
+        this.currentUser = JSON.parse(JSON.stringify(decodedToken)).user;
+
         this.formattedDate = this.formatDate();
     }
 

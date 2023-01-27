@@ -21,15 +21,4 @@ export class MessageController {
     async getMessagesByServerId(@Param("serverId") serverId: string) {
         return this.messageService.getMessagesByServerId(serverId);
     }
-
-    @Post()
-    async addMessage(@Body() message: Message) {
-        return this.messageService.addMessage(
-            message.author._id,
-            message.date_created,
-            message.content,
-            message.server!,
-            message.isEdited
-        );
-    }
 }

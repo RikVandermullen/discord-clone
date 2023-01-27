@@ -4,7 +4,6 @@ import mongoose, {
     ObjectId,
     Schema as MongooseSchema
 } from "mongoose";
-import { User } from "../auth/user.schema";
 
 export type MessageDocument = Message & Document;
 

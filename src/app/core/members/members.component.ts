@@ -8,6 +8,7 @@ import { User } from "../../models/User";
 })
 export class MembersComponent implements OnInit, OnChanges {
     @Input() users: User[];
+    foundUsers: User[];
     onlineUsers: User[];
     offlineUsers: User[];
 

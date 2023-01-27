@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-inferrable-types */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import {
     AfterViewChecked,
@@ -27,8 +28,17 @@ export class ServerComponent implements OnInit {
 
     servers: Server[] = [
         new Server(
-            "63d2d639abaa37742196819b",
-            "Server 1",
+            "",
+            "",
+            new User(
+                "0",
+                "chihi@mail.com",
+                "Chihi",
+                "Secret",
+                new Date(),
+                Status.Idle
+            ),
+            new Date(),
             [
                 new User(
                     "0",
@@ -48,33 +58,18 @@ export class ServerComponent implements OnInit {
                 )
             ],
             []
-        ),
-        new Server(
-            "63d2d639abaa37742196819a",
-            "Server 2",
-            [
-                new User(
-                    "0",
-                    "chihi@mail.com",
-                    "Chihi",
-                    "Secret",
-                    new Date(),
-                    Status.Idle
-                )
-            ],
-            []
-        ),
-        new Server("63d2d639abaa37742196819c", "Server 3", [], [])
+        )
     ];
-    selectedServer: Server = this.servers[0];
-    user: User = new User(
-        "0",
-        "chihi@mail.com",
-        "Chihi",
-        "Secret",
+    selectedServer: Server = new Server(
+        "",
+        "",
+        new User("0", "", "", "", new Date(), Status.Idle),
         new Date(),
-        Status.Online
+        [],
+        []
     );
+    user: User = new User("", "", "", "", new Date(), Status.Online);
+    hideMemberPanel: boolean = false;
     subscription: Subscription;
 
     constructor(
@@ -88,14 +83,23 @@ export class ServerComponent implements OnInit {
         );
         this.user = JSON.parse(JSON.stringify(decodedToken)).user;
 
-        this.servers.forEach((server) => {
-            this.serverService
-                .getMessagesByServerId(server._id)
-                .subscribe((messages: Message[]) => {
-                    server.messages = messages;
+        this.subscription = this.serverService
+            .getServerByUserId(this.user._id)
+            .subscribe((servers: Server[]) => {
+                this.servers = servers;
+                this.selectedServer = this.servers[0];
+                this.servers.forEach((server) => {
+                    this.serverService
+                        .getMessagesByServerId(server._id)
+                        .subscribe((messages: Message[]) => {
+                            server.messages = messages;
+                        });
+                    this.websocketService.joinServer(
+                        server._id,
+                        this.user.userName
+                    );
                 });
-            this.websocketService.joinServer(server._id, this.user.userName);
-        });
+            });
 
         this.subscription = this.websocketService
             .onNewMessage()
@@ -137,7 +141,15 @@ export class ServerComponent implements OnInit {
     }
 
     createServer() {
-        const server: Server = new Server("3", "Server 4", [this.user], []);
+        const server: Server = new Server(
+            "0",
+            "Test Server 2",
+            this.user,
+            new Date(),
+            [],
+            []
+        );
+        this.serverService.createServer(server).subscribe();
         this.websocketService.createServer(server.name, this.user.userName);
         this.servers.push(server);
     }
@@ -163,5 +175,9 @@ export class ServerComponent implements OnInit {
         } catch (err) {
             console.log(err);
         }
+    }
+
+    hideMembers() {
+        this.hideMemberPanel = !this.hideMemberPanel;
     }
 }
