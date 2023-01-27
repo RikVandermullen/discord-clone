@@ -1,4 +1,5 @@
 import { Component, Input, OnChanges, OnInit } from "@angular/core";
+import { WebsocketService } from "../../context/WebsocketService";
 import { User } from "../../models/User";
 
 @Component({
@@ -12,8 +13,19 @@ export class MembersComponent implements OnInit, OnChanges {
     onlineUsers: User[];
     offlineUsers: User[];
 
+    constructor(private websocketService: WebsocketService) {}
+
     ngOnInit() {
         this.sortUsers();
+
+        this.websocketService.onStatusChange().subscribe((data) => {
+            this.users.forEach((user) => {
+                if (user._id === data._id) {
+                    user.status = data.status;
+                    this.sortUsers();
+                }
+            });
+        });
     }
 
     ngOnChanges() {

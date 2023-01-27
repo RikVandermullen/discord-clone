@@ -53,6 +53,7 @@ export class ServerComponent implements OnInit {
     );
     user: User = new User("", "", "", "", new Date(), Status.Online);
     hideMemberPanel: boolean = false;
+    hideProfilePanel: boolean = false;
     subscription: Subscription;
 
     constructor(
@@ -66,7 +67,13 @@ export class ServerComponent implements OnInit {
             localStorage.getItem("currentuser")!
         );
         this.user = JSON.parse(JSON.stringify(decodedToken)).user;
-        this.newServer.owner = this.user;
+
+        this.subscription = this.serverService
+            .getUserById(this.user._id)
+            .subscribe((user: User) => {
+                this.user = user;
+                this.newServer.owner = user;
+            });
 
         this.subscription = this.serverService
             .getServerByUserId(this.user._id)
@@ -166,6 +173,11 @@ export class ServerComponent implements OnInit {
     }
 
     selectServer(server: Server) {
+        this.subscription = this.serverService
+            .getServerById(server._id)
+            .subscribe((server) => {
+                this.selectedServer.users = server.users;
+            });
         this.selectedServer = server;
     }
     /**
@@ -202,5 +214,12 @@ export class ServerComponent implements OnInit {
         this.modalService.open(content, {
             ariaLabelledBy: "join-modal"
         });
+    }
+
+    setStatus(status: string) {
+        const statusEnum = Status[status as keyof typeof Status];
+        this.user.status = statusEnum;
+        this.serverService.setUserStatus(this.user._id, statusEnum).subscribe();
+        this.websocketService.setStatus(this.user);
     }
 }

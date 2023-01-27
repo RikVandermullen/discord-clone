@@ -36,6 +36,16 @@ export class ServerController {
         );
     }
 
+    @Put("/user")
+    async updateStatus(@Body() body: string) {
+        const response = JSON.parse(JSON.stringify(body));
+
+        return this.serverService.setUserStatus(
+            response.userId,
+            response.status
+        );
+    }
+
     @Get("users/:userId")
     async getServersByUserId(@Param("userId") userId: string) {
         return this.serverService.getServersByUserId(userId);

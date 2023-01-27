@@ -14,9 +14,11 @@ module.exports = {
                 "main-gray-darker": "#2f3136",
                 "main-gray-darker2": "#292b2f",
                 "main-gray-darkest": "#202225",
+                "main-gray-dark": "#221b22",
                 "main-gray-light": "#40444b",
                 "main-gray-hover": "#3b3e45",
                 "main-gray-hover2": "#32353b",
+                "main-black": "#18191c",
                 "white-light": "#dcddde",
                 "lightmode-grey": "#e3e5e8"
             },

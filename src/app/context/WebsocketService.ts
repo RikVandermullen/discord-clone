@@ -36,6 +36,14 @@ export class WebsocketService {
         });
     }
 
+    onStatusChange(): Observable<User> {
+        return new Observable((observer) => {
+            this.socket.on("onStatusChange", (data: User) => {
+                observer.next(data);
+            });
+        });
+    }
+
     sendMessage(message: Message) {
         this.socket.emit("newMessage", message);
     }
@@ -67,5 +75,9 @@ export class WebsocketService {
             server: server,
             user: userId
         });
+    }
+
+    setStatus(user: User) {
+        this.socket.emit("setStatus", user);
     }
 }

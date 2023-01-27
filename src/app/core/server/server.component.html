@@ -4,6 +4,7 @@
         class="hidden md:block min-h-screen max-h-screen min-w-[72px] bg-main-gray-darkest"
     >
         <div class="flex flex-col justify-between min-h-screen">
+            <!-- SERVERS -->
             <div class="flex flex-col items-center align-top mt-3 gap-3">
                 <div
                     placement="end"
@@ -25,6 +26,7 @@
                     </svg>
                 </div>
                 <hr class="bg-main-gray-dark min-h-[5px] min-w-[60%]" />
+
                 <div
                     *ngFor="let server of servers"
                     placement="end"
@@ -32,7 +34,7 @@
                     tooltipClass="font-semibold text-md"
                     (click)="selectServer(server)"
                     routerLink="/server/{{ server._id }}"
-                    class="flex flex-col items-center justify-center bg-main-gray-darker rounded-full hover:rounded-xl"
+                    class="flex flex-col items-center justify-center bg-main-gray-darker rounded-full hover:rounded-xl relative"
                 >
                     <img
                         src="https://api.dicebear.com/5.x/identicon/svg?seed={{
@@ -41,6 +43,12 @@
                         alt="avatar"
                         class="w-12 h-12 rounded-full transition hover:cursor-pointer hover:rounded-xl"
                     />
+                    <div
+                        *ngIf="server._id === selectedServer._id"
+                        class="absolute top-1 -left-3.5 h-[40px] bg-white rounded-full"
+                    >
+                        *
+                    </div>
                 </div>
             </div>
             <!-- CREATE SERVER -->
@@ -201,6 +209,7 @@
                 </div>
             </ng-template>
 
+            <!-- SERVER ACTIONS -->
             <div class="flex flex-col items-center gap-3 mb-3">
                 <div
                     placement="end"
@@ -299,9 +308,12 @@
             </div>
             <!-- PROFILE -->
             <div class="flex flex-col">
-                <div class="flex flex-row min-h-[52px] bg-main-gray-darker2">
+                <div
+                    (click)="hideProfilePanel = !hideProfilePanel"
+                    class="flex flex-row min-h-[52px] items-center bg-main-gray-darker2"
+                >
                     <div
-                        class="flex flex-row p-2 items-center hover:cursor-pointer"
+                        class="flex flex-row min-w-[50%] max-h-[39px] ml-2 py-2 pl-1 items-center hover:cursor-pointer hover:bg-main-gray-hover rounded-sm group"
                     >
                         <div class="relative">
                             <img
@@ -332,6 +344,163 @@
                                     alt=""
                                     class="w-2.5 h-2.5"
                                 />
+                                <img
+                                    *ngIf="user.status === 'Offline'"
+                                    src="../../../assets/offline.png"
+                                    alt=""
+                                    class="w-2.5 h-2.5"
+                                />
+                            </div>
+                            <div
+                                *ngIf="hideProfilePanel"
+                                class="absolute bottom-12 -left-7 min-h-[395px] min-w-[340px] bg-main-gray-darker2 rounded-md"
+                            >
+                                <div
+                                    class="min-h-[60px] bg-main-gray-dark rounded-md relative"
+                                >
+                                    <img
+                                        src="https://api.dicebear.com/5.x/identicon/svg?seed={{
+                                            user._id
+                                        }}"
+                                        alt="avatar"
+                                        class="w-20 h-20 rounded-full absolute top-3 left-5 bg-main-gray-darker"
+                                    />
+                                    <div
+                                        class="flex w-8 h-8 rounded-full bg-main-gray-darker absolute left-16 -bottom-10 justify-center items-center ml-3"
+                                    >
+                                        <img
+                                            *ngIf="user.status === 'Online'"
+                                            src="../../../assets/online.png"
+                                            alt=""
+                                            class="w-4 h-4"
+                                        />
+                                        <img
+                                            *ngIf="user.status === 'Idle'"
+                                            src="../../../assets/away.png"
+                                            alt=""
+                                            class="w-4 h-4"
+                                        />
+                                        <img
+                                            *ngIf="
+                                                user.status === 'Do Not Disturb'
+                                            "
+                                            src="../../../assets/busy.png"
+                                            alt=""
+                                            class="w-4 h-4"
+                                        />
+                                        <img
+                                            *ngIf="user.status === 'Offline'"
+                                            src="../../../assets/offline.png"
+                                            alt=""
+                                            class="w-4 h-4"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="bg-main-black min-h-[265px] mx-3 mt-5 rounded-md"
+                                >
+                                    <div
+                                        class="px-3 pt-2 pb-3 text-white font-semibold"
+                                    >
+                                        <h1 class="text-2xl">
+                                            {{ user.userName }}
+                                        </h1>
+                                        <hr class="mt-2 mb-2" />
+                                        <p class="text-sm uppercase">
+                                            Scuffed Discord Member Since
+                                        </p>
+                                        <p
+                                            class="text-gray-400 font-normal font-sm mt-1"
+                                        >
+                                            Apr, 2021
+                                        </p>
+                                        <hr class="mt-2 mb-2" />
+                                        <p class="text-sm uppercase">Status</p>
+                                        <div class="mt-1">
+                                            <div
+                                                [ngClass]="{
+                                                    currentStatus:
+                                                        user.status === 'Online'
+                                                }"
+                                                (click)="setStatus('Online')"
+                                                class="mt-1 flex flex-row gap-1 items-center text-center hover:bg-main-gray-hover p-1.5 rounded-md"
+                                            >
+                                                <img
+                                                    src="../../../assets/online.png"
+                                                    alt=""
+                                                    class="w-4 h-4"
+                                                />
+                                                <p
+                                                    class="text-gray-400 font-normal text-sm ml-2"
+                                                >
+                                                    Online
+                                                </p>
+                                            </div>
+                                            <div
+                                                [ngClass]="{
+                                                    currentStatus:
+                                                        user.status === 'Idle'
+                                                }"
+                                                (click)="setStatus('Idle')"
+                                                class="mt-1 flex flex-row gap-1 items-center text-center hover:bg-main-gray-hover p-1.5 rounded-md aria-[selected]:bg-main-gray-hover"
+                                            >
+                                                <img
+                                                    src="../../../assets/away.png"
+                                                    alt=""
+                                                    class="w-4 h-4"
+                                                />
+                                                <p
+                                                    class="text-gray-400 font-normal text-sm ml-2"
+                                                >
+                                                    Idle
+                                                </p>
+                                            </div>
+                                            <div
+                                                [ngClass]="{
+                                                    currentStatus:
+                                                        user.status ===
+                                                        'Do Not Disturb'
+                                                }"
+                                                (click)="
+                                                    setStatus('DoNotDisturb')
+                                                "
+                                                class="mt-1 flex flex-row gap-1 items-center text-center hover:bg-main-gray-hover p-1.5 rounded-md aria-[selected]:bg-main-gray-hover"
+                                            >
+                                                <img
+                                                    src="../../../assets/busy.png"
+                                                    alt=""
+                                                    class="w-4 h-4"
+                                                />
+                                                <p
+                                                    class="text-gray-400 font-normal text-sm ml-2"
+                                                >
+                                                    Do Not Disturb
+                                                </p>
+                                            </div>
+                                            <div
+                                                [ngClass]="{
+                                                    currentStatus:
+                                                        user.status ===
+                                                        'Offline'
+                                                }"
+                                                (click)="setStatus('Offline')"
+                                                class="mt-1 flex flex-row gap-1 items-center text-center hover:bg-main-gray-hover p-1.5 rounded-md aria-[selected]:bg-main-gray-hover"
+                                            >
+                                                <img
+                                                    src="../../../assets/offline.png"
+                                                    alt=""
+                                                    class="w-4 h-4"
+                                                />
+                                                <p
+                                                    class="text-gray-400 font-normal text-sm ml-2"
+                                                >
+                                                    Offline
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <h1

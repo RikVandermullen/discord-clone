@@ -4,6 +4,8 @@ import { Message } from "../../models/Message";
 import { environment } from "../../../environments/environment";
 import { map, Observable, tap } from "rxjs";
 import { Server } from "../../models/Server";
+import { User } from "../../models/User";
+import { Status } from "../../models/Status";
 
 @Injectable({
     providedIn: "root"
@@ -57,6 +59,26 @@ export class ServerService {
             map((response: Server) => response),
             tap((server: Server) => {
                 return server;
+            })
+        );
+    }
+
+    setUserStatus(userId: string, status: Status): Observable<User> {
+        const url = environment.apiUrl + "/api/users/" + userId;
+        return this.http.put<User>(url, { userId, status }).pipe(
+            map((response: User) => response),
+            tap((user: User) => {
+                return user;
+            })
+        );
+    }
+
+    getUserById(userId: string): Observable<User> {
+        const url = environment.apiUrl + "/api/users/" + userId;
+        return this.http.get<User>(url).pipe(
+            map((response: User) => response),
+            tap((user: User) => {
+                return user;
             })
         );
     }

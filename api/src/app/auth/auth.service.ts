@@ -4,7 +4,7 @@ import { Injectable } from "@nestjs/common";
 import { JwtPayload, verify, sign } from "jsonwebtoken";
 import { hash, compare } from "bcrypt";
 
-import { Model } from "mongoose";
+import mongoose, { Model } from "mongoose";
 import { InjectModel } from "@nestjs/mongoose";
 
 import { Identity, IdentityDocument } from "./identity.schema";
@@ -84,5 +84,12 @@ export class AuthService {
                 else resolve(token);
             });
         });
+    }
+
+    async setUserStatus(userId: string, status: Status) {
+        return await this.userModel.updateOne(
+            { _id: new mongoose.Types.ObjectId(userId) },
+            { $set: { status: status } }
+        );
     }
 }
