@@ -13,7 +13,7 @@ import { WebsocketService } from "../../context/WebsocketService";
 import { User } from "../../models/User";
 import { Message } from "../../models/Message";
 import { Status } from "../../models/Status";
-import { Subscription } from "rxjs";
+import { fromEvent, Subscription } from "rxjs";
 import { JwtPayload } from "jwt-decode";
 import jwt_decode from "jwt-decode";
 import { ServerService } from "./server.service";
@@ -32,6 +32,7 @@ export class ServerComponent implements OnInit {
         new User("0", "", "", "", new Date(), new Date(), Status.Idle),
         new Date(),
         [],
+        new Map<string, string>(),
         []
     );
     servers: Server[] = [];
@@ -41,17 +42,10 @@ export class ServerComponent implements OnInit {
         new User("0", "", "", "", new Date(), new Date(), Status.Idle),
         new Date(),
         [],
+        new Map<string, string>(),
         []
     );
-    selectedServer: Server = new Server(
-        "",
-        "",
-        new User("0", "", "", "", new Date(), new Date(), Status.Idle),
-        new Date(),
-
-        [],
-        []
-    );
+    selectedServer: Server;
     user: User = new User(
         "",
         "",
@@ -63,6 +57,9 @@ export class ServerComponent implements OnInit {
     );
     hideMemberPanel: boolean = false;
     hideProfilePanel: boolean = false;
+    allowScrollToMessage: boolean = true;
+    allowScrollToBottom: boolean = false;
+    clearMessageInput: number = 0;
     subscription: Subscription;
 
     constructor(
@@ -186,27 +183,66 @@ export class ServerComponent implements OnInit {
             .getServerById(server._id)
             .subscribe((server) => {
                 this.selectedServer.users = server.users;
+                this.selectedServer.lastMessageRead = server.lastMessageRead;
             });
         this.selectedServer = server;
+        if (this.getLastMessage() === "") {
+            console.log("No messages");
+
+            this.allowScrollToBottom = true;
+            this.allowScrollToMessage = false;
+        } else {
+            this.allowScrollToBottom = false;
+            this.allowScrollToMessage = true;
+        }
     }
     /**
      @todo: Fix scroll to bottom to work with updated messages
     **/
-    // ngAfterViewChecked() {
-    //     this.scrollToBottom();
-    // }
+    ngAfterViewChecked() {
+        if (this.allowScrollToMessage) {
+            this.scrollToMessage();
+        } else if (this.allowScrollToBottom) {
+            this.scrollToBottom();
+        }
+
+        if (this.clearMessageInput === 1) {
+            this.serverService
+                .setLastReadMessage(this.selectedServer._id, this.user._id, "")
+                .subscribe();
+        }
+    }
 
     onDestroy() {
         this.subscription.unsubscribe();
     }
 
+    scrollToMessage(): void {
+        if (!this.selectedServer) return;
+        const lastMessage = this.getLastMessage();
+
+        const container = this.messageContainer.nativeElement;
+        const message = container.querySelectorAll(
+            "div #message-" + lastMessage
+        );
+
+        try {
+            this.messageContainer.nativeElement.scrollTop =
+                message[0].offsetTop - 105;
+
+            this.allowScrollToMessage = false;
+            // eslint-disable-next-line no-empty
+        } catch (err) {}
+    }
+
     scrollToBottom(): void {
+        if (!this.selectedServer) return;
         try {
             this.messageContainer.nativeElement.scrollTop =
                 this.messageContainer.nativeElement.scrollHeight;
-        } catch (err) {
-            console.log(err);
-        }
+            this.allowScrollToBottom = true;
+            // eslint-disable-next-line no-empty
+        } catch (err) {}
     }
 
     hideMembers() {
@@ -230,5 +266,45 @@ export class ServerComponent implements OnInit {
         this.user.status = statusEnum;
         this.serverService.setUserStatus(this.user._id, statusEnum).subscribe();
         this.websocketService.setStatus(this.user);
+    }
+
+    getLastMessage() {
+        let lastMessagesRead: any = [];
+        lastMessagesRead = JSON.parse(
+            JSON.stringify(this.selectedServer.lastMessageRead)
+        );
+        let lastMessage = "";
+        lastMessagesRead.forEach((message: any) => {
+            if (message.user === this.user._id) {
+                lastMessage = message.message;
+            }
+        });
+        return lastMessage;
+    }
+
+    getEditStatus(status: boolean) {
+        if (status) {
+            this.allowScrollToBottom = false;
+        }
+    }
+
+    getScrollStatus(status: boolean) {
+        if (status) {
+            this.messageContainer.nativeElement.addEventListener(
+                "mousewheel",
+                () => {
+                    if (
+                        this.messageContainer.nativeElement.scrollTop +
+                            this.messageContainer.nativeElement.clientHeight ===
+                        this.messageContainer.nativeElement.scrollHeight
+                    ) {
+                        this.allowScrollToBottom = true;
+                        this.clearMessageInput++;
+                    } else {
+                        this.allowScrollToBottom = false;
+                    }
+                }
+            );
+        }
     }
 }

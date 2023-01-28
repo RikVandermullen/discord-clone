@@ -69,6 +69,8 @@ export class InputComponent implements OnInit, OnChanges {
              @todo: Error handling
             **/
             this.setServer();
+            console.log(this.message);
+
             this.WebsocketService.sendMessage(this.message);
             this.message.content = "";
         }
@@ -79,7 +81,7 @@ export class InputComponent implements OnInit, OnChanges {
     }
 
     formatContent() {
-        const elements = document.getElementsByClassName("line");
+        const elements = document.getElementsByClassName("lineNew");
         Array.from(elements).forEach((element: Element) => {
             this.message.content += element.textContent + "\n";
         });
@@ -99,7 +101,7 @@ export class InputComponent implements OnInit, OnChanges {
 
         div.appendChild(br);
 
-        div.classList.add("line");
+        div.classList.add("lineNew");
         div.setAttribute("contenteditable", "true");
 
         document.getElementById("input")?.appendChild(div);

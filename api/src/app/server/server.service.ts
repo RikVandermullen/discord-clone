@@ -1,3 +1,4 @@
+/* eslint-disable @nrwl/nx/enforce-module-boundaries */
 import { Injectable } from "@nestjs/common";
 
 import mongoose, { Model, Mongoose, ObjectId } from "mongoose";
@@ -6,6 +7,11 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Server as ServerModel, ServerDocument } from "./server.schema";
 import { Status } from "../../../../src/app/models/Status";
 import { User as UserModel, UserDocument } from "../auth/user.schema";
+import {
+    UserMessage,
+    UserMessage as UserMessageModel,
+    UserMessageDocument
+} from "./UserMessage.schema";
 
 @Injectable()
 export class ServerService {
@@ -13,7 +19,9 @@ export class ServerService {
         @InjectModel(ServerModel.name)
         private serverModel: Model<ServerDocument>,
         @InjectModel(UserModel.name)
-        private userModel: Model<UserDocument>
+        private userModel: Model<UserDocument>,
+        @InjectModel(UserMessageModel.name)
+        private userMessageModel: Model<UserMessageDocument>
     ) {}
 
     async createServer(name: string, owner: string, date_created: Date) {
@@ -22,6 +30,8 @@ export class ServerService {
             name: name,
             owner: ownerId,
             users: [ownerId],
+            messages: [],
+            lastMessageRead: [new UserMessage(owner, "")],
             date_created: date_created
         });
         await server.save();
@@ -50,9 +60,15 @@ export class ServerService {
     }
 
     async addUserToServer(serverId: string, userId: string) {
+        const userMessage = new UserMessage(userId, "");
         const result = await this.serverModel.updateOne(
             { _id: new mongoose.Types.ObjectId(serverId) },
-            { $push: { users: new mongoose.Types.ObjectId(userId) } }
+            {
+                $push: {
+                    users: new mongoose.Types.ObjectId(userId),
+                    lastMessageRead: userMessage
+                }
+            }
         );
     }
 
@@ -70,18 +86,15 @@ export class ServerService {
         ]);
     }
 
-    async setUserStatus(userId: string, status: Status) {
-        const result = await this.userModel.updateOne(
-            { _id: new mongoose.Types.ObjectId(userId) },
-            { $set: { status: status } }
-        );
-
-        return this.getUserById(userId);
-    }
-
-    async getUserById(userId: string) {
-        return await this.userModel.findById(
-            new mongoose.Types.ObjectId(userId)
+    async setLastMessageRead(
+        serverId: string,
+        userId: string,
+        messageId: string
+    ) {
+        return this.serverModel.updateOne(
+            { _id: new mongoose.Types.ObjectId(serverId) },
+            { $set: { "lastMessageRead.$[elem].message": messageId } },
+            { arrayFilters: [{ "elem.user": userId }] }
         );
     }
 }

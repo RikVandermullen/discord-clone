@@ -36,16 +36,6 @@ export class ServerController {
         );
     }
 
-    @Put("/user")
-    async updateStatus(@Body() body: string) {
-        const response = JSON.parse(JSON.stringify(body));
-
-        return this.serverService.setUserStatus(
-            response.userId,
-            response.status
-        );
-    }
-
     @Get("users/:userId")
     async getServersByUserId(@Param("userId") userId: string) {
         return this.serverService.getServersByUserId(userId);
@@ -54,5 +44,19 @@ export class ServerController {
     @Get(":serverId")
     async getServerById(@Param("serverId") serverId: string) {
         return this.serverService.getServerById(serverId);
+    }
+
+    @Put(":serverId")
+    async setLastMessageRead(
+        @Param("serverId") serverId: string,
+        @Body() body: string
+    ) {
+        const response = JSON.parse(JSON.stringify(body));
+
+        return this.serverService.setLastMessageRead(
+            serverId,
+            response.userId,
+            response.messageId
+        );
     }
 }

@@ -6,9 +6,11 @@ import {
     AfterViewInit,
     Component,
     ElementRef,
+    EventEmitter,
     Input,
     OnChanges,
     OnInit,
+    Output,
     ViewChild
 } from "@angular/core";
 import { User } from "../../models/User";
@@ -24,6 +26,9 @@ import jwt_decode from "jwt-decode";
 })
 export class MessageComponent implements OnInit {
     @Input() message: Message;
+    @Input() lastRead: boolean;
+    @Output() editStatus = new EventEmitter<boolean>();
+    @Output() scrollable = new EventEmitter<boolean>();
     @ViewChild("messageId") messageId: ElementRef;
     currentDate: number = Date.now();
     formattedDate: string;
@@ -42,6 +47,7 @@ export class MessageComponent implements OnInit {
         this.currentUser = JSON.parse(JSON.stringify(decodedToken)).user;
 
         this.formattedDate = this.formatDate();
+        this.scrollable.emit(true);
     }
 
     formatDate(): string {
@@ -71,6 +77,7 @@ export class MessageComponent implements OnInit {
 
     editMessage() {
         this.editMode = true;
+        this.editStatus.emit(true);
         setTimeout(() => {
             const content: string[] = this.message.content.split("\n");
             content.forEach((line, index) => {
@@ -95,7 +102,11 @@ export class MessageComponent implements OnInit {
                         );
                     }
 
-                    if (evt.key === "Enter" && !evt.shiftKey) {
+                    if (
+                        evt.key === "Enter" &&
+                        !evt.shiftKey &&
+                        document.activeElement === this.messageId.nativeElement
+                    ) {
                         this.formatContent();
                         this.saveMessage();
                         evt.preventDefault();
@@ -116,14 +127,14 @@ export class MessageComponent implements OnInit {
         div.textContent = content;
         div.appendChild(br);
 
-        div.classList.add("line");
+        div.classList.add("lineEdit");
         div.setAttribute("contenteditable", "true");
         return div;
     }
 
     formatContent() {
         this.message.content = "";
-        const elements = document.getElementsByClassName("line");
+        const elements = document.getElementsByClassName("lineEdit");
         Array.from(elements).forEach((element: Element, index) => {
             if (index !== elements.length - 1) {
                 this.message.content += element.textContent + "\n";

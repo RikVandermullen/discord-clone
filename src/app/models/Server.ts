@@ -7,6 +7,7 @@ export class Server {
     owner: User;
     date_created: Date;
     users: User[];
+    lastMessageRead: Map<string, string>;
     messages: Message[];
 
     constructor(
@@ -15,6 +16,7 @@ export class Server {
         owner: User,
         date_created: Date,
         users: User[],
+        lastMessageRead: Map<string, string>,
         messages: Message[]
     ) {
         this._id = _id;
@@ -22,6 +24,7 @@ export class Server {
         this.owner = owner;
         this.date_created = date_created;
         this.users = users;
+        this.lastMessageRead = lastMessageRead;
         this.messages = messages;
     }
 }

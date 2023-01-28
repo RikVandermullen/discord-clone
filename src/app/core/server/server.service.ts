@@ -82,4 +82,14 @@ export class ServerService {
             })
         );
     }
+
+    setLastReadMessage(serverId: string, userId: string, messageId: string) {
+        const url = environment.apiUrl + "/api/servers/" + serverId;
+        return this.http.put<User>(url, { userId, messageId }).pipe(
+            map((response: User) => response),
+            tap((user: User) => {
+                return user;
+            })
+        );
+    }
 }

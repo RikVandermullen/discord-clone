@@ -4,6 +4,7 @@ import mongoose, {
     ObjectId,
     Schema as MongooseSchema
 } from "mongoose";
+import { UserMessage } from "./UserMessage.schema";
 
 export type ServerDocument = Server & Document;
 
@@ -19,6 +20,12 @@ export class Server {
 
     @Prop({ required: false, type: [mongoose.Types.ObjectId] })
     users: ObjectId[];
+
+    @Prop({
+        required: false,
+        type: []
+    })
+    lastMessageRead: UserMessage[];
 
     @Prop({ required: true, type: Date })
     date_created: Date;
