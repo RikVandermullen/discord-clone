@@ -12,9 +12,10 @@ import { Gateway } from "./gateway";
     imports: [
         MongooseModule.forFeature([
             { name: Message.name, schema: MessageSchema },
-            { name: User.name, schema: UserSchema }
+            { name: User.name, schema: UserSchema },
+            { name: Server.name, schema: ServerSchema }
         ])
     ],
-    providers: [Gateway, MessageService, UserService]
+    providers: [Gateway, MessageService, UserService, ServerService]
 })
 export class GatewayModule {}

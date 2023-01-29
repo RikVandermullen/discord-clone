@@ -8,6 +8,7 @@ import {
     WsResponse
 } from "@nestjs/websockets";
 import { Server, Socket } from "socket.io";
+import { User } from "../../../../src/app/models/User";
 import { Status } from "../../../../src/app/models/Status";
 import { MessageService } from "../message/message.service";
 import { ServerService } from "../server/server.service";
@@ -24,7 +25,8 @@ export class Gateway implements OnModuleInit {
 
     constructor(
         private messageService: MessageService,
-        private userService: UserService
+        private userService: UserService,
+        private serverService: ServerService
     ) {}
 
     onModuleInit() {
@@ -49,7 +51,6 @@ export class Gateway implements OnModuleInit {
 
     @SubscribeMessage("newMessage")
     async onNewMessage(@MessageBody() body: any) {
-        console.log(body);
         if (body.server) {
             const message = await this.messageService.addMessage(
                 body.author._id,
@@ -60,6 +61,21 @@ export class Gateway implements OnModuleInit {
             );
             body._id = message._id;
             this.server?.to(body.server).emit("onMessage", body);
+
+            const server = await this.serverService
+                .getServerById(body.server)
+                .then((server) => {
+                    return server;
+                });
+            server[0].users.forEach((user: User) => {
+                if (user.status === Status.Offline) {
+                    this.serverService.setLastMessageReadIfEmpty(
+                        server[0]._id,
+                        user._id.toString(),
+                        message._id.toString()
+                    );
+                }
+            });
         } else {
             this.server?.emit("onMessage", body);
         }

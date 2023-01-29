@@ -234,7 +234,7 @@ export class ServerComponent implements OnInit, OnDestroy {
 
         if (this.clearMessageInput === 1) {
             this.serverService
-                .setLastReadMessage(this.selectedServer._id, this.user._id, "")
+                .setLastReadMessage(this.selectedServer._id, this.user._id)
                 .subscribe();
         }
     }

@@ -28,8 +28,6 @@ export class MembersComponent implements OnInit, OnChanges {
         });
 
         this.websocketService.onStatusChange().subscribe((data: any) => {
-            console.log(data);
-
             this.users.forEach((user) => {
                 if (user._id === data.userId) {
                     user.status = data.status;

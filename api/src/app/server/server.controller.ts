@@ -46,17 +46,30 @@ export class ServerController {
         return this.serverService.getServerById(serverId);
     }
 
-    @Put(":serverId")
+    @Put(":serverId/messages/new")
     async setLastMessageRead(
         @Param("serverId") serverId: string,
         @Body() body: string
     ) {
         const response = JSON.parse(JSON.stringify(body));
 
-        return this.serverService.setLastMessageRead(
+        return this.serverService.setLastMessageReadIfEmpty(
             serverId,
             response.userId,
             response.messageId
+        );
+    }
+
+    @Put(":serverId/messages/clear")
+    async clearLastMessageRead(
+        @Param("serverId") serverId: string,
+        @Body() body: string
+    ) {
+        const response = JSON.parse(JSON.stringify(body));
+
+        return this.serverService.clearLastMessageRead(
+            serverId,
+            response.userId
         );
     }
 }

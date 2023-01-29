@@ -95,9 +95,10 @@ export class ServerService {
         );
     }
 
-    setLastReadMessage(serverId: string, userId: string, messageId: string) {
-        const url = environment.apiUrl + "/api/servers/" + serverId;
-        return this.http.put<User>(url, { userId, messageId }).pipe(
+    setLastReadMessage(serverId: string, userId: string) {
+        const url =
+            environment.apiUrl + "/api/servers/" + serverId + "/messages/clear";
+        return this.http.put<User>(url, { userId }).pipe(
             map((response: User) => response),
             tap((user: User) => {
                 return user;

@@ -82,15 +82,36 @@ export class ServerService {
         ]);
     }
 
-    async setLastMessageRead(
-        serverId: string,
-        userId: string,
-        messageId: string
-    ) {
+    async clearLastMessageRead(serverId: string, userId: string) {
         return this.serverModel.updateOne(
             { _id: new mongoose.Types.ObjectId(serverId) },
-            { $set: { "lastMessageRead.$[elem].message": messageId } },
+            { $set: { "lastMessageRead.$[elem].message": "" } },
             { arrayFilters: [{ "elem.user": userId }] }
+        );
+    }
+
+    async setLastMessageReadIfEmpty(
+        serverId: string,
+        user: string,
+        message: string
+    ) {
+        console.log("setLastMessageReadIfEmpty: ", serverId, user, message);
+
+        return this.serverModel.updateOne(
+            { _id: new mongoose.Types.ObjectId(serverId) },
+            {
+                $set: {
+                    "lastMessageRead.$[user].message": message
+                }
+            },
+            {
+                arrayFilters: [
+                    {
+                        "user.user": user,
+                        "user.message": ""
+                    }
+                ]
+            }
         );
     }
 }
