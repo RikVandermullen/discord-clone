@@ -17,11 +17,7 @@ import {
 export class ServerService {
     constructor(
         @InjectModel(ServerModel.name)
-        private serverModel: Model<ServerDocument>,
-        @InjectModel(UserModel.name)
-        private userModel: Model<UserDocument>,
-        @InjectModel(UserMessageModel.name)
-        private userMessageModel: Model<UserMessageDocument>
+        private serverModel: Model<ServerDocument>
     ) {}
 
     async createServer(name: string, owner: string, date_created: Date) {

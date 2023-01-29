@@ -9,6 +9,7 @@ export class Server {
     users: User[];
     lastMessageRead: Map<string, string>;
     messages: Message[];
+    newMessage: boolean;
 
     constructor(
         _id: string,

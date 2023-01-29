@@ -8,6 +8,7 @@ export class User {
     date_created: Date;
     dateOfBirth: Date;
     status: Status;
+    displayedStatus: Status;
 
     constructor(
         _id: string,
@@ -16,7 +17,8 @@ export class User {
         password: string,
         dateOfBirth: Date,
         date_created: Date,
-        status: Status
+        status: Status,
+        displayedStatus: Status
     ) {
         this._id = _id;
         this.emailAddress = emailAddress;
@@ -25,6 +27,7 @@ export class User {
         this.dateOfBirth = dateOfBirth;
         this.date_created = date_created;
         this.status = status;
+        this.displayedStatus = displayedStatus;
     }
 }
 

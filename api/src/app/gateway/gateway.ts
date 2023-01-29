@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { OnModuleInit } from "@nestjs/common";
 import {
     MessageBody,
@@ -7,7 +8,10 @@ import {
     WsResponse
 } from "@nestjs/websockets";
 import { Server, Socket } from "socket.io";
+import { Status } from "../../../../src/app/models/Status";
 import { MessageService } from "../message/message.service";
+import { ServerService } from "../server/server.service";
+import { UserService } from "../user/user.service";
 
 @WebSocketGateway({
     cors: {
@@ -18,11 +22,28 @@ export class Gateway implements OnModuleInit {
     @WebSocketServer()
     server: Server | undefined;
 
-    constructor(private messageService: MessageService) {}
+    constructor(
+        private messageService: MessageService,
+        private userService: UserService
+    ) {}
 
     onModuleInit() {
         this.server?.on("connection", (socket) => {
-            console.log(socket.id);
+            console.log("Connected: " + socket.id);
+            const userId = socket.handshake.query["userId"]!.toString();
+            console.log("User ID: " + userId);
+            const body = { userId: userId, status: Status.Online };
+            this.server?.emit("onStatusChange", body);
+
+            socket.on("disconnect", () => {
+                console.log("Disconnected: " + socket.id);
+                const data = this.userService.setUserStatus(
+                    userId,
+                    Status.Offline
+                );
+                const body = { userId: userId, status: Status.Offline };
+                this.server?.emit("onStatusChange", body);
+            });
         });
     }
 
@@ -100,9 +121,14 @@ export class Gateway implements OnModuleInit {
         return { event: "serverLeft", data: { server: data.server } };
     }
 
-    @SubscribeMessage("setStatus")
-    async setStatus(@MessageBody() data: any) {
-        console.log("Status set: ", data._id, " Status: ", data.status);
-        this.server?.emit("onStatusChange", data);
+    @SubscribeMessage("setDisplayStatus")
+    async setDisplayStatus(@MessageBody() data: any) {
+        console.log(
+            "DisplayStatus set: ",
+            data._id,
+            " Status: ",
+            data.displayedStatus
+        );
+        this.server?.emit("onDisplayStatusChange", data);
     }
 }

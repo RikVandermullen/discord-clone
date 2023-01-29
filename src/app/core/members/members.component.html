@@ -21,19 +21,19 @@
                         class="flex w-4 h-4 rounded-full bg-main-gray-darker absolute bottom-0 right-0 justify-center items-center -mr-1 -mb-1"
                     >
                         <img
-                            *ngIf="user.status === 'Online'"
+                            *ngIf="user.displayedStatus === 'Online'"
                             src="../../../assets/online.png"
                             alt=""
                             class="w-2.5 h-2.5"
                         />
                         <img
-                            *ngIf="user.status === 'Idle'"
+                            *ngIf="user.displayedStatus === 'Idle'"
                             src="../../../assets/away.png"
                             alt=""
                             class="w-2.5 h-2.5"
                         />
                         <img
-                            *ngIf="user.status === 'Do Not Disturb'"
+                            *ngIf="user.displayedStatus === 'Do Not Disturb'"
                             src="../../../assets/busy.png"
                             alt=""
                             class="w-2.5 h-2.5"

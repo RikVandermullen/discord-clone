@@ -4,7 +4,9 @@ import {
     AfterViewChecked,
     Component,
     ElementRef,
+    HostListener,
     OnChanges,
+    OnDestroy,
     OnInit,
     ViewChild
 } from "@angular/core";
@@ -18,18 +20,28 @@ import { JwtPayload } from "jwt-decode";
 import jwt_decode from "jwt-decode";
 import { ServerService } from "./server.service";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { environment } from "../../../environments/environment";
 
 @Component({
     selector: "discord-clone-server",
     templateUrl: "./server.component.html",
     styleUrls: ["./server.component.css"]
 })
-export class ServerComponent implements OnInit {
+export class ServerComponent implements OnInit, OnDestroy {
     @ViewChild("messageContainer") private messageContainer: ElementRef;
     newServer: Server = new Server(
         "",
         "",
-        new User("0", "", "", "", new Date(), new Date(), Status.Idle),
+        new User(
+            "0",
+            "",
+            "",
+            "",
+            new Date(),
+            new Date(),
+            Status.Idle,
+            Status.Idle
+        ),
         new Date(),
         [],
         new Map<string, string>(),
@@ -39,7 +51,16 @@ export class ServerComponent implements OnInit {
     serverToJoin: Server = new Server(
         "",
         "",
-        new User("0", "", "", "", new Date(), new Date(), Status.Idle),
+        new User(
+            "0",
+            "",
+            "",
+            "",
+            new Date(),
+            new Date(),
+            Status.Idle,
+            Status.Idle
+        ),
         new Date(),
         [],
         new Map<string, string>(),
@@ -53,6 +74,7 @@ export class ServerComponent implements OnInit {
         "",
         new Date(),
         new Date(),
+        Status.Online,
         Status.Online
     );
     hideMemberPanel: boolean = false;
@@ -68,11 +90,15 @@ export class ServerComponent implements OnInit {
         private modalService: NgbModal
     ) {}
 
-    ngOnInit() {
+    async ngOnInit() {
         const decodedToken = jwt_decode<JwtPayload>(
             localStorage.getItem("currentuser")!
         );
         this.user = JSON.parse(JSON.stringify(decodedToken)).user;
+
+        this.subscription = this.serverService
+            .setUserOnline(this.user._id)
+            .subscribe();
 
         this.subscription = this.serverService
             .getUserById(this.user._id)
@@ -85,6 +111,7 @@ export class ServerComponent implements OnInit {
             .getServerByUserId(this.user._id)
             .subscribe((servers: Server[]) => {
                 this.servers = servers;
+                this.selectServer(this.servers[0]);
                 this.selectedServer = this.servers[0];
                 this.servers.forEach((server) => {
                     this.serverService
@@ -105,6 +132,7 @@ export class ServerComponent implements OnInit {
                 this.servers.forEach((server) => {
                     if (server._id === data.server) {
                         server.messages.push(data);
+                        server.newMessage = true;
                     }
                 });
             });
@@ -196,9 +224,7 @@ export class ServerComponent implements OnInit {
             this.allowScrollToMessage = true;
         }
     }
-    /**
-     @todo: Fix scroll to bottom to work with updated messages
-    **/
+
     ngAfterViewChecked() {
         if (this.allowScrollToMessage) {
             this.scrollToMessage();
@@ -213,7 +239,7 @@ export class ServerComponent implements OnInit {
         }
     }
 
-    onDestroy() {
+    ngOnDestroy() {
         this.subscription.unsubscribe();
     }
 
@@ -241,6 +267,8 @@ export class ServerComponent implements OnInit {
             this.messageContainer.nativeElement.scrollTop =
                 this.messageContainer.nativeElement.scrollHeight;
             this.allowScrollToBottom = true;
+            this.selectedServer.newMessage = false;
+            this.clearMessageInput++;
             // eslint-disable-next-line no-empty
         } catch (err) {}
     }
@@ -261,10 +289,12 @@ export class ServerComponent implements OnInit {
         });
     }
 
-    setStatus(status: string) {
+    setDisplayedStatus(status: string) {
         const statusEnum = Status[status as keyof typeof Status];
-        this.user.status = statusEnum;
-        this.serverService.setUserStatus(this.user._id, statusEnum).subscribe();
+        this.user.displayedStatus = statusEnum;
+        this.serverService
+            .setUserDisplayedStatus(this.user._id, statusEnum)
+            .subscribe();
         this.websocketService.setStatus(this.user);
     }
 
@@ -299,7 +329,6 @@ export class ServerComponent implements OnInit {
                         this.messageContainer.nativeElement.scrollHeight
                     ) {
                         this.allowScrollToBottom = true;
-                        this.clearMessageInput++;
                     } else {
                         this.allowScrollToBottom = false;
                     }

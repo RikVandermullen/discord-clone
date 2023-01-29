@@ -63,8 +63,20 @@ export class ServerService {
         );
     }
 
-    setUserStatus(userId: string, status: Status): Observable<User> {
-        const url = environment.apiUrl + "/api/users/" + userId;
+    setUserDisplayedStatus(userId: string, status: Status): Observable<User> {
+        const url =
+            environment.apiUrl + "/api/users/" + userId + "/displayedStatus";
+        return this.http.put<User>(url, { userId, status }).pipe(
+            map((response: User) => response),
+            tap((user: User) => {
+                return user;
+            })
+        );
+    }
+
+    setUserOnline(userId: string): Observable<User> {
+        const url = environment.apiUrl + "/api/users/" + userId + "/status";
+        const status = Status.Online;
         return this.http.put<User>(url, { userId, status }).pipe(
             map((response: User) => response),
             tap((user: User) => {

@@ -26,6 +26,9 @@ export class User {
 
     @Prop({ required: true, type: String, enum: Status })
     status?: Status;
+
+    @Prop({ required: true, type: String, enum: Status })
+    displayedStatus?: Status;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

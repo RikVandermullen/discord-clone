@@ -1,15 +1,25 @@
-import { Injectable } from "@angular/core";
+import { Inject, Injectable, InjectionToken, Optional } from "@angular/core";
 import { Observable } from "rxjs";
 import { io, Socket } from "socket.io-client";
 import { Message } from "../models/Message";
 import { User } from "../models/User";
+import { JwtPayload } from "jwt-decode";
+import jwt_decode from "jwt-decode";
 
 @Injectable()
 export class WebsocketService {
     private socket: Socket;
 
     constructor() {
-        this.socket = io("http://localhost:3333");
+        const decodedToken = jwt_decode<JwtPayload>(
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            localStorage.getItem("currentuser")!
+        );
+        const userId = JSON.parse(JSON.stringify(decodedToken)).user._id;
+
+        this.socket = io("http://localhost:3333", {
+            query: { userId: userId }
+        });
     }
 
     onNewMessage(): Observable<Message> {
@@ -31,6 +41,14 @@ export class WebsocketService {
     onEditedMessage(): Observable<Message> {
         return new Observable((observer) => {
             this.socket.on("onEditedMessage", (data: Message) => {
+                observer.next(data);
+            });
+        });
+    }
+
+    onDisplayStatusChange(): Observable<User> {
+        return new Observable((observer) => {
+            this.socket.on("onDisplayStatusChange", (data: User) => {
                 observer.next(data);
             });
         });
@@ -78,6 +96,10 @@ export class WebsocketService {
     }
 
     setStatus(user: User) {
-        this.socket.emit("setStatus", user);
+        this.socket.emit("setDisplayStatus", user);
+    }
+
+    disconnect() {
+        this.socket.disconnect();
     }
 }

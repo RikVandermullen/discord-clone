@@ -17,11 +17,22 @@ import { Server } from "../../../../src/app/models/Server";
 export class UserController {
     constructor(private readonly userService: UserService) {}
 
-    @Put(":userId")
+    @Put(":userId/status")
     async updateStatus(@Body() body: string) {
         const response = JSON.parse(JSON.stringify(body));
+        console.log(response);
 
         return this.userService.setUserStatus(response.userId, response.status);
+    }
+
+    @Put(":userId/displayedStatus")
+    async updateDisplayedStatus(@Body() body: string) {
+        const response = JSON.parse(JSON.stringify(body));
+
+        return this.userService.setUserDisplayedStatus(
+            response.userId,
+            response.status
+        );
     }
 
     @Get(":userId")

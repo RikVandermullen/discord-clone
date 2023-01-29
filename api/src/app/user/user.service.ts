@@ -14,9 +14,18 @@ export class UserService {
     ) {}
 
     async setUserStatus(userId: string, status: Status) {
-        const result = await this.userModel.updateOne(
+        await this.userModel.updateOne(
             { _id: new mongoose.Types.ObjectId(userId) },
             { $set: { status: status } }
+        );
+
+        return this.getUserById(userId);
+    }
+
+    async setUserDisplayedStatus(userId: string, status: Status) {
+        await this.userModel.updateOne(
+            { _id: new mongoose.Types.ObjectId(userId) },
+            { $set: { displayedStatus: status } }
         );
 
         return this.getUserById(userId);

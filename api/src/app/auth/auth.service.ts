@@ -42,7 +42,8 @@ export class AuthService {
             password: password,
             dateOfBirth: dateOfBirth,
             date_created: date_created,
-            status: status
+            status: status,
+            displayedStatus: status
         });
         console.log(user);
 

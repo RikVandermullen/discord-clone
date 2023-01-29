@@ -49,6 +49,13 @@
                     >
                         *
                     </div>
+                    <div
+                        *ngIf="
+                            server._id !== selectedServer._id &&
+                            server.newMessage
+                        "
+                        class="absolute top-5 -left-4 h-2 w-2 bg-white rounded-full"
+                    ></div>
                 </div>
             </div>
             <!-- CREATE SERVER -->
@@ -327,25 +334,28 @@
                                 class="flex w-4 h-4 rounded-full bg-main-gray-darker absolute bottom-0 right-0 justify-center items-center -mr-1 -mb-1"
                             >
                                 <img
-                                    *ngIf="user.status === 'Online'"
+                                    *ngIf="user.displayedStatus === 'Online'"
                                     src="../../../assets/online.png"
                                     alt=""
                                     class="w-2.5 h-2.5"
                                 />
                                 <img
-                                    *ngIf="user.status === 'Idle'"
+                                    *ngIf="user.displayedStatus === 'Idle'"
                                     src="../../../assets/away.png"
                                     alt=""
                                     class="w-2.5 h-2.5"
                                 />
                                 <img
-                                    *ngIf="user.status === 'Do Not Disturb'"
+                                    *ngIf="
+                                        user.displayedStatus ===
+                                        'Do Not Disturb'
+                                    "
                                     src="../../../assets/busy.png"
                                     alt=""
                                     class="w-2.5 h-2.5"
                                 />
                                 <img
-                                    *ngIf="user.status === 'Offline'"
+                                    *ngIf="user.displayedStatus === 'Offline'"
                                     src="../../../assets/offline.png"
                                     alt=""
                                     class="w-2.5 h-2.5"
@@ -369,27 +379,36 @@
                                         class="flex w-8 h-8 rounded-full bg-main-gray-darker2 absolute left-16 -bottom-10 justify-center items-center ml-3"
                                     >
                                         <img
-                                            *ngIf="user.status === 'Online'"
+                                            *ngIf="
+                                                user.displayedStatus ===
+                                                'Online'
+                                            "
                                             src="../../../assets/online.png"
                                             alt=""
                                             class="w-4 h-4"
                                         />
                                         <img
-                                            *ngIf="user.status === 'Idle'"
+                                            *ngIf="
+                                                user.displayedStatus === 'Idle'
+                                            "
                                             src="../../../assets/away.png"
                                             alt=""
                                             class="w-4 h-4"
                                         />
                                         <img
                                             *ngIf="
-                                                user.status === 'Do Not Disturb'
+                                                user.displayedStatus ===
+                                                'Do Not Disturb'
                                             "
                                             src="../../../assets/busy.png"
                                             alt=""
                                             class="w-4 h-4"
                                         />
                                         <img
-                                            *ngIf="user.status === 'Offline'"
+                                            *ngIf="
+                                                user.displayedStatus ===
+                                                'Offline'
+                                            "
                                             src="../../../assets/offline.png"
                                             alt=""
                                             class="w-4 h-4"
@@ -424,9 +443,12 @@
                                             <div
                                                 [ngClass]="{
                                                     currentStatus:
-                                                        user.status === 'Online'
+                                                        user.displayedStatus ===
+                                                        'Online'
                                                 }"
-                                                (click)="setStatus('Online')"
+                                                (click)="
+                                                    setDisplayedStatus('Online')
+                                                "
                                                 class="mt-1 flex flex-row gap-1 items-center text-center hover:bg-main-gray-hover p-1.5 rounded-md"
                                             >
                                                 <img
@@ -443,9 +465,12 @@
                                             <div
                                                 [ngClass]="{
                                                     currentStatus:
-                                                        user.status === 'Idle'
+                                                        user.displayedStatus ===
+                                                        'Idle'
                                                 }"
-                                                (click)="setStatus('Idle')"
+                                                (click)="
+                                                    setDisplayedStatus('Idle')
+                                                "
                                                 class="mt-1 flex flex-row gap-1 items-center text-center hover:bg-main-gray-hover p-1.5 rounded-md aria-[selected]:bg-main-gray-hover"
                                             >
                                                 <img
@@ -462,11 +487,13 @@
                                             <div
                                                 [ngClass]="{
                                                     currentStatus:
-                                                        user.status ===
+                                                        user.displayedStatus ===
                                                         'Do Not Disturb'
                                                 }"
                                                 (click)="
-                                                    setStatus('DoNotDisturb')
+                                                    setDisplayedStatus(
+                                                        'DoNotDisturb'
+                                                    )
                                                 "
                                                 class="mt-1 flex flex-row gap-1 items-center text-center hover:bg-main-gray-hover p-1.5 rounded-md aria-[selected]:bg-main-gray-hover"
                                             >
@@ -484,10 +511,14 @@
                                             <div
                                                 [ngClass]="{
                                                     currentStatus:
-                                                        user.status ===
+                                                        user.displayedStatus ===
                                                         'Offline'
                                                 }"
-                                                (click)="setStatus('Offline')"
+                                                (click)="
+                                                    setDisplayedStatus(
+                                                        'Offline'
+                                                    )
+                                                "
                                                 class="mt-1 flex flex-row gap-1 items-center text-center hover:bg-main-gray-hover p-1.5 rounded-md aria-[selected]:bg-main-gray-hover"
                                             >
                                                 <img

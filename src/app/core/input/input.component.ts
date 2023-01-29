@@ -19,7 +19,16 @@ export class InputComponent implements OnInit, OnChanges {
         "1",
         "",
         new Date(),
-        new User("0", "", "", "", new Date(), new Date(), Status.Online),
+        new User(
+            "0",
+            "",
+            "",
+            "",
+            new Date(),
+            new Date(),
+            Status.Online,
+            Status.Online
+        ),
         false
     );
     content: string | null | undefined;

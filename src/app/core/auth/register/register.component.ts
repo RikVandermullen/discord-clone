@@ -50,6 +50,7 @@ export class RegisterComponent {
         "",
         new Date(),
         new Date(),
+        Status.Online,
         Status.Online
     );
     birthday: any = { day: 0, month: 0, year: 0 };

@@ -1,5 +1,5 @@
-import { Component } from "@angular/core";
-
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+import { Component, OnInit } from "@angular/core";
 @Component({
     selector: "discord-clone-root",
     templateUrl: "./app.component.html",

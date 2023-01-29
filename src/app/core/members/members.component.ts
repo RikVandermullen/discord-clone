@@ -18,9 +18,20 @@ export class MembersComponent implements OnInit, OnChanges {
     ngOnInit() {
         this.sortUsers();
 
-        this.websocketService.onStatusChange().subscribe((data) => {
+        this.websocketService.onDisplayStatusChange().subscribe((data) => {
             this.users.forEach((user) => {
                 if (user._id === data._id) {
+                    user.displayedStatus = data.displayedStatus;
+                    this.sortUsers();
+                }
+            });
+        });
+
+        this.websocketService.onStatusChange().subscribe((data: any) => {
+            console.log(data);
+
+            this.users.forEach((user) => {
+                if (user._id === data.userId) {
                     user.status = data.status;
                     this.sortUsers();
                 }
@@ -35,12 +46,15 @@ export class MembersComponent implements OnInit, OnChanges {
     sortUsers() {
         this.onlineUsers = this.users.filter(
             (user) =>
-                user.status === "Online" ||
-                user.status === "Idle" ||
-                user.status === "Do Not Disturb"
+                user.status === "Online" &&
+                (user.displayedStatus === "Online" ||
+                    user.displayedStatus === "Idle" ||
+                    user.displayedStatus === "Do Not Disturb")
         );
+
         this.offlineUsers = this.users.filter(
-            (user) => user.status === "Offline"
+            (user) =>
+                user.status === "Offline" || user.displayedStatus === "Offline"
         );
     }
 }
