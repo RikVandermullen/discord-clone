@@ -10,7 +10,9 @@
                     placement="end"
                     ngbTooltip="Direct Messages"
                     tooltipClass="font-semibold text-md"
-                    class="flex flex-col items-center justify-center bg-main-gray-light w-12 h-12 rounded-full transition hover:cursor-pointer hover:rounded-xl hover:bg-indigo-500"
+                    (click)="selectDirectMessages()"
+                    routerLink="/servers/@me"
+                    class="flex flex-col items-center justify-center bg-main-gray-light w-12 h-12 rounded-full transition hover:cursor-pointer hover:rounded-xl hover:bg-indigo-500 relative"
                 >
                     <svg
                         aria-hidden="true"
@@ -24,6 +26,12 @@
                             d="M23.0212 1.67671C21.3107 0.879656 19.5079 0.318797 17.6584 0C17.4062 0.461742 17.1749 0.934541 16.9708 1.4184C15.003 1.12145 12.9974 1.12145 11.0283 1.4184C10.819 0.934541 10.589 0.461744 10.3368 0.00546311C8.48074 0.324393 6.67795 0.885118 4.96746 1.68231C1.56727 6.77853 0.649666 11.7538 1.11108 16.652C3.10102 18.1418 5.3262 19.2743 7.69177 20C8.22338 19.2743 8.69519 18.4993 9.09812 17.691C8.32996 17.3997 7.58522 17.0424 6.87684 16.6135C7.06531 16.4762 7.24726 16.3387 7.42403 16.1847C11.5911 18.1749 16.408 18.1749 20.5763 16.1847C20.7531 16.3332 20.9351 16.4762 21.1171 16.6135C20.41 17.0369 19.6639 17.3997 18.897 17.691C19.3052 18.4993 19.7718 19.2689 20.3021 19.9945C22.6677 19.2689 24.8929 18.1364 26.8828 16.6466H26.8893C27.43 10.9731 25.9665 6.04728 23.0212 1.67671ZM9.68041 13.6383C8.39754 13.6383 7.34085 12.4453 7.34085 10.994C7.34085 9.54272 8.37155 8.34973 9.68041 8.34973C10.9893 8.34973 12.0395 9.54272 12.0187 10.994C12.0187 12.4453 10.9828 13.6383 9.68041 13.6383ZM18.3161 13.6383C17.0332 13.6383 15.9765 12.4453 15.9765 10.994C15.9765 9.54272 17.0124 8.34973 18.3161 8.34973C19.6184 8.34973 20.6751 9.54272 20.6543 10.994C20.6543 12.4453 19.6184 13.6383 18.3161 13.6383Z"
                         ></path>
                     </svg>
+                    <div
+                        *ngIf="directMessages"
+                        class="absolute top-1 -left-3.5 h-[40px] bg-white rounded-full"
+                    >
+                        *
+                    </div>
                 </div>
                 <hr class="bg-main-gray-dark min-h-[5px] min-w-[60%]" />
 
@@ -33,7 +41,7 @@
                     ngbTooltip="{{ server.name }}"
                     tooltipClass="font-semibold text-md"
                     (click)="selectServer(server)"
-                    routerLink="/server/{{ server._id }}"
+                    routerLink="/servers/{{ server._id }}"
                     class="flex flex-col items-center justify-center bg-main-gray-darker rounded-full hover:rounded-xl relative"
                 >
                     <img
@@ -44,7 +52,9 @@
                         class="w-12 h-12 rounded-full transition hover:cursor-pointer hover:rounded-xl"
                     />
                     <div
-                        *ngIf="server._id === selectedServer._id"
+                        *ngIf="
+                            server._id === selectedServer._id && !directMessages
+                        "
                         class="absolute top-1 -left-3.5 h-[40px] bg-white rounded-full"
                     >
                         *
@@ -275,410 +285,725 @@
         </div>
     </div>
 
-    <!-- SERVER INSIDE -->
-    <div
-        class="hidden md:block min-h-screen min-w-[240px] max-h-screen bg-main-gray-darker"
-    >
-        <div class="flex flex-col justify-between min-h-screen">
-            <!-- CHATS -->
-            <div class="flex flex-col align-top">
-                <div
-                    class="flex flex-row items-center min-w-full min-h-[48px] border-b border-b-main-gray-darkest"
-                >
-                    <h1 class="text-md font-semibold ml-4">
-                        {{ selectedServer.name }}
-                    </h1>
-                </div>
-                <div class="flex flex-col">
+    <ng-container *ngIf="!directMessages">
+        <!-- SERVER INSIDE -->
+        <div
+            class="hidden md:block min-h-screen min-w-[240px] max-h-screen bg-main-gray-darker"
+        >
+            <div class="flex flex-col justify-between min-h-screen">
+                <!-- CHATS -->
+                <div class="flex flex-col align-top">
                     <div
-                        class="flex flex-row p-2 ml-3 mt-1 rounded-md max-w-[90%] hover:bg-main-gray-hover"
+                        class="flex flex-row items-center min-w-full min-h-[48px] border-b border-b-main-gray-darkest"
                     >
-                        <svg
-                            width="20"
-                            height="20"
-                            viewBox="0 0 24 24"
-                            x="0"
-                            y="0"
-                            aria-hidden="true"
-                            role="img"
+                        <h1 class="text-md font-semibold ml-4">
+                            {{ selectedServer.name }}
+                        </h1>
+                    </div>
+                    <div class="flex flex-col">
+                        <div
+                            class="flex flex-row p-2 ml-3 mt-1 rounded-md max-w-[90%] hover:bg-main-gray-hover"
                         >
-                            <path
-                                fill="#8e9297"
-                                fill-rule="evenodd"
-                                clip-rule="evenodd"
-                                d="M5.88657 21C5.57547 21 5.3399 20.7189 5.39427 20.4126L6.00001 17H2.59511C2.28449 17 2.04905 16.7198 2.10259 16.4138L2.27759 15.4138C2.31946 15.1746 2.52722 15 2.77011 15H6.35001L7.41001 9H4.00511C3.69449 9 3.45905 8.71977 3.51259 8.41381L3.68759 7.41381C3.72946 7.17456 3.93722 7 4.18011 7H7.76001L8.39677 3.41262C8.43914 3.17391 8.64664 3 8.88907 3H9.87344C10.1845 3 10.4201 3.28107 10.3657 3.58738L9.76001 7H15.76L16.3968 3.41262C16.4391 3.17391 16.6466 3 16.8891 3H17.8734C18.1845 3 18.4201 3.28107 18.3657 3.58738L17.76 7H21.1649C21.4755 7 21.711 7.28023 21.6574 7.58619L21.4824 8.58619C21.4406 8.82544 21.2328 9 20.9899 9H17.41L16.35 15H19.7549C20.0655 15 20.301 15.2802 20.2474 15.5862L20.0724 16.5862C20.0306 16.8254 19.8228 17 19.5799 17H16L15.3632 20.5874C15.3209 20.8261 15.1134 21 14.8709 21H13.8866C13.5755 21 13.3399 20.7189 13.3943 20.4126L14 17H8.00001L7.36325 20.5874C7.32088 20.8261 7.11337 21 6.87094 21H5.88657ZM9.41045 9L8.35045 15H14.3504L15.4104 9H9.41045Z"
-                            ></path>
-                        </svg>
-                        <h1 class="text-gray-300 font-medium ml-2">welcome</h1>
+                            <svg
+                                width="20"
+                                height="20"
+                                viewBox="0 0 24 24"
+                                x="0"
+                                y="0"
+                                aria-hidden="true"
+                                role="img"
+                            >
+                                <path
+                                    fill="#8e9297"
+                                    fill-rule="evenodd"
+                                    clip-rule="evenodd"
+                                    d="M5.88657 21C5.57547 21 5.3399 20.7189 5.39427 20.4126L6.00001 17H2.59511C2.28449 17 2.04905 16.7198 2.10259 16.4138L2.27759 15.4138C2.31946 15.1746 2.52722 15 2.77011 15H6.35001L7.41001 9H4.00511C3.69449 9 3.45905 8.71977 3.51259 8.41381L3.68759 7.41381C3.72946 7.17456 3.93722 7 4.18011 7H7.76001L8.39677 3.41262C8.43914 3.17391 8.64664 3 8.88907 3H9.87344C10.1845 3 10.4201 3.28107 10.3657 3.58738L9.76001 7H15.76L16.3968 3.41262C16.4391 3.17391 16.6466 3 16.8891 3H17.8734C18.1845 3 18.4201 3.28107 18.3657 3.58738L17.76 7H21.1649C21.4755 7 21.711 7.28023 21.6574 7.58619L21.4824 8.58619C21.4406 8.82544 21.2328 9 20.9899 9H17.41L16.35 15H19.7549C20.0655 15 20.301 15.2802 20.2474 15.5862L20.0724 16.5862C20.0306 16.8254 19.8228 17 19.5799 17H16L15.3632 20.5874C15.3209 20.8261 15.1134 21 14.8709 21H13.8866C13.5755 21 13.3399 20.7189 13.3943 20.4126L14 17H8.00001L7.36325 20.5874C7.32088 20.8261 7.11337 21 6.87094 21H5.88657ZM9.41045 9L8.35045 15H14.3504L15.4104 9H9.41045Z"
+                                ></path>
+                            </svg>
+                            <h1 class="text-gray-300 font-medium ml-2">
+                                welcome
+                            </h1>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <!-- PROFILE -->
-            <div class="flex flex-col">
-                <div
-                    (click)="hideProfilePanel = !hideProfilePanel"
-                    class="flex flex-row min-h-[52px] items-center bg-main-gray-darker2"
-                >
+                <!-- PROFILE -->
+                <div class="flex flex-col">
                     <div
-                        class="flex flex-row min-w-[50%] max-h-[39px] ml-2 py-2 pl-1 items-center hover:cursor-pointer hover:bg-main-gray-hover rounded-sm group"
+                        (click)="hideProfilePanel = !hideProfilePanel"
+                        class="flex flex-row min-h-[52px] items-center bg-main-gray-darker2"
                     >
-                        <div class="relative">
-                            <img
-                                src="https://api.dicebear.com/5.x/identicon/svg?seed={{
-                                    user._id
-                                }}"
-                                alt="avatar"
-                                class="w-8 h-8 rounded-full"
-                            />
-                            <div
-                                class="flex w-4 h-4 rounded-full bg-main-gray-darker absolute bottom-0 right-0 justify-center items-center -mr-1 -mb-1"
-                            >
+                        <div
+                            class="flex flex-row min-w-[50%] max-h-[39px] ml-2 py-2 pl-1 items-center hover:cursor-pointer hover:bg-main-gray-hover rounded-sm group"
+                        >
+                            <div class="relative">
                                 <img
-                                    *ngIf="user.displayedStatus === 'Online'"
-                                    src="../../../assets/online.png"
-                                    alt=""
-                                    class="w-2.5 h-2.5"
+                                    src="https://api.dicebear.com/5.x/identicon/svg?seed={{
+                                        user._id
+                                    }}"
+                                    alt="avatar"
+                                    class="w-8 h-8 rounded-full"
                                 />
-                                <img
-                                    *ngIf="user.displayedStatus === 'Idle'"
-                                    src="../../../assets/away.png"
-                                    alt=""
-                                    class="w-2.5 h-2.5"
-                                />
-                                <img
-                                    *ngIf="
-                                        user.displayedStatus ===
-                                        'Do Not Disturb'
-                                    "
-                                    src="../../../assets/busy.png"
-                                    alt=""
-                                    class="w-2.5 h-2.5"
-                                />
-                                <img
-                                    *ngIf="user.displayedStatus === 'Offline'"
-                                    src="../../../assets/offline.png"
-                                    alt=""
-                                    class="w-2.5 h-2.5"
-                                />
-                            </div>
-                            <div
-                                *ngIf="hideProfilePanel"
-                                class="absolute bottom-12 -left-10 min-h-[395px] min-w-[340px] bg-main-gray-darker2 shadow-md rounded-md"
-                            >
                                 <div
-                                    class="min-h-[60px] bg-main-gray-dark rounded-md relative"
+                                    class="flex w-4 h-4 rounded-full bg-main-gray-darker absolute bottom-0 right-0 justify-center items-center -mr-1 -mb-1"
                                 >
                                     <img
-                                        src="https://api.dicebear.com/5.x/identicon/svg?seed={{
-                                            user._id
-                                        }}"
-                                        alt="avatar"
-                                        class="w-20 h-20 rounded-full absolute top-3 left-5 bg-main-gray-darker"
+                                        *ngIf="
+                                            user.displayedStatus === 'Online'
+                                        "
+                                        src="../../../assets/online.png"
+                                        alt=""
+                                        class="w-2.5 h-2.5"
                                     />
-                                    <div
-                                        class="flex w-8 h-8 rounded-full bg-main-gray-darker2 absolute left-16 -bottom-10 justify-center items-center ml-3"
-                                    >
-                                        <img
-                                            *ngIf="
-                                                user.displayedStatus ===
-                                                'Online'
-                                            "
-                                            src="../../../assets/online.png"
-                                            alt=""
-                                            class="w-4 h-4"
-                                        />
-                                        <img
-                                            *ngIf="
-                                                user.displayedStatus === 'Idle'
-                                            "
-                                            src="../../../assets/away.png"
-                                            alt=""
-                                            class="w-4 h-4"
-                                        />
-                                        <img
-                                            *ngIf="
-                                                user.displayedStatus ===
-                                                'Do Not Disturb'
-                                            "
-                                            src="../../../assets/busy.png"
-                                            alt=""
-                                            class="w-4 h-4"
-                                        />
-                                        <img
-                                            *ngIf="
-                                                user.displayedStatus ===
-                                                'Offline'
-                                            "
-                                            src="../../../assets/offline.png"
-                                            alt=""
-                                            class="w-4 h-4"
-                                        />
-                                    </div>
+                                    <img
+                                        *ngIf="user.displayedStatus === 'Idle'"
+                                        src="../../../assets/away.png"
+                                        alt=""
+                                        class="w-2.5 h-2.5"
+                                    />
+                                    <img
+                                        *ngIf="
+                                            user.displayedStatus ===
+                                            'Do Not Disturb'
+                                        "
+                                        src="../../../assets/busy.png"
+                                        alt=""
+                                        class="w-2.5 h-2.5"
+                                    />
+                                    <img
+                                        *ngIf="
+                                            user.displayedStatus === 'Offline'
+                                        "
+                                        src="../../../assets/offline.png"
+                                        alt=""
+                                        class="w-2.5 h-2.5"
+                                    />
                                 </div>
-
                                 <div
-                                    class="bg-main-black min-h-[265px] mx-3 mt-5 mb-3 rounded-md"
+                                    *ngIf="hideProfilePanel"
+                                    class="absolute bottom-12 -left-10 min-h-[395px] min-w-[340px] bg-main-gray-darker2 shadow-md rounded-md"
                                 >
                                     <div
-                                        class="px-3 pt-2 pb-3 text-white font-semibold"
+                                        class="min-h-[60px] bg-main-gray-dark rounded-md relative"
                                     >
-                                        <h1 class="text-2xl">
-                                            {{ user.userName }}
-                                        </h1>
-                                        <hr class="mt-2 mb-2" />
-                                        <p class="text-sm uppercase">
-                                            Scuffed Discord Member Since
-                                        </p>
-                                        <p
-                                            class="text-gray-400 font-normal font-sm mt-1"
+                                        <img
+                                            src="https://api.dicebear.com/5.x/identicon/svg?seed={{
+                                                user._id
+                                            }}"
+                                            alt="avatar"
+                                            class="w-20 h-20 rounded-full absolute top-3 left-5 bg-main-gray-darker"
+                                        />
+                                        <div
+                                            class="flex w-8 h-8 rounded-full bg-main-gray-darker2 absolute left-16 -bottom-10 justify-center items-center ml-3"
                                         >
-                                            {{
-                                                user.date_created
-                                                    | date : "longDate"
-                                            }}
-                                        </p>
-                                        <hr class="mt-2 mb-2" />
-                                        <p class="text-sm uppercase">Status</p>
-                                        <div class="mt-1">
-                                            <div
-                                                [ngClass]="{
-                                                    currentStatus:
-                                                        user.displayedStatus ===
-                                                        'Online'
-                                                }"
-                                                (click)="
-                                                    setDisplayedStatus('Online')
+                                            <img
+                                                *ngIf="
+                                                    user.displayedStatus ===
+                                                    'Online'
                                                 "
-                                                class="mt-1 flex flex-row gap-1 items-center text-center hover:bg-main-gray-hover p-1.5 rounded-md"
-                                            >
-                                                <img
-                                                    src="../../../assets/online.png"
-                                                    alt=""
-                                                    class="w-4 h-4"
-                                                />
-                                                <p
-                                                    class="text-gray-400 font-normal text-sm ml-2"
-                                                >
-                                                    Online
-                                                </p>
-                                            </div>
-                                            <div
-                                                [ngClass]="{
-                                                    currentStatus:
-                                                        user.displayedStatus ===
-                                                        'Idle'
-                                                }"
-                                                (click)="
-                                                    setDisplayedStatus('Idle')
+                                                src="../../../assets/online.png"
+                                                alt=""
+                                                class="w-4 h-4"
+                                            />
+                                            <img
+                                                *ngIf="
+                                                    user.displayedStatus ===
+                                                    'Idle'
                                                 "
-                                                class="mt-1 flex flex-row gap-1 items-center text-center hover:bg-main-gray-hover p-1.5 rounded-md aria-[selected]:bg-main-gray-hover"
-                                            >
-                                                <img
-                                                    src="../../../assets/away.png"
-                                                    alt=""
-                                                    class="w-4 h-4"
-                                                />
-                                                <p
-                                                    class="text-gray-400 font-normal text-sm ml-2"
-                                                >
-                                                    Idle
-                                                </p>
-                                            </div>
-                                            <div
-                                                [ngClass]="{
-                                                    currentStatus:
-                                                        user.displayedStatus ===
-                                                        'Do Not Disturb'
-                                                }"
-                                                (click)="
-                                                    setDisplayedStatus(
-                                                        'DoNotDisturb'
-                                                    )
+                                                src="../../../assets/away.png"
+                                                alt=""
+                                                class="w-4 h-4"
+                                            />
+                                            <img
+                                                *ngIf="
+                                                    user.displayedStatus ===
+                                                    'Do Not Disturb'
                                                 "
-                                                class="mt-1 flex flex-row gap-1 items-center text-center hover:bg-main-gray-hover p-1.5 rounded-md aria-[selected]:bg-main-gray-hover"
-                                            >
-                                                <img
-                                                    src="../../../assets/busy.png"
-                                                    alt=""
-                                                    class="w-4 h-4"
-                                                />
-                                                <p
-                                                    class="text-gray-400 font-normal text-sm ml-2"
-                                                >
-                                                    Do Not Disturb
-                                                </p>
-                                            </div>
-                                            <div
-                                                [ngClass]="{
-                                                    currentStatus:
-                                                        user.displayedStatus ===
-                                                        'Offline'
-                                                }"
-                                                (click)="
-                                                    setDisplayedStatus(
-                                                        'Offline'
-                                                    )
+                                                src="../../../assets/busy.png"
+                                                alt=""
+                                                class="w-4 h-4"
+                                            />
+                                            <img
+                                                *ngIf="
+                                                    user.displayedStatus ===
+                                                    'Offline'
                                                 "
-                                                class="mt-1 flex flex-row gap-1 items-center text-center hover:bg-main-gray-hover p-1.5 rounded-md aria-[selected]:bg-main-gray-hover"
+                                                src="../../../assets/offline.png"
+                                                alt=""
+                                                class="w-4 h-4"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div
+                                        class="bg-main-black min-h-[265px] mx-3 mt-5 mb-3 rounded-md"
+                                    >
+                                        <div
+                                            class="px-3 pt-2 pb-3 text-white font-semibold"
+                                        >
+                                            <h1 class="text-2xl">
+                                                {{ user.userName }}
+                                            </h1>
+                                            <hr class="mt-2 mb-2" />
+                                            <p class="text-sm uppercase">
+                                                Scuffed Discord Member Since
+                                            </p>
+                                            <p
+                                                class="text-gray-400 font-normal font-sm mt-1"
                                             >
-                                                <img
-                                                    src="../../../assets/offline.png"
-                                                    alt=""
-                                                    class="w-4 h-4"
-                                                />
-                                                <p
-                                                    class="text-gray-400 font-normal text-sm ml-2"
+                                                {{
+                                                    user.date_created
+                                                        | date : "longDate"
+                                                }}
+                                            </p>
+                                            <hr class="mt-2 mb-2" />
+                                            <p class="text-sm uppercase">
+                                                Status
+                                            </p>
+                                            <div class="mt-1">
+                                                <div
+                                                    [ngClass]="{
+                                                        currentStatus:
+                                                            user.displayedStatus ===
+                                                            'Online'
+                                                    }"
+                                                    (click)="
+                                                        setDisplayedStatus(
+                                                            'Online'
+                                                        )
+                                                    "
+                                                    class="mt-1 flex flex-row gap-1 items-center text-center hover:bg-main-gray-hover p-1.5 rounded-md"
                                                 >
-                                                    Offline
-                                                </p>
+                                                    <img
+                                                        src="../../../assets/online.png"
+                                                        alt=""
+                                                        class="w-4 h-4"
+                                                    />
+                                                    <p
+                                                        class="text-gray-400 font-normal text-sm ml-2"
+                                                    >
+                                                        Online
+                                                    </p>
+                                                </div>
+                                                <div
+                                                    [ngClass]="{
+                                                        currentStatus:
+                                                            user.displayedStatus ===
+                                                            'Idle'
+                                                    }"
+                                                    (click)="
+                                                        setDisplayedStatus(
+                                                            'Idle'
+                                                        )
+                                                    "
+                                                    class="mt-1 flex flex-row gap-1 items-center text-center hover:bg-main-gray-hover p-1.5 rounded-md aria-[selected]:bg-main-gray-hover"
+                                                >
+                                                    <img
+                                                        src="../../../assets/away.png"
+                                                        alt=""
+                                                        class="w-4 h-4"
+                                                    />
+                                                    <p
+                                                        class="text-gray-400 font-normal text-sm ml-2"
+                                                    >
+                                                        Idle
+                                                    </p>
+                                                </div>
+                                                <div
+                                                    [ngClass]="{
+                                                        currentStatus:
+                                                            user.displayedStatus ===
+                                                            'Do Not Disturb'
+                                                    }"
+                                                    (click)="
+                                                        setDisplayedStatus(
+                                                            'DoNotDisturb'
+                                                        )
+                                                    "
+                                                    class="mt-1 flex flex-row gap-1 items-center text-center hover:bg-main-gray-hover p-1.5 rounded-md aria-[selected]:bg-main-gray-hover"
+                                                >
+                                                    <img
+                                                        src="../../../assets/busy.png"
+                                                        alt=""
+                                                        class="w-4 h-4"
+                                                    />
+                                                    <p
+                                                        class="text-gray-400 font-normal text-sm ml-2"
+                                                    >
+                                                        Do Not Disturb
+                                                    </p>
+                                                </div>
+                                                <div
+                                                    [ngClass]="{
+                                                        currentStatus:
+                                                            user.displayedStatus ===
+                                                            'Offline'
+                                                    }"
+                                                    (click)="
+                                                        setDisplayedStatus(
+                                                            'Offline'
+                                                        )
+                                                    "
+                                                    class="mt-1 flex flex-row gap-1 items-center text-center hover:bg-main-gray-hover p-1.5 rounded-md aria-[selected]:bg-main-gray-hover"
+                                                >
+                                                    <img
+                                                        src="../../../assets/offline.png"
+                                                        alt=""
+                                                        class="w-4 h-4"
+                                                    />
+                                                    <p
+                                                        class="text-gray-400 font-normal text-sm ml-2"
+                                                    >
+                                                        Offline
+                                                    </p>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                            <h1
+                                class="text-sm ml-2 font-semibold max-w-[7rem] truncate"
+                            >
+                                {{ user.userName }}
+                            </h1>
                         </div>
-                        <h1
-                            class="text-sm ml-2 font-semibold max-w-[7rem] truncate"
-                        >
-                            {{ user.userName }}
-                        </h1>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- MESSAGES -->
-    <div class="flex flex-col min-h-screen max-h-screen grow bg-main-gray">
-        <div
-            class="flex flex-row items-center justify-between min-w-full min-h-[48px] border-b border-b-main-gray-darker"
-        >
-            <div class="ml-4 flex flex-row">
-                <svg
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    x="0"
-                    y="0"
-                    aria-hidden="true"
-                    role="img"
-                >
-                    <path
-                        fill="#8e9297"
-                        fill-rule="evenodd"
-                        clip-rule="evenodd"
-                        d="M5.88657 21C5.57547 21 5.3399 20.7189 5.39427 20.4126L6.00001 17H2.59511C2.28449 17 2.04905 16.7198 2.10259 16.4138L2.27759 15.4138C2.31946 15.1746 2.52722 15 2.77011 15H6.35001L7.41001 9H4.00511C3.69449 9 3.45905 8.71977 3.51259 8.41381L3.68759 7.41381C3.72946 7.17456 3.93722 7 4.18011 7H7.76001L8.39677 3.41262C8.43914 3.17391 8.64664 3 8.88907 3H9.87344C10.1845 3 10.4201 3.28107 10.3657 3.58738L9.76001 7H15.76L16.3968 3.41262C16.4391 3.17391 16.6466 3 16.8891 3H17.8734C18.1845 3 18.4201 3.28107 18.3657 3.58738L17.76 7H21.1649C21.4755 7 21.711 7.28023 21.6574 7.58619L21.4824 8.58619C21.4406 8.82544 21.2328 9 20.9899 9H17.41L16.35 15H19.7549C20.0655 15 20.301 15.2802 20.2474 15.5862L20.0724 16.5862C20.0306 16.8254 19.8228 17 19.5799 17H16L15.3632 20.5874C15.3209 20.8261 15.1134 21 14.8709 21H13.8866C13.5755 21 13.3399 20.7189 13.3943 20.4126L14 17H8.00001L7.36325 20.5874C7.32088 20.8261 7.11337 21 6.87094 21H5.88657ZM9.41045 9L8.35045 15H14.3504L15.4104 9H9.41045Z"
-                    ></path>
-                </svg>
-                <h1 class="text-white font-semibold ml-2">welcome</h1>
+        <!-- MESSAGES -->
+        <div class="flex flex-col min-h-screen max-h-screen grow bg-main-gray">
+            <div
+                class="flex flex-row items-center justify-between min-w-full min-h-[48px] border-b border-b-main-gray-darker"
+            >
+                <div class="ml-4 flex flex-row">
+                    <svg
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        x="0"
+                        y="0"
+                        aria-hidden="true"
+                        role="img"
+                    >
+                        <path
+                            fill="#8e9297"
+                            fill-rule="evenodd"
+                            clip-rule="evenodd"
+                            d="M5.88657 21C5.57547 21 5.3399 20.7189 5.39427 20.4126L6.00001 17H2.59511C2.28449 17 2.04905 16.7198 2.10259 16.4138L2.27759 15.4138C2.31946 15.1746 2.52722 15 2.77011 15H6.35001L7.41001 9H4.00511C3.69449 9 3.45905 8.71977 3.51259 8.41381L3.68759 7.41381C3.72946 7.17456 3.93722 7 4.18011 7H7.76001L8.39677 3.41262C8.43914 3.17391 8.64664 3 8.88907 3H9.87344C10.1845 3 10.4201 3.28107 10.3657 3.58738L9.76001 7H15.76L16.3968 3.41262C16.4391 3.17391 16.6466 3 16.8891 3H17.8734C18.1845 3 18.4201 3.28107 18.3657 3.58738L17.76 7H21.1649C21.4755 7 21.711 7.28023 21.6574 7.58619L21.4824 8.58619C21.4406 8.82544 21.2328 9 20.9899 9H17.41L16.35 15H19.7549C20.0655 15 20.301 15.2802 20.2474 15.5862L20.0724 16.5862C20.0306 16.8254 19.8228 17 19.5799 17H16L15.3632 20.5874C15.3209 20.8261 15.1134 21 14.8709 21H13.8866C13.5755 21 13.3399 20.7189 13.3943 20.4126L14 17H8.00001L7.36325 20.5874C7.32088 20.8261 7.11337 21 6.87094 21H5.88657ZM9.41045 9L8.35045 15H14.3504L15.4104 9H9.41045Z"
+                        ></path>
+                    </svg>
+                    <h1 class="text-white font-semibold ml-2">welcome</h1>
+                </div>
+
+                <div class="mr-2">
+                    <svg
+                        x="0"
+                        y="0"
+                        class="hover:scale-110 hover:cursor-pointer"
+                        aria-hidden="true"
+                        role="img"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        (click)="hideMembers()"
+                    >
+                        <path
+                            fill="currentColor"
+                            fill-rule="evenodd"
+                            clip-rule="evenodd"
+                            d="M14 8.00598C14 10.211 12.206 12.006 10 12.006C7.795 12.006 6 10.211 6 8.00598C6 5.80098 7.794 4.00598 10 4.00598C12.206 4.00598 14 5.80098 14 8.00598ZM2 19.006C2 15.473 5.29 13.006 10 13.006C14.711 13.006 18 15.473 18 19.006V20.006H2V19.006Z"
+                        ></path>
+                        <path
+                            fill="currentColor"
+                            fill-rule="evenodd"
+                            clip-rule="evenodd"
+                            d="M14 8.00598C14 10.211 12.206 12.006 10 12.006C7.795 12.006 6 10.211 6 8.00598C6 5.80098 7.794 4.00598 10 4.00598C12.206 4.00598 14 5.80098 14 8.00598ZM2 19.006C2 15.473 5.29 13.006 10 13.006C14.711 13.006 18 15.473 18 19.006V20.006H2V19.006Z"
+                        ></path>
+                        <path
+                            fill="currentColor"
+                            d="M20.0001 20.006H22.0001V19.006C22.0001 16.4433 20.2697 14.4415 17.5213 13.5352C19.0621 14.9127 20.0001 16.8059 20.0001 19.006V20.006Z"
+                        ></path>
+                        <path
+                            fill="currentColor"
+                            d="M14.8834 11.9077C16.6657 11.5044 18.0001 9.9077 18.0001 8.00598C18.0001 5.96916 16.4693 4.28218 14.4971 4.0367C15.4322 5.09511 16.0001 6.48524 16.0001 8.00598C16.0001 9.44888 15.4889 10.7742 14.6378 11.8102C14.7203 11.8418 14.8022 11.8743 14.8834 11.9077Z"
+                        ></path>
+                    </svg>
+                </div>
             </div>
-
-            <div class="mr-2">
-                <svg
-                    x="0"
-                    y="0"
-                    class="hover:scale-110 hover:cursor-pointer"
-                    aria-hidden="true"
-                    role="img"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    (click)="hideMembers()"
+            <div
+                class="flex flex-col justify-between min-h-[94vh] max-h-[94vh]"
+            >
+                <div
+                    #messageContainer
+                    id="messages"
+                    class="max-h-[85vh] overflow-y-scroll scrollbar-thin scrollbar-track-rounded-full scrollbar-thumb-rounded-full scrollbar-thumb-main-gray-darkest scrollbar-track-main-gray-darker mr-1 mt-2"
                 >
-                    <path
-                        fill="currentColor"
-                        fill-rule="evenodd"
-                        clip-rule="evenodd"
-                        d="M14 8.00598C14 10.211 12.206 12.006 10 12.006C7.795 12.006 6 10.211 6 8.00598C6 5.80098 7.794 4.00598 10 4.00598C12.206 4.00598 14 5.80098 14 8.00598ZM2 19.006C2 15.473 5.29 13.006 10 13.006C14.711 13.006 18 15.473 18 19.006V20.006H2V19.006Z"
-                    ></path>
-                    <path
-                        fill="currentColor"
-                        fill-rule="evenodd"
-                        clip-rule="evenodd"
-                        d="M14 8.00598C14 10.211 12.206 12.006 10 12.006C7.795 12.006 6 10.211 6 8.00598C6 5.80098 7.794 4.00598 10 4.00598C12.206 4.00598 14 5.80098 14 8.00598ZM2 19.006C2 15.473 5.29 13.006 10 13.006C14.711 13.006 18 15.473 18 19.006V20.006H2V19.006Z"
-                    ></path>
-                    <path
-                        fill="currentColor"
-                        d="M20.0001 20.006H22.0001V19.006C22.0001 16.4433 20.2697 14.4415 17.5213 13.5352C19.0621 14.9127 20.0001 16.8059 20.0001 19.006V20.006Z"
-                    ></path>
-                    <path
-                        fill="currentColor"
-                        d="M14.8834 11.9077C16.6657 11.5044 18.0001 9.9077 18.0001 8.00598C18.0001 5.96916 16.4693 4.28218 14.4971 4.0367C15.4322 5.09511 16.0001 6.48524 16.0001 8.00598C16.0001 9.44888 15.4889 10.7742 14.6378 11.8102C14.7203 11.8418 14.8022 11.8743 14.8834 11.9077Z"
-                    ></path>
-                </svg>
+                    <discord-clone-message
+                        *ngFor="let message of selectedServer.messages"
+                        [message]="message"
+                        [lastRead]="message._id === getLastMessage()"
+                        (editStatus)="getEditStatus($event)"
+                        (scrollable)="getScrollStatus($event)"
+                    >
+                    </discord-clone-message>
+                </div>
+
+                <div
+                    *ngIf="!allowScrollToBottom"
+                    class="flex flex-row justify-end mr-4 mt-2"
+                >
+                    <img
+                        src="../../../assets/down.png"
+                        alt=""
+                        placement="top"
+                        ngbTooltip="Scroll to bottom"
+                        tooltipClass="font-semibold text-md"
+                        class="w-6 h-6 hover:cursor-pointer"
+                        (click)="allowScrollToBottom = !allowScrollToBottom"
+                    />
+                </div>
+
+                <div class="p-3 min-w-full">
+                    <discord-clone-input
+                        [currentServer]="selectedServer._id"
+                    ></discord-clone-input>
+                </div>
             </div>
         </div>
-        <div class="flex flex-col justify-between min-h-[94vh] max-h-[94vh]">
-            <div
-                #messageContainer
-                id="messages"
-                class="max-h-[85vh] overflow-y-scroll scrollbar-thin scrollbar-track-rounded-full scrollbar-thumb-rounded-full scrollbar-thumb-main-gray-darkest scrollbar-track-main-gray-darker mr-1 mt-2"
-            >
-                <discord-clone-message
-                    *ngFor="let message of selectedServer.messages"
-                    [message]="message"
-                    [lastRead]="message._id === getLastMessage()"
-                    (editStatus)="getEditStatus($event)"
-                    (scrollable)="getScrollStatus($event)"
-                >
-                </discord-clone-message>
-            </div>
 
+        <!-- MEMBERS -->
+        <div
+            *ngIf="!hideMemberPanel"
+            class="hidden md:block min-h-screen max-h-screen min-w-[240px] bg-main-gray-darker"
+        >
             <div
-                *ngIf="!allowScrollToBottom"
-                class="flex flex-row justify-end mr-4 mt-2"
+                class="py-2 pr-2 flex flex-row items-center justify-between bg-main-gray min-w-full min-h-[48px] border-b border-b-main-gray-darker"
             >
-                <img
-                    src="../../../assets/down.png"
-                    alt=""
-                    placement="top"
-                    ngbTooltip="Scroll to bottom"
-                    tooltipClass="font-semibold text-md"
-                    class="w-6 h-6 hover:cursor-pointer"
-                    (click)="allowScrollToBottom = !allowScrollToBottom"
+                <input
+                    type="text"
+                    placeholder="Search"
+                    class="text-sm font-semibold bg-main-gray-darkest max-h-[24px] text-gray-300 border-none rounded-sm focus:outline-none focus:ring-0 focus:border-none"
                 />
-            </div>
 
-            <div class="p-3 min-w-full">
-                <discord-clone-input
-                    [currentServer]="selectedServer._id"
-                ></discord-clone-input>
+                <svg
+                    x="0"
+                    y="0"
+                    class="icon-2xnN2Y"
+                    aria-hidden="true"
+                    role="img"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                >
+                    <path
+                        fill="currentColor"
+                        d="M12 2C6.486 2 2 6.487 2 12C2 17.515 6.486 22 12 22C17.514 22 22 17.515 22 12C22 6.487 17.514 2 12 2ZM12 18.25C11.31 18.25 10.75 17.691 10.75 17C10.75 16.31 11.31 15.75 12 15.75C12.69 15.75 13.25 16.31 13.25 17C13.25 17.691 12.69 18.25 12 18.25ZM13 13.875V15H11V12H12C13.104 12 14 11.103 14 10C14 8.896 13.104 8 12 8C10.896 8 10 8.896 10 10H8C8 7.795 9.795 6 12 6C14.205 6 16 7.795 16 10C16 11.861 14.723 13.429 13 13.875Z"
+                    ></path>
+                </svg>
             </div>
+            <discord-clone-members
+                [users]="selectedServer.users"
+            ></discord-clone-members>
         </div>
-    </div>
+    </ng-container>
 
-    <!-- MEMBERS -->
-    <div
-        *ngIf="!hideMemberPanel"
-        class="hidden md:block min-h-screen max-h-screen min-w-[240px] bg-main-gray-darker"
-    >
+    <ng-container *ngIf="directMessages">
         <div
-            class="py-2 pr-2 flex flex-row items-center justify-between bg-main-gray min-w-full min-h-[48px] border-b border-b-main-gray-darker"
+            class="hidden md:flex md:flex-col min-h-screen min-w-[240px] max-h-screen bg-main-gray-darker"
         >
-            <input
-                type="text"
-                placeholder="Search"
-                class="text-sm font-semibold bg-main-gray-darkest max-h-[24px] text-gray-300 border-none rounded-sm focus:outline-none focus:ring-0 focus:border-none"
-            />
+            <div class="flex flex-col justify-between min-h-screen">
+                <!-- CHATS -->
+                <div class="flex flex-col align-top">
+                    <div
+                        class="flex flex-row items-center justify-center min-w-full min-h-[48px] border-b border-b-main-gray-darkest"
+                    >
+                        <input
+                            type="text"
+                            placeholder="Find or start a conversation"
+                            class="text-sm font-semibold bg-main-gray-darkest max-h-[28px] min-w-[92%] text-gray-300 border-none rounded-sm focus:outline-none focus:ring-0 focus:border-none"
+                        />
+                    </div>
 
-            <svg
-                x="0"
-                y="0"
-                class="icon-2xnN2Y"
-                aria-hidden="true"
-                role="img"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-            >
-                <path
-                    fill="currentColor"
-                    d="M12 2C6.486 2 2 6.487 2 12C2 17.515 6.486 22 12 22C17.514 22 22 17.515 22 12C22 6.487 17.514 2 12 2ZM12 18.25C11.31 18.25 10.75 17.691 10.75 17C10.75 16.31 11.31 15.75 12 15.75C12.69 15.75 13.25 16.31 13.25 17C13.25 17.691 12.69 18.25 12 18.25ZM13 13.875V15H11V12H12C13.104 12 14 11.103 14 10C14 8.896 13.104 8 12 8C10.896 8 10 8.896 10 10H8C8 7.795 9.795 6 12 6C14.205 6 16 7.795 16 10C16 11.861 14.723 13.429 13 13.875Z"
-                ></path>
-            </svg>
+                    <div
+                        class="flex flex-row gap-3 items-center p-2 m-2 hover:bg-main-gray-hover rounded-md hover:cursor-pointer"
+                    >
+                        <svg
+                            class=""
+                            aria-hidden="true"
+                            role="img"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                        >
+                            <g fill="none" fill-rule="evenodd">
+                                <path
+                                    fill="currentColor"
+                                    fill-rule="nonzero"
+                                    d="M0.5,0 L0.5,1.5 C0.5,5.65 2.71,9.28 6,11.3 L6,16 L21,16 L21,14 C21,11.34 15.67,10 13,10 C13,10 12.83,10 12.75,10 C8,10 4,6 4,1.5 L4,0 L0.5,0 Z M13,0 C10.790861,0 9,1.790861 9,4 C9,6.209139 10.790861,8 13,8 C15.209139,8 17,6.209139 17,4 C17,1.790861 15.209139,0 13,0 Z"
+                                    transform="translate(2 4)"
+                                ></path>
+                                <path
+                                    d="M0,0 L24,0 L24,24 L0,24 L0,0 Z M0,0 L24,0 L24,24 L0,24 L0,0 Z M0,0 L24,0 L24,24 L0,24 L0,0 Z"
+                                ></path>
+                            </g>
+                        </svg>
+                        <h1 class="text-md font-semibold">Friends</h1>
+                    </div>
+
+                    <div class="flex flex-col gap-2">
+                        <h2
+                            class="text-gray-400 font-semibold p-2 ml-2 text-sm"
+                        >
+                            Direct Messages
+                        </h2>
+                    </div>
+                </div>
+                <!-- PROFILE -->
+                <div class="flex flex-col">
+                    <div
+                        (click)="hideProfilePanel = !hideProfilePanel"
+                        class="flex flex-row min-h-[52px] items-center bg-main-gray-darker2"
+                    >
+                        <div
+                            class="flex flex-row min-w-[50%] max-h-[39px] ml-2 py-2 pl-1 items-center hover:cursor-pointer hover:bg-main-gray-hover rounded-sm group"
+                        >
+                            <div class="relative">
+                                <img
+                                    src="https://api.dicebear.com/5.x/identicon/svg?seed={{
+                                        user._id
+                                    }}"
+                                    alt="avatar"
+                                    class="w-8 h-8 rounded-full"
+                                />
+                                <div
+                                    class="flex w-4 h-4 rounded-full bg-main-gray-darker absolute bottom-0 right-0 justify-center items-center -mr-1 -mb-1"
+                                >
+                                    <img
+                                        *ngIf="
+                                            user.displayedStatus === 'Online'
+                                        "
+                                        src="../../../assets/online.png"
+                                        alt=""
+                                        class="w-2.5 h-2.5"
+                                    />
+                                    <img
+                                        *ngIf="user.displayedStatus === 'Idle'"
+                                        src="../../../assets/away.png"
+                                        alt=""
+                                        class="w-2.5 h-2.5"
+                                    />
+                                    <img
+                                        *ngIf="
+                                            user.displayedStatus ===
+                                            'Do Not Disturb'
+                                        "
+                                        src="../../../assets/busy.png"
+                                        alt=""
+                                        class="w-2.5 h-2.5"
+                                    />
+                                    <img
+                                        *ngIf="
+                                            user.displayedStatus === 'Offline'
+                                        "
+                                        src="../../../assets/offline.png"
+                                        alt=""
+                                        class="w-2.5 h-2.5"
+                                    />
+                                </div>
+                                <div
+                                    *ngIf="hideProfilePanel"
+                                    class="absolute bottom-12 -left-10 min-h-[395px] min-w-[340px] bg-main-gray-darker2 shadow-md rounded-md"
+                                >
+                                    <div
+                                        class="min-h-[60px] bg-main-gray-dark rounded-md relative"
+                                    >
+                                        <img
+                                            src="https://api.dicebear.com/5.x/identicon/svg?seed={{
+                                                user._id
+                                            }}"
+                                            alt="avatar"
+                                            class="w-20 h-20 rounded-full absolute top-3 left-5 bg-main-gray-darker"
+                                        />
+                                        <div
+                                            class="flex w-8 h-8 rounded-full bg-main-gray-darker2 absolute left-16 -bottom-10 justify-center items-center ml-3"
+                                        >
+                                            <img
+                                                *ngIf="
+                                                    user.displayedStatus ===
+                                                    'Online'
+                                                "
+                                                src="../../../assets/online.png"
+                                                alt=""
+                                                class="w-4 h-4"
+                                            />
+                                            <img
+                                                *ngIf="
+                                                    user.displayedStatus ===
+                                                    'Idle'
+                                                "
+                                                src="../../../assets/away.png"
+                                                alt=""
+                                                class="w-4 h-4"
+                                            />
+                                            <img
+                                                *ngIf="
+                                                    user.displayedStatus ===
+                                                    'Do Not Disturb'
+                                                "
+                                                src="../../../assets/busy.png"
+                                                alt=""
+                                                class="w-4 h-4"
+                                            />
+                                            <img
+                                                *ngIf="
+                                                    user.displayedStatus ===
+                                                    'Offline'
+                                                "
+                                                src="../../../assets/offline.png"
+                                                alt=""
+                                                class="w-4 h-4"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div
+                                        class="bg-main-black min-h-[265px] mx-3 mt-5 mb-3 rounded-md"
+                                    >
+                                        <div
+                                            class="px-3 pt-2 pb-3 text-white font-semibold"
+                                        >
+                                            <h1 class="text-2xl">
+                                                {{ user.userName }}
+                                            </h1>
+                                            <hr class="mt-2 mb-2" />
+                                            <p class="text-sm uppercase">
+                                                Scuffed Discord Member Since
+                                            </p>
+                                            <p
+                                                class="text-gray-400 font-normal font-sm mt-1"
+                                            >
+                                                {{
+                                                    user.date_created
+                                                        | date : "longDate"
+                                                }}
+                                            </p>
+                                            <hr class="mt-2 mb-2" />
+                                            <p class="text-sm uppercase">
+                                                Status
+                                            </p>
+                                            <div class="mt-1">
+                                                <div
+                                                    [ngClass]="{
+                                                        currentStatus:
+                                                            user.displayedStatus ===
+                                                            'Online'
+                                                    }"
+                                                    (click)="
+                                                        setDisplayedStatus(
+                                                            'Online'
+                                                        )
+                                                    "
+                                                    class="mt-1 flex flex-row gap-1 items-center text-center hover:bg-main-gray-hover p-1.5 rounded-md"
+                                                >
+                                                    <img
+                                                        src="../../../assets/online.png"
+                                                        alt=""
+                                                        class="w-4 h-4"
+                                                    />
+                                                    <p
+                                                        class="text-gray-400 font-normal text-sm ml-2"
+                                                    >
+                                                        Online
+                                                    </p>
+                                                </div>
+                                                <div
+                                                    [ngClass]="{
+                                                        currentStatus:
+                                                            user.displayedStatus ===
+                                                            'Idle'
+                                                    }"
+                                                    (click)="
+                                                        setDisplayedStatus(
+                                                            'Idle'
+                                                        )
+                                                    "
+                                                    class="mt-1 flex flex-row gap-1 items-center text-center hover:bg-main-gray-hover p-1.5 rounded-md aria-[selected]:bg-main-gray-hover"
+                                                >
+                                                    <img
+                                                        src="../../../assets/away.png"
+                                                        alt=""
+                                                        class="w-4 h-4"
+                                                    />
+                                                    <p
+                                                        class="text-gray-400 font-normal text-sm ml-2"
+                                                    >
+                                                        Idle
+                                                    </p>
+                                                </div>
+                                                <div
+                                                    [ngClass]="{
+                                                        currentStatus:
+                                                            user.displayedStatus ===
+                                                            'Do Not Disturb'
+                                                    }"
+                                                    (click)="
+                                                        setDisplayedStatus(
+                                                            'DoNotDisturb'
+                                                        )
+                                                    "
+                                                    class="mt-1 flex flex-row gap-1 items-center text-center hover:bg-main-gray-hover p-1.5 rounded-md aria-[selected]:bg-main-gray-hover"
+                                                >
+                                                    <img
+                                                        src="../../../assets/busy.png"
+                                                        alt=""
+                                                        class="w-4 h-4"
+                                                    />
+                                                    <p
+                                                        class="text-gray-400 font-normal text-sm ml-2"
+                                                    >
+                                                        Do Not Disturb
+                                                    </p>
+                                                </div>
+                                                <div
+                                                    [ngClass]="{
+                                                        currentStatus:
+                                                            user.displayedStatus ===
+                                                            'Offline'
+                                                    }"
+                                                    (click)="
+                                                        setDisplayedStatus(
+                                                            'Offline'
+                                                        )
+                                                    "
+                                                    class="mt-1 flex flex-row gap-1 items-center text-center hover:bg-main-gray-hover p-1.5 rounded-md aria-[selected]:bg-main-gray-hover"
+                                                >
+                                                    <img
+                                                        src="../../../assets/offline.png"
+                                                        alt=""
+                                                        class="w-4 h-4"
+                                                    />
+                                                    <p
+                                                        class="text-gray-400 font-normal text-sm ml-2"
+                                                    >
+                                                        Offline
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <h1
+                                class="text-sm ml-2 font-semibold max-w-[7rem] truncate"
+                            >
+                                {{ user.userName }}
+                            </h1>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <discord-clone-members
-            [users]="selectedServer.users"
-        ></discord-clone-members>
-    </div>
+    </ng-container>
 </div>

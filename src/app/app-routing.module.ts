@@ -9,10 +9,10 @@ const routes: Routes = [
     {
         path: "",
         pathMatch: "full",
-        redirectTo: "server/1"
+        redirectTo: "servers/@me"
     },
     {
-        path: "server/:id",
+        path: "servers/:id",
         pathMatch: "full",
         component: ServerComponent,
         canActivate: [AuthGuard]

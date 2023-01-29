@@ -1,11 +1,8 @@
 /* eslint-disable @typescript-eslint/no-inferrable-types */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import {
-    AfterViewChecked,
     Component,
     ElementRef,
-    HostListener,
-    OnChanges,
     OnDestroy,
     OnInit,
     ViewChild
@@ -15,12 +12,12 @@ import { WebsocketService } from "../../context/WebsocketService";
 import { User } from "../../models/User";
 import { Message } from "../../models/Message";
 import { Status } from "../../models/Status";
-import { fromEvent, Subscription } from "rxjs";
 import { JwtPayload } from "jwt-decode";
 import jwt_decode from "jwt-decode";
 import { ServerService } from "./server.service";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { environment } from "../../../environments/environment";
+import { Subscription } from "rxjs";
+import { ActivatedRoute, Router } from "@angular/router";
 
 @Component({
     selector: "discord-clone-server",
@@ -83,11 +80,13 @@ export class ServerComponent implements OnInit, OnDestroy {
     allowScrollToBottom: boolean = false;
     clearMessageInput: number = 0;
     subscription: Subscription;
+    directMessages: boolean = true;
 
     constructor(
         private websocketService: WebsocketService,
         private serverService: ServerService,
-        private modalService: NgbModal
+        private modalService: NgbModal,
+        private route: ActivatedRoute
     ) {}
 
     async ngOnInit() {
@@ -95,6 +94,14 @@ export class ServerComponent implements OnInit, OnDestroy {
             localStorage.getItem("currentuser")!
         );
         this.user = JSON.parse(JSON.stringify(decodedToken)).user;
+
+        const id = this.route.snapshot.params["id"];
+        if (id === "@me") {
+            this.directMessages = true;
+            this.allowScrollToMessage = false;
+        } else {
+            this.directMessages = false;
+        }
 
         this.subscription = this.serverService
             .setUserOnline(this.user._id)
@@ -111,7 +118,9 @@ export class ServerComponent implements OnInit, OnDestroy {
             .getServerByUserId(this.user._id)
             .subscribe((servers: Server[]) => {
                 this.servers = servers;
-                this.selectServer(this.servers[0]);
+                if (!this.directMessages) {
+                    this.selectServer(this.servers[0]);
+                }
                 this.selectedServer = this.servers[0];
                 this.servers.forEach((server) => {
                     this.serverService
@@ -207,6 +216,7 @@ export class ServerComponent implements OnInit, OnDestroy {
     }
 
     selectServer(server: Server) {
+        this.directMessages = false;
         this.subscription = this.serverService
             .getServerById(server._id)
             .subscribe((server) => {
@@ -214,6 +224,7 @@ export class ServerComponent implements OnInit, OnDestroy {
                 this.selectedServer.lastMessageRead = server.lastMessageRead;
             });
         this.selectedServer = server;
+        this.clearMessageInput = 0;
         if (this.getLastMessage() === "") {
             console.log("No messages");
 
@@ -319,21 +330,29 @@ export class ServerComponent implements OnInit, OnDestroy {
     }
 
     getScrollStatus(status: boolean) {
-        if (status) {
-            this.messageContainer.nativeElement.addEventListener(
-                "mousewheel",
-                () => {
-                    if (
-                        this.messageContainer.nativeElement.scrollTop +
-                            this.messageContainer.nativeElement.clientHeight ===
-                        this.messageContainer.nativeElement.scrollHeight
-                    ) {
-                        this.allowScrollToBottom = true;
-                    } else {
-                        this.allowScrollToBottom = false;
+        setTimeout(() => {
+            if (status && this.directMessages === false) {
+                this.messageContainer.nativeElement.addEventListener(
+                    "mousewheel",
+                    () => {
+                        if (
+                            this.messageContainer.nativeElement.scrollTop +
+                                this.messageContainer.nativeElement
+                                    .clientHeight ===
+                            this.messageContainer.nativeElement.scrollHeight
+                        ) {
+                            this.allowScrollToBottom = true;
+                        } else {
+                            this.allowScrollToBottom = false;
+                        }
                     }
-                }
-            );
-        }
+                );
+            }
+        }, 100);
+    }
+
+    selectDirectMessages() {
+        this.directMessages = !this.directMessages;
+        this.selectedServer = this.newServer;
     }
 }
