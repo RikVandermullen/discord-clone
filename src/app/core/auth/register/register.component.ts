@@ -3,6 +3,7 @@ import { Component } from "@angular/core";
 import { Status } from "../../../models/Status";
 import { User } from "../../../models/User";
 import { AuthService } from "../auth.service";
+import { FriendStatus } from "../../../models/FriendStatus";
 
 @Component({
     selector: "discord-clone-register",
@@ -51,7 +52,9 @@ export class RegisterComponent {
         new Date(),
         new Date(),
         Status.Online,
-        Status.Online
+        Status.Online,
+        new Map<string, FriendStatus.Normal>(),
+        []
     );
     birthday: any = { day: 0, month: 0, year: 0 };
 

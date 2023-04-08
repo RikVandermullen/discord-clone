@@ -517,10 +517,65 @@
 
                     <div class="flex flex-col gap-2">
                         <h2
-                            class="ml-2 p-2 text-sm font-semibold text-gray-400"
+                            class="ml-2 p-2 text-xs font-semibold uppercase text-gray-400"
                         >
                             Direct Messages
                         </h2>
+
+                        <!-- CHATS -->
+                        <div
+                            class="mx-2 flex flex-row items-center gap-2 rounded-md p-1 hover:cursor-pointer hover:bg-main-gray-hover"
+                        >
+                            <div class="relative">
+                                <img
+                                    src="https://api.dicebear.com/5.x/identicon/svg?seed={{
+                                        user._id
+                                    }}"
+                                    alt="avatar"
+                                    class="h-8 w-8 rounded-full"
+                                />
+                                <div
+                                    class="absolute bottom-0 right-0 -mr-1 -mb-1 flex h-4 w-4 items-center justify-center rounded-full bg-main-gray-darker"
+                                >
+                                    <img
+                                        *ngIf="
+                                            user.displayedStatus === 'Online'
+                                        "
+                                        src="../../../assets/online.png"
+                                        alt=""
+                                        class="h-2.5 w-2.5"
+                                    />
+                                    <img
+                                        *ngIf="user.displayedStatus === 'Idle'"
+                                        src="../../../assets/away.png"
+                                        alt=""
+                                        class="h-2.5 w-2.5"
+                                    />
+                                    <img
+                                        *ngIf="
+                                            user.displayedStatus ===
+                                            'Do Not Disturb'
+                                        "
+                                        src="../../../assets/busy.png"
+                                        alt=""
+                                        class="h-2.5 w-2.5"
+                                    />
+                                    <img
+                                        *ngIf="
+                                            user.displayedStatus === 'Offline'
+                                        "
+                                        src="../../../assets/offline.png"
+                                        alt=""
+                                        class="h-2.5 w-2.5"
+                                    />
+                                </div>
+                            </div>
+                            <h1
+                                class="text-md max-w-[7rem] truncate font-semibold"
+                            >
+                                {{ user.userName }}
+                            </h1>
+                        </div>
                     </div>
                 </div>
                 <!-- PROFILE -->

@@ -1,4 +1,5 @@
 import { Status } from "./Status";
+import { FriendStatus } from "./FriendStatus";
 
 export class User {
     _id: string;
@@ -9,6 +10,8 @@ export class User {
     dateOfBirth: Date;
     status: Status;
     displayedStatus: Status;
+    friends: Map<string, FriendStatus>;
+    chatRooms: string[];
 
     constructor(
         _id: string,
@@ -18,7 +21,9 @@ export class User {
         dateOfBirth: Date,
         date_created: Date,
         status: Status,
-        displayedStatus: Status
+        displayedStatus: Status,
+        friends: Map<string, FriendStatus>,
+        chatRooms: string[]
     ) {
         this._id = _id;
         this.emailAddress = emailAddress;
@@ -28,6 +33,8 @@ export class User {
         this.date_created = date_created;
         this.status = status;
         this.displayedStatus = displayedStatus;
+        this.friends = friends;
+        this.chatRooms = chatRooms;
     }
 }
 

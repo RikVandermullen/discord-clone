@@ -1,3 +1,4 @@
+/* eslint-disable @nrwl/nx/enforce-module-boundaries */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { Component, Input, OnChanges, OnInit } from "@angular/core";
 import { Message } from "../../models/Message";
@@ -7,6 +8,7 @@ import jwt_decode from "jwt-decode";
 import { User } from "../../models/User";
 import { Status } from "../../models/Status";
 import { ServerService } from "../server/server.service";
+import { FriendStatus } from "src/app/models/FriendStatus";
 
 @Component({
     selector: "discord-clone-input",
@@ -27,7 +29,9 @@ export class InputComponent implements OnInit, OnChanges {
             new Date(),
             new Date(),
             Status.Online,
-            Status.Online
+            Status.Online,
+            new Map<string, FriendStatus.Normal>(),
+            []
         ),
         false
     );

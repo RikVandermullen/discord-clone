@@ -1,3 +1,4 @@
+/* eslint-disable @nrwl/nx/enforce-module-boundaries */
 /* eslint-disable @typescript-eslint/no-inferrable-types */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import {
@@ -18,6 +19,8 @@ import { ServerService } from "./server.service";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Subscription } from "rxjs";
 import { ActivatedRoute, Router } from "@angular/router";
+import { log } from "console";
+import { FriendStatus } from "src/app/models/FriendStatus";
 
 @Component({
     selector: "discord-clone-server",
@@ -37,7 +40,9 @@ export class ServerComponent implements OnInit, OnDestroy {
             new Date(),
             new Date(),
             Status.Idle,
-            Status.Idle
+            Status.Idle,
+            new Map<string, FriendStatus.Normal>(),
+            []
         ),
         new Date(),
         [],
@@ -56,7 +61,9 @@ export class ServerComponent implements OnInit, OnDestroy {
             new Date(),
             new Date(),
             Status.Idle,
-            Status.Idle
+            Status.Idle,
+            new Map<string, FriendStatus.Normal>(),
+            []
         ),
         new Date(),
         [],
@@ -72,7 +79,9 @@ export class ServerComponent implements OnInit, OnDestroy {
         new Date(),
         new Date(),
         Status.Online,
-        Status.Online
+        Status.Online,
+        new Map<string, FriendStatus.Normal>(),
+        []
     );
     hideMemberPanel: boolean = false;
     allowScrollToMessage: boolean = true;
@@ -342,6 +351,9 @@ export class ServerComponent implements OnInit, OnDestroy {
     }
 
     selectDirectMessages() {
+        console.log(this.user.displayedStatus);
+
+        if (this.directMessages) return;
         this.directMessages = !this.directMessages;
         this.selectedServer = this.newServer;
     }
