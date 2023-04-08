@@ -39,4 +39,15 @@ export class UserController {
     async getUserById(@Param("userId") userId: string) {
         return this.userService.getUserById(userId);
     }
+
+    @Put(":userId/friends")
+    async addFriend(@Param("userId") userId: string, @Body() body: string) {
+        const response = JSON.parse(JSON.stringify(body));
+
+        return this.userService.addUserFriend(
+            userId,
+            response.friendId,
+            response.friendStatus
+        );
+    }
 }

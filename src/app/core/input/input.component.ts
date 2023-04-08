@@ -30,7 +30,8 @@ export class InputComponent implements OnInit, OnChanges {
             new Date(),
             Status.Online,
             Status.Online,
-            new Map<string, FriendStatus.Normal>(),
+            new Map<null, null>(),
+            [],
             []
         ),
         false

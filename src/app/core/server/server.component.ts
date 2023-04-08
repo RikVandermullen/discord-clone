@@ -41,7 +41,8 @@ export class ServerComponent implements OnInit, OnDestroy {
             new Date(),
             Status.Idle,
             Status.Idle,
-            new Map<string, FriendStatus.Normal>(),
+            new Map<null, null>(),
+            [],
             []
         ),
         new Date(),
@@ -62,7 +63,8 @@ export class ServerComponent implements OnInit, OnDestroy {
             new Date(),
             Status.Idle,
             Status.Idle,
-            new Map<string, FriendStatus.Normal>(),
+            new Map<null, null>(),
+            [],
             []
         ),
         new Date(),
@@ -80,7 +82,8 @@ export class ServerComponent implements OnInit, OnDestroy {
         new Date(),
         Status.Online,
         Status.Online,
-        new Map<string, FriendStatus.Normal>(),
+        new Map<null, null>(),
+        [],
         []
     );
     hideMemberPanel: boolean = false;
@@ -120,6 +123,28 @@ export class ServerComponent implements OnInit, OnDestroy {
             .subscribe((user: User) => {
                 this.user = user;
                 this.newServer.owner = user;
+                this.user.friendsList = [];
+                this.user.friends.forEach((friend: any) => {
+                    if (friend.status === FriendStatus.Accepted) {
+                        this.subscription = this.serverService
+                            .getUserById(friend.user)
+                            .subscribe((user: User) => {
+                                this.user.friendsList.push(user);
+                            });
+                    }
+                });
+                this.websocketService
+                    .onStatusChange()
+                    .subscribe((data: any) => {
+                        this.user.friendsList.forEach((user) => {
+                            if (user._id === data.userId) {
+                                user.status = data.status;
+                                if (data.status === Status.Offline) {
+                                    user.displayedStatus = Status.Offline;
+                                }
+                            }
+                        });
+                    });
             });
 
         this.subscription = this.serverService
@@ -181,6 +206,14 @@ export class ServerComponent implements OnInit, OnDestroy {
                     }
                 });
             });
+
+        this.websocketService.onDisplayStatusChange().subscribe((data) => {
+            this.user.friendsList.forEach((user) => {
+                if (user._id === data._id) {
+                    user.displayedStatus = data.displayedStatus;
+                }
+            });
+        });
     }
 
     createServer() {
@@ -351,8 +384,6 @@ export class ServerComponent implements OnInit, OnDestroy {
     }
 
     selectDirectMessages() {
-        console.log(this.user.displayedStatus);
-
         if (this.directMessages) return;
         this.directMessages = !this.directMessages;
         this.selectedServer = this.newServer;

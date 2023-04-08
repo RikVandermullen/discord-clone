@@ -10,9 +10,9 @@ module.exports = {
     theme: {
         extend: {
             colors: {
-                "main-gray": "#36393f",
-                "main-gray-darker": "#2f3136",
-                "main-gray-darker2": "#292b2f",
+                "main-gray": "#313338",
+                "main-gray-darker": "#2b2d31",
+                "main-gray-darker2": "#232428",
                 "main-gray-darkest": "#202225",
                 "main-gray-dark": "#221b22",
                 "main-gray-light": "#40444b",

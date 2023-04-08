@@ -53,7 +53,8 @@ export class RegisterComponent {
         new Date(),
         Status.Online,
         Status.Online,
-        new Map<string, FriendStatus.Normal>(),
+        new Map<null, null>(),
+        [],
         []
     );
     birthday: any = { day: 0, month: 0, year: 0 };

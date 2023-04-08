@@ -2,6 +2,7 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document, Schema as MongooseSchema } from "mongoose";
 import { Status } from "../../../../src/app/models/Status";
+import { UserFriendStatus } from "../user/friendStatus.schema";
 
 export type UserDocument = User & Document;
 
@@ -29,6 +30,12 @@ export class User {
 
     @Prop({ required: true, type: String, enum: Status })
     displayedStatus?: Status;
+
+    @Prop({
+        required: false,
+        type: []
+    })
+    friends: UserFriendStatus[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

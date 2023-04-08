@@ -1,6 +1,7 @@
 import { Component } from "@angular/core";
 import { UserCredentials } from "../../../models/User";
 import { AuthService } from "../auth.service";
+import { Router } from "@angular/router";
 
 @Component({
     selector: "discord-clone-login",
@@ -10,7 +11,7 @@ import { AuthService } from "../auth.service";
 export class LoginComponent {
     userCredentials: UserCredentials = new UserCredentials("", "");
 
-    constructor(private authService: AuthService) {}
+    constructor(private authService: AuthService, private router: Router) {}
 
     onSubmit() {
         /** 
@@ -20,6 +21,8 @@ export class LoginComponent {
         this.authService.login(this.userCredentials).subscribe((token) => {
             if (token === undefined) {
                 console.log("Login failed");
+            } else {
+                this.router.navigate([""]);
             }
         });
     }
