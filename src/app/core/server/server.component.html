@@ -1,18 +1,18 @@
-<div *ngIf="selectedServer" class="flex flex-row min-w-[100vw]">
+<div *ngIf="selectedServer" class="flex min-w-[100vw] flex-row">
     <!-- SERVERS -->
     <div
-        class="hidden md:block min-h-screen max-h-screen min-w-[72px] bg-main-gray-darkest"
+        class="hidden max-h-screen min-h-screen min-w-[72px] bg-main-gray-darkest md:block"
     >
-        <div class="flex flex-col justify-between min-h-screen">
+        <div class="flex min-h-screen flex-col justify-between">
             <!-- SERVERS -->
-            <div class="flex flex-col items-center align-top mt-3 gap-3">
+            <div class="mt-3 flex flex-col items-center gap-3 align-top">
                 <div
                     placement="end"
                     ngbTooltip="Direct Messages"
                     tooltipClass="font-semibold text-md"
                     (click)="selectDirectMessages()"
                     routerLink="/servers/@me"
-                    class="flex flex-col items-center justify-center bg-main-gray-light w-12 h-12 rounded-full transition hover:cursor-pointer hover:rounded-xl hover:bg-indigo-500 relative"
+                    class="relative flex h-12 w-12 flex-col items-center justify-center rounded-full bg-main-gray-light transition hover:cursor-pointer hover:rounded-xl hover:bg-indigo-500"
                 >
                     <svg
                         aria-hidden="true"
@@ -28,12 +28,12 @@
                     </svg>
                     <div
                         *ngIf="directMessages"
-                        class="absolute top-1 -left-3.5 h-[40px] bg-white rounded-full"
+                        class="absolute top-1 -left-3.5 h-[40px] rounded-full bg-white"
                     >
                         *
                     </div>
                 </div>
-                <hr class="bg-main-gray-dark min-h-[5px] min-w-[60%]" />
+                <hr class="min-h-[5px] min-w-[60%] bg-main-gray-dark" />
 
                 <div
                     *ngFor="let server of servers"
@@ -42,20 +42,20 @@
                     tooltipClass="font-semibold text-md"
                     (click)="selectServer(server)"
                     routerLink="/servers/{{ server._id }}"
-                    class="flex flex-col items-center justify-center bg-main-gray-darker rounded-full hover:rounded-xl relative"
+                    class="relative flex flex-col items-center justify-center rounded-full bg-main-gray-darker hover:rounded-xl"
                 >
                     <img
                         src="https://api.dicebear.com/5.x/identicon/svg?seed={{
                             server.name
                         }}"
                         alt="avatar"
-                        class="w-12 h-12 rounded-full transition hover:cursor-pointer hover:rounded-xl"
+                        class="h-12 w-12 rounded-full transition hover:cursor-pointer hover:rounded-xl"
                     />
                     <div
                         *ngIf="
                             server._id === selectedServer._id && !directMessages
                         "
-                        class="absolute top-1 -left-3.5 h-[40px] bg-white rounded-full"
+                        class="absolute top-1 -left-3.5 h-[40px] rounded-full bg-white"
                     >
                         *
                     </div>
@@ -64,14 +64,14 @@
                             server._id !== selectedServer._id &&
                             server.newMessage
                         "
-                        class="absolute top-5 -left-4 h-2 w-2 bg-white rounded-full"
+                        class="absolute top-5 -left-4 h-2 w-2 rounded-full bg-white"
                     ></div>
                 </div>
             </div>
             <!-- CREATE SERVER -->
             <ng-template #create let-createmodal>
                 <div class="rounded-md">
-                    <div class="flex flex-row justify-end mt-3 mr-5">
+                    <div class="mt-3 mr-5 flex flex-row justify-end">
                         <svg
                             class="hover:cursor-pointer"
                             aria-hidden="true"
@@ -89,15 +89,15 @@
                         </svg>
                     </div>
                     <div
-                        class="flex flex-col text-center px-5 justify-center mt-2"
+                        class="mt-2 flex flex-col justify-center px-5 text-center"
                     >
                         <h4
-                            class="text-2xl text-black font-semibold"
+                            class="text-2xl font-semibold text-black"
                             id="modal-basic-title"
                         >
                             Create a server
                         </h4>
-                        <p class="text-md text-gray-600 mt-2">
+                        <p class="text-md mt-2 text-gray-600">
                             Your server is where you and your friends hang out.
                             Make yours and start talking.
                         </p>
@@ -105,10 +105,10 @@
                 </div>
                 <div class="">
                     <form>
-                        <div class="flex flex-col mt-3 p-3">
+                        <div class="mt-3 flex flex-col p-3">
                             <label
                                 for="password"
-                                class="font-bold text-xs mb-2 text-main-gray-darker uppercase"
+                                class="mb-2 text-xs font-bold uppercase text-main-gray-darker"
                                 >Server Name</label
                             >
                             <input
@@ -118,7 +118,7 @@
                                 [(ngModel)]="newServer!.name"
                                 #name="ngModel"
                                 required
-                                class="bg-lightmode-grey text-main-gray-darker border-none rounded-sm focus:outline-none focus:ring-0 focus:border-none"
+                                class="rounded-sm border-none bg-lightmode-grey text-main-gray-darker focus:border-none focus:outline-none focus:ring-0"
                             />
                             <p>
                                 <span class="text-xs text-gray-400"
@@ -134,12 +134,12 @@
                     </form>
                 </div>
                 <div
-                    class="flex flex-row justify-end items-center bg-lightmode-grey min-h-[70px] rounded-b-md"
+                    class="flex min-h-[70px] flex-row items-center justify-end rounded-b-md bg-lightmode-grey"
                 >
                     <button
                         type="submit"
                         (click)="createServer()"
-                        class="text-white text-sm min-w-[96px] min-h-[38px] bg-indigo-500 rounded-sm font-semibold hover:bg-indigo-600 mr-4"
+                        class="mr-4 min-h-[38px] min-w-[96px] rounded-sm bg-indigo-500 text-sm font-semibold text-white hover:bg-indigo-600"
                     >
                         Create
                     </button>
@@ -149,7 +149,7 @@
             <!-- JOIN SERVER -->
             <ng-template #join let-joinmodal>
                 <div class="rounded-md">
-                    <div class="flex flex-row justify-end mt-3 mr-5">
+                    <div class="mt-3 mr-5 flex flex-row justify-end">
                         <svg
                             class="hover:cursor-pointer"
                             aria-hidden="true"
@@ -167,25 +167,25 @@
                         </svg>
                     </div>
                     <div
-                        class="flex flex-col text-center px-5 justify-center mt-2"
+                        class="mt-2 flex flex-col justify-center px-5 text-center"
                     >
                         <h4
-                            class="text-2xl text-black font-semibold"
+                            class="text-2xl font-semibold text-black"
                             id="modal-basic-title"
                         >
                             Join a server
                         </h4>
-                        <p class="text-md text-gray-600 mt-2">
+                        <p class="text-md mt-2 text-gray-600">
                             Enter an invite below to join an existing server.
                         </p>
                     </div>
                 </div>
                 <div class="">
                     <form #joinForm="ngForm">
-                        <div class="flex flex-col mt-3 p-3">
+                        <div class="mt-3 flex flex-col p-3">
                             <label
                                 for="join"
-                                class="font-bold text-xs mb-2 text-main-gray-darker uppercase"
+                                class="mb-2 text-xs font-bold uppercase text-main-gray-darker"
                                 >Invite Link</label
                             >
                             <input
@@ -197,7 +197,7 @@
                                 required
                                 minlength="24"
                                 maxlength="24"
-                                class="bg-lightmode-grey text-main-gray-darker border-none rounded-sm focus:outline-none focus:ring-0 focus:border-none"
+                                class="rounded-sm border-none bg-lightmode-grey text-main-gray-darker focus:border-none focus:outline-none focus:ring-0"
                             />
                             <p>
                                 <span class="text-xs text-gray-400"
@@ -213,13 +213,13 @@
                     </form>
                 </div>
                 <div
-                    class="flex flex-row justify-end items-center bg-lightmode-grey min-h-[70px] rounded-b-md"
+                    class="flex min-h-[70px] flex-row items-center justify-end rounded-b-md bg-lightmode-grey"
                 >
                     <button
                         type="submit"
                         (click)="joinServer()"
                         [disabled]="!joinForm.valid"
-                        class="text-white text-sm min-w-[96px] min-h-[38px] bg-indigo-500 rounded-sm font-semibold hover:bg-indigo-600 mr-4 disabled:bg-indigo-300 disabled:hover:bg-indigo-300"
+                        class="mr-4 min-h-[38px] min-w-[96px] rounded-sm bg-indigo-500 text-sm font-semibold text-white disabled:bg-indigo-300 hover:bg-indigo-600 disabled:hover:bg-indigo-300"
                     >
                         Join Server
                     </button>
@@ -227,23 +227,23 @@
             </ng-template>
 
             <!-- SERVER ACTIONS -->
-            <div class="flex flex-col items-center gap-3 mb-3">
+            <div class="mb-3 flex flex-col items-center gap-3">
                 <div
                     placement="end"
                     ngbTooltip="Join Server"
                     tooltipClass="font-semibold text-md"
                     (click)="openJoin(join)"
-                    class="flex flex-col items-center justify-center bg-main-gray-light rounded-full w-12 h-12 transition hover:cursor-pointer hover:rounded-xl hover:bg-green-600 group"
+                    class="group flex h-12 w-12 flex-col items-center justify-center rounded-full bg-main-gray-light transition hover:cursor-pointer hover:rounded-xl hover:bg-green-600"
                 >
                     <img
                         src="../../../assets/link.png"
                         alt=""
-                        class="block group-hover:hidden w-5 h-5"
+                        class="block h-5 w-5 group-hover:hidden"
                     />
                     <img
                         src="../../../assets/link-hover.png"
                         alt=""
-                        class="hidden group-hover:block w-5 h-5"
+                        class="hidden h-5 w-5 group-hover:block"
                     />
                 </div>
 
@@ -252,7 +252,7 @@
                     ngbTooltip="Create Server"
                     tooltipClass="font-semibold text-md"
                     (click)="openCreate(create)"
-                    class="flex flex-col items-center justify-center bg-main-gray-light rounded-full w-12 h-12 transition hover:cursor-pointer hover:rounded-xl hover:bg-green-600 group"
+                    class="group flex h-12 w-12 flex-col items-center justify-center rounded-full bg-main-gray-light transition hover:cursor-pointer hover:rounded-xl hover:bg-green-600"
                 >
                     <svg
                         aria-hidden="true"
@@ -260,7 +260,7 @@
                         width="24"
                         height="24"
                         viewBox="0 0 24 24"
-                        class="group-hover:hidden block"
+                        class="block group-hover:hidden"
                     >
                         <path
                             fill="#3aa35b"
@@ -288,21 +288,21 @@
     <ng-container *ngIf="!directMessages">
         <!-- SERVER INSIDE -->
         <div
-            class="hidden md:block min-h-screen min-w-[240px] max-h-screen bg-main-gray-darker"
+            class="hidden max-h-screen min-h-screen min-w-[240px] bg-main-gray-darker md:block"
         >
-            <div class="flex flex-col justify-between min-h-screen">
+            <div class="flex min-h-screen flex-col justify-between">
                 <!-- CHATS -->
                 <div class="flex flex-col align-top">
                     <div
-                        class="flex flex-row items-center min-w-full min-h-[48px] border-b border-b-main-gray-darkest"
+                        class="flex min-h-[48px] min-w-full flex-row items-center border-b border-b-main-gray-darkest"
                     >
-                        <h1 class="text-md font-semibold ml-4">
+                        <h1 class="text-md ml-4 font-semibold">
                             {{ selectedServer.name }}
                         </h1>
                     </div>
                     <div class="flex flex-col">
                         <div
-                            class="flex flex-row p-2 ml-3 mt-1 rounded-md max-w-[90%] hover:bg-main-gray-hover"
+                            class="ml-3 mt-1 flex max-w-[90%] flex-row rounded-md p-2 hover:bg-main-gray-hover"
                         >
                             <svg
                                 width="20"
@@ -320,7 +320,7 @@
                                     d="M5.88657 21C5.57547 21 5.3399 20.7189 5.39427 20.4126L6.00001 17H2.59511C2.28449 17 2.04905 16.7198 2.10259 16.4138L2.27759 15.4138C2.31946 15.1746 2.52722 15 2.77011 15H6.35001L7.41001 9H4.00511C3.69449 9 3.45905 8.71977 3.51259 8.41381L3.68759 7.41381C3.72946 7.17456 3.93722 7 4.18011 7H7.76001L8.39677 3.41262C8.43914 3.17391 8.64664 3 8.88907 3H9.87344C10.1845 3 10.4201 3.28107 10.3657 3.58738L9.76001 7H15.76L16.3968 3.41262C16.4391 3.17391 16.6466 3 16.8891 3H17.8734C18.1845 3 18.4201 3.28107 18.3657 3.58738L17.76 7H21.1649C21.4755 7 21.711 7.28023 21.6574 7.58619L21.4824 8.58619C21.4406 8.82544 21.2328 9 20.9899 9H17.41L16.35 15H19.7549C20.0655 15 20.301 15.2802 20.2474 15.5862L20.0724 16.5862C20.0306 16.8254 19.8228 17 19.5799 17H16L15.3632 20.5874C15.3209 20.8261 15.1134 21 14.8709 21H13.8866C13.5755 21 13.3399 20.7189 13.3943 20.4126L14 17H8.00001L7.36325 20.5874C7.32088 20.8261 7.11337 21 6.87094 21H5.88657ZM9.41045 9L8.35045 15H14.3504L15.4104 9H9.41045Z"
                                 ></path>
                             </svg>
-                            <h1 class="text-gray-300 font-medium ml-2">
+                            <h1 class="ml-2 font-medium text-gray-300">
                                 welcome
                             </h1>
                         </div>
@@ -328,254 +328,17 @@
                 </div>
                 <!-- PROFILE -->
                 <div class="flex flex-col">
-                    <div
-                        (click)="hideProfilePanel = !hideProfilePanel"
-                        class="flex flex-row min-h-[52px] items-center bg-main-gray-darker2"
-                    >
-                        <div
-                            class="flex flex-row min-w-[50%] max-h-[39px] ml-2 py-2 pl-1 items-center hover:cursor-pointer hover:bg-main-gray-hover rounded-sm group"
-                        >
-                            <div class="relative">
-                                <img
-                                    src="https://api.dicebear.com/5.x/identicon/svg?seed={{
-                                        user._id
-                                    }}"
-                                    alt="avatar"
-                                    class="w-8 h-8 rounded-full"
-                                />
-                                <div
-                                    class="flex w-4 h-4 rounded-full bg-main-gray-darker absolute bottom-0 right-0 justify-center items-center -mr-1 -mb-1"
-                                >
-                                    <img
-                                        *ngIf="
-                                            user.displayedStatus === 'Online'
-                                        "
-                                        src="../../../assets/online.png"
-                                        alt=""
-                                        class="w-2.5 h-2.5"
-                                    />
-                                    <img
-                                        *ngIf="user.displayedStatus === 'Idle'"
-                                        src="../../../assets/away.png"
-                                        alt=""
-                                        class="w-2.5 h-2.5"
-                                    />
-                                    <img
-                                        *ngIf="
-                                            user.displayedStatus ===
-                                            'Do Not Disturb'
-                                        "
-                                        src="../../../assets/busy.png"
-                                        alt=""
-                                        class="w-2.5 h-2.5"
-                                    />
-                                    <img
-                                        *ngIf="
-                                            user.displayedStatus === 'Offline'
-                                        "
-                                        src="../../../assets/offline.png"
-                                        alt=""
-                                        class="w-2.5 h-2.5"
-                                    />
-                                </div>
-                                <div
-                                    *ngIf="hideProfilePanel"
-                                    class="absolute bottom-12 -left-10 min-h-[395px] min-w-[340px] bg-main-gray-darker2 shadow-md rounded-md"
-                                >
-                                    <div
-                                        class="min-h-[60px] bg-main-gray-dark rounded-md relative"
-                                    >
-                                        <img
-                                            src="https://api.dicebear.com/5.x/identicon/svg?seed={{
-                                                user._id
-                                            }}"
-                                            alt="avatar"
-                                            class="w-20 h-20 rounded-full absolute top-3 left-5 bg-main-gray-darker"
-                                        />
-                                        <div
-                                            class="flex w-8 h-8 rounded-full bg-main-gray-darker2 absolute left-16 -bottom-10 justify-center items-center ml-3"
-                                        >
-                                            <img
-                                                *ngIf="
-                                                    user.displayedStatus ===
-                                                    'Online'
-                                                "
-                                                src="../../../assets/online.png"
-                                                alt=""
-                                                class="w-4 h-4"
-                                            />
-                                            <img
-                                                *ngIf="
-                                                    user.displayedStatus ===
-                                                    'Idle'
-                                                "
-                                                src="../../../assets/away.png"
-                                                alt=""
-                                                class="w-4 h-4"
-                                            />
-                                            <img
-                                                *ngIf="
-                                                    user.displayedStatus ===
-                                                    'Do Not Disturb'
-                                                "
-                                                src="../../../assets/busy.png"
-                                                alt=""
-                                                class="w-4 h-4"
-                                            />
-                                            <img
-                                                *ngIf="
-                                                    user.displayedStatus ===
-                                                    'Offline'
-                                                "
-                                                src="../../../assets/offline.png"
-                                                alt=""
-                                                class="w-4 h-4"
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div
-                                        class="bg-main-black min-h-[265px] mx-3 mt-5 mb-3 rounded-md"
-                                    >
-                                        <div
-                                            class="px-3 pt-2 pb-3 text-white font-semibold"
-                                        >
-                                            <h1 class="text-2xl">
-                                                {{ user.userName }}
-                                            </h1>
-                                            <hr class="mt-2 mb-2" />
-                                            <p class="text-sm uppercase">
-                                                Scuffed Discord Member Since
-                                            </p>
-                                            <p
-                                                class="text-gray-400 font-normal font-sm mt-1"
-                                            >
-                                                {{
-                                                    user.date_created
-                                                        | date : "longDate"
-                                                }}
-                                            </p>
-                                            <hr class="mt-2 mb-2" />
-                                            <p class="text-sm uppercase">
-                                                Status
-                                            </p>
-                                            <div class="mt-1">
-                                                <div
-                                                    [ngClass]="{
-                                                        currentStatus:
-                                                            user.displayedStatus ===
-                                                            'Online'
-                                                    }"
-                                                    (click)="
-                                                        setDisplayedStatus(
-                                                            'Online'
-                                                        )
-                                                    "
-                                                    class="mt-1 flex flex-row gap-1 items-center text-center hover:bg-main-gray-hover p-1.5 rounded-md"
-                                                >
-                                                    <img
-                                                        src="../../../assets/online.png"
-                                                        alt=""
-                                                        class="w-4 h-4"
-                                                    />
-                                                    <p
-                                                        class="text-gray-400 font-normal text-sm ml-2"
-                                                    >
-                                                        Online
-                                                    </p>
-                                                </div>
-                                                <div
-                                                    [ngClass]="{
-                                                        currentStatus:
-                                                            user.displayedStatus ===
-                                                            'Idle'
-                                                    }"
-                                                    (click)="
-                                                        setDisplayedStatus(
-                                                            'Idle'
-                                                        )
-                                                    "
-                                                    class="mt-1 flex flex-row gap-1 items-center text-center hover:bg-main-gray-hover p-1.5 rounded-md aria-[selected]:bg-main-gray-hover"
-                                                >
-                                                    <img
-                                                        src="../../../assets/away.png"
-                                                        alt=""
-                                                        class="w-4 h-4"
-                                                    />
-                                                    <p
-                                                        class="text-gray-400 font-normal text-sm ml-2"
-                                                    >
-                                                        Idle
-                                                    </p>
-                                                </div>
-                                                <div
-                                                    [ngClass]="{
-                                                        currentStatus:
-                                                            user.displayedStatus ===
-                                                            'Do Not Disturb'
-                                                    }"
-                                                    (click)="
-                                                        setDisplayedStatus(
-                                                            'DoNotDisturb'
-                                                        )
-                                                    "
-                                                    class="mt-1 flex flex-row gap-1 items-center text-center hover:bg-main-gray-hover p-1.5 rounded-md aria-[selected]:bg-main-gray-hover"
-                                                >
-                                                    <img
-                                                        src="../../../assets/busy.png"
-                                                        alt=""
-                                                        class="w-4 h-4"
-                                                    />
-                                                    <p
-                                                        class="text-gray-400 font-normal text-sm ml-2"
-                                                    >
-                                                        Do Not Disturb
-                                                    </p>
-                                                </div>
-                                                <div
-                                                    [ngClass]="{
-                                                        currentStatus:
-                                                            user.displayedStatus ===
-                                                            'Offline'
-                                                    }"
-                                                    (click)="
-                                                        setDisplayedStatus(
-                                                            'Offline'
-                                                        )
-                                                    "
-                                                    class="mt-1 flex flex-row gap-1 items-center text-center hover:bg-main-gray-hover p-1.5 rounded-md aria-[selected]:bg-main-gray-hover"
-                                                >
-                                                    <img
-                                                        src="../../../assets/offline.png"
-                                                        alt=""
-                                                        class="w-4 h-4"
-                                                    />
-                                                    <p
-                                                        class="text-gray-400 font-normal text-sm ml-2"
-                                                    >
-                                                        Offline
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <h1
-                                class="text-sm ml-2 font-semibold max-w-[7rem] truncate"
-                            >
-                                {{ user.userName }}
-                            </h1>
-                        </div>
-                    </div>
+                    <discord-clone-profile
+                        [user]="user"
+                    ></discord-clone-profile>
                 </div>
             </div>
         </div>
 
         <!-- MESSAGES -->
-        <div class="flex flex-col min-h-screen max-h-screen grow bg-main-gray">
+        <div class="flex max-h-screen min-h-screen grow flex-col bg-main-gray">
             <div
-                class="flex flex-row items-center justify-between min-w-full min-h-[48px] border-b border-b-main-gray-darker"
+                class="flex min-h-[48px] min-w-full flex-row items-center justify-between border-b border-b-main-gray-darker"
             >
                 <div class="ml-4 flex flex-row">
                     <svg
@@ -594,7 +357,7 @@
                             d="M5.88657 21C5.57547 21 5.3399 20.7189 5.39427 20.4126L6.00001 17H2.59511C2.28449 17 2.04905 16.7198 2.10259 16.4138L2.27759 15.4138C2.31946 15.1746 2.52722 15 2.77011 15H6.35001L7.41001 9H4.00511C3.69449 9 3.45905 8.71977 3.51259 8.41381L3.68759 7.41381C3.72946 7.17456 3.93722 7 4.18011 7H7.76001L8.39677 3.41262C8.43914 3.17391 8.64664 3 8.88907 3H9.87344C10.1845 3 10.4201 3.28107 10.3657 3.58738L9.76001 7H15.76L16.3968 3.41262C16.4391 3.17391 16.6466 3 16.8891 3H17.8734C18.1845 3 18.4201 3.28107 18.3657 3.58738L17.76 7H21.1649C21.4755 7 21.711 7.28023 21.6574 7.58619L21.4824 8.58619C21.4406 8.82544 21.2328 9 20.9899 9H17.41L16.35 15H19.7549C20.0655 15 20.301 15.2802 20.2474 15.5862L20.0724 16.5862C20.0306 16.8254 19.8228 17 19.5799 17H16L15.3632 20.5874C15.3209 20.8261 15.1134 21 14.8709 21H13.8866C13.5755 21 13.3399 20.7189 13.3943 20.4126L14 17H8.00001L7.36325 20.5874C7.32088 20.8261 7.11337 21 6.87094 21H5.88657ZM9.41045 9L8.35045 15H14.3504L15.4104 9H9.41045Z"
                         ></path>
                     </svg>
-                    <h1 class="text-white font-semibold ml-2">welcome</h1>
+                    <h1 class="ml-2 font-semibold text-white">welcome</h1>
                 </div>
 
                 <div class="mr-2">
@@ -633,12 +396,12 @@
                 </div>
             </div>
             <div
-                class="flex flex-col justify-between min-h-[94vh] max-h-[94vh]"
+                class="flex max-h-[94vh] min-h-[94vh] flex-col justify-between"
             >
                 <div
                     #messageContainer
                     id="messages"
-                    class="max-h-[85vh] overflow-y-scroll scrollbar-thin scrollbar-track-rounded-full scrollbar-thumb-rounded-full scrollbar-thumb-main-gray-darkest scrollbar-track-main-gray-darker mr-1 mt-2"
+                    class="mr-1 mt-2 max-h-[85vh] overflow-y-scroll scrollbar-thin scrollbar-track-main-gray-darker scrollbar-thumb-main-gray-darkest scrollbar-track-rounded-full scrollbar-thumb-rounded-full"
                 >
                     <discord-clone-message
                         *ngFor="let message of selectedServer.messages"
@@ -652,7 +415,7 @@
 
                 <div
                     *ngIf="!allowScrollToBottom"
-                    class="flex flex-row justify-end mr-4 mt-2"
+                    class="mr-4 mt-2 flex flex-row justify-end"
                 >
                     <img
                         src="../../../assets/down.png"
@@ -660,12 +423,12 @@
                         placement="top"
                         ngbTooltip="Scroll to bottom"
                         tooltipClass="font-semibold text-md"
-                        class="w-6 h-6 hover:cursor-pointer"
+                        class="h-6 w-6 hover:cursor-pointer"
                         (click)="allowScrollToBottom = !allowScrollToBottom"
                     />
                 </div>
 
-                <div class="p-3 min-w-full">
+                <div class="min-w-full p-3">
                     <discord-clone-input
                         [currentServer]="selectedServer._id"
                     ></discord-clone-input>
@@ -676,15 +439,15 @@
         <!-- MEMBERS -->
         <div
             *ngIf="!hideMemberPanel"
-            class="hidden md:block min-h-screen max-h-screen min-w-[240px] bg-main-gray-darker"
+            class="hidden max-h-screen min-h-screen min-w-[240px] bg-main-gray-darker md:block"
         >
             <div
-                class="py-2 pr-2 flex flex-row items-center justify-between bg-main-gray min-w-full min-h-[48px] border-b border-b-main-gray-darker"
+                class="flex min-h-[48px] min-w-full flex-row items-center justify-between border-b border-b-main-gray-darker bg-main-gray py-2 pr-2"
             >
                 <input
                     type="text"
                     placeholder="Search"
-                    class="text-sm font-semibold bg-main-gray-darkest max-h-[24px] text-gray-300 border-none rounded-sm focus:outline-none focus:ring-0 focus:border-none"
+                    class="max-h-[24px] rounded-sm border-none bg-main-gray-darkest text-sm font-semibold text-gray-300 focus:border-none focus:outline-none focus:ring-0"
                 />
 
                 <svg
@@ -711,23 +474,23 @@
 
     <ng-container *ngIf="directMessages">
         <div
-            class="hidden md:flex md:flex-col min-h-screen min-w-[240px] max-h-screen bg-main-gray-darker"
+            class="hidden max-h-screen min-h-screen min-w-[240px] bg-main-gray-darker md:flex md:flex-col"
         >
-            <div class="flex flex-col justify-between min-h-screen">
+            <div class="flex min-h-screen flex-col justify-between">
                 <!-- CHATS -->
                 <div class="flex flex-col align-top">
                     <div
-                        class="flex flex-row items-center justify-center min-w-full min-h-[48px] border-b border-b-main-gray-darkest"
+                        class="flex min-h-[48px] min-w-full flex-row items-center justify-center border-b border-b-main-gray-darkest"
                     >
                         <input
                             type="text"
                             placeholder="Find or start a conversation"
-                            class="text-sm font-semibold bg-main-gray-darkest max-h-[28px] min-w-[92%] text-gray-300 border-none rounded-sm focus:outline-none focus:ring-0 focus:border-none"
+                            class="max-h-[28px] min-w-[92%] rounded-sm border-none bg-main-gray-darkest text-sm font-semibold text-gray-300 focus:border-none focus:outline-none focus:ring-0"
                         />
                     </div>
 
                     <div
-                        class="flex flex-row gap-3 items-center p-2 m-2 hover:bg-main-gray-hover rounded-md hover:cursor-pointer"
+                        class="m-2 flex flex-row items-center gap-3 rounded-md p-2 hover:cursor-pointer hover:bg-main-gray-hover"
                     >
                         <svg
                             class=""
@@ -754,7 +517,7 @@
 
                     <div class="flex flex-col gap-2">
                         <h2
-                            class="text-gray-400 font-semibold p-2 ml-2 text-sm"
+                            class="ml-2 p-2 text-sm font-semibold text-gray-400"
                         >
                             Direct Messages
                         </h2>
@@ -762,246 +525,9 @@
                 </div>
                 <!-- PROFILE -->
                 <div class="flex flex-col">
-                    <div
-                        (click)="hideProfilePanel = !hideProfilePanel"
-                        class="flex flex-row min-h-[52px] items-center bg-main-gray-darker2"
-                    >
-                        <div
-                            class="flex flex-row min-w-[50%] max-h-[39px] ml-2 py-2 pl-1 items-center hover:cursor-pointer hover:bg-main-gray-hover rounded-sm group"
-                        >
-                            <div class="relative">
-                                <img
-                                    src="https://api.dicebear.com/5.x/identicon/svg?seed={{
-                                        user._id
-                                    }}"
-                                    alt="avatar"
-                                    class="w-8 h-8 rounded-full"
-                                />
-                                <div
-                                    class="flex w-4 h-4 rounded-full bg-main-gray-darker absolute bottom-0 right-0 justify-center items-center -mr-1 -mb-1"
-                                >
-                                    <img
-                                        *ngIf="
-                                            user.displayedStatus === 'Online'
-                                        "
-                                        src="../../../assets/online.png"
-                                        alt=""
-                                        class="w-2.5 h-2.5"
-                                    />
-                                    <img
-                                        *ngIf="user.displayedStatus === 'Idle'"
-                                        src="../../../assets/away.png"
-                                        alt=""
-                                        class="w-2.5 h-2.5"
-                                    />
-                                    <img
-                                        *ngIf="
-                                            user.displayedStatus ===
-                                            'Do Not Disturb'
-                                        "
-                                        src="../../../assets/busy.png"
-                                        alt=""
-                                        class="w-2.5 h-2.5"
-                                    />
-                                    <img
-                                        *ngIf="
-                                            user.displayedStatus === 'Offline'
-                                        "
-                                        src="../../../assets/offline.png"
-                                        alt=""
-                                        class="w-2.5 h-2.5"
-                                    />
-                                </div>
-                                <div
-                                    *ngIf="hideProfilePanel"
-                                    class="absolute bottom-12 -left-10 min-h-[395px] min-w-[340px] bg-main-gray-darker2 shadow-md rounded-md"
-                                >
-                                    <div
-                                        class="min-h-[60px] bg-main-gray-dark rounded-md relative"
-                                    >
-                                        <img
-                                            src="https://api.dicebear.com/5.x/identicon/svg?seed={{
-                                                user._id
-                                            }}"
-                                            alt="avatar"
-                                            class="w-20 h-20 rounded-full absolute top-3 left-5 bg-main-gray-darker"
-                                        />
-                                        <div
-                                            class="flex w-8 h-8 rounded-full bg-main-gray-darker2 absolute left-16 -bottom-10 justify-center items-center ml-3"
-                                        >
-                                            <img
-                                                *ngIf="
-                                                    user.displayedStatus ===
-                                                    'Online'
-                                                "
-                                                src="../../../assets/online.png"
-                                                alt=""
-                                                class="w-4 h-4"
-                                            />
-                                            <img
-                                                *ngIf="
-                                                    user.displayedStatus ===
-                                                    'Idle'
-                                                "
-                                                src="../../../assets/away.png"
-                                                alt=""
-                                                class="w-4 h-4"
-                                            />
-                                            <img
-                                                *ngIf="
-                                                    user.displayedStatus ===
-                                                    'Do Not Disturb'
-                                                "
-                                                src="../../../assets/busy.png"
-                                                alt=""
-                                                class="w-4 h-4"
-                                            />
-                                            <img
-                                                *ngIf="
-                                                    user.displayedStatus ===
-                                                    'Offline'
-                                                "
-                                                src="../../../assets/offline.png"
-                                                alt=""
-                                                class="w-4 h-4"
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div
-                                        class="bg-main-black min-h-[265px] mx-3 mt-5 mb-3 rounded-md"
-                                    >
-                                        <div
-                                            class="px-3 pt-2 pb-3 text-white font-semibold"
-                                        >
-                                            <h1 class="text-2xl">
-                                                {{ user.userName }}
-                                            </h1>
-                                            <hr class="mt-2 mb-2" />
-                                            <p class="text-sm uppercase">
-                                                Scuffed Discord Member Since
-                                            </p>
-                                            <p
-                                                class="text-gray-400 font-normal font-sm mt-1"
-                                            >
-                                                {{
-                                                    user.date_created
-                                                        | date : "longDate"
-                                                }}
-                                            </p>
-                                            <hr class="mt-2 mb-2" />
-                                            <p class="text-sm uppercase">
-                                                Status
-                                            </p>
-                                            <div class="mt-1">
-                                                <div
-                                                    [ngClass]="{
-                                                        currentStatus:
-                                                            user.displayedStatus ===
-                                                            'Online'
-                                                    }"
-                                                    (click)="
-                                                        setDisplayedStatus(
-                                                            'Online'
-                                                        )
-                                                    "
-                                                    class="mt-1 flex flex-row gap-1 items-center text-center hover:bg-main-gray-hover p-1.5 rounded-md"
-                                                >
-                                                    <img
-                                                        src="../../../assets/online.png"
-                                                        alt=""
-                                                        class="w-4 h-4"
-                                                    />
-                                                    <p
-                                                        class="text-gray-400 font-normal text-sm ml-2"
-                                                    >
-                                                        Online
-                                                    </p>
-                                                </div>
-                                                <div
-                                                    [ngClass]="{
-                                                        currentStatus:
-                                                            user.displayedStatus ===
-                                                            'Idle'
-                                                    }"
-                                                    (click)="
-                                                        setDisplayedStatus(
-                                                            'Idle'
-                                                        )
-                                                    "
-                                                    class="mt-1 flex flex-row gap-1 items-center text-center hover:bg-main-gray-hover p-1.5 rounded-md aria-[selected]:bg-main-gray-hover"
-                                                >
-                                                    <img
-                                                        src="../../../assets/away.png"
-                                                        alt=""
-                                                        class="w-4 h-4"
-                                                    />
-                                                    <p
-                                                        class="text-gray-400 font-normal text-sm ml-2"
-                                                    >
-                                                        Idle
-                                                    </p>
-                                                </div>
-                                                <div
-                                                    [ngClass]="{
-                                                        currentStatus:
-                                                            user.displayedStatus ===
-                                                            'Do Not Disturb'
-                                                    }"
-                                                    (click)="
-                                                        setDisplayedStatus(
-                                                            'DoNotDisturb'
-                                                        )
-                                                    "
-                                                    class="mt-1 flex flex-row gap-1 items-center text-center hover:bg-main-gray-hover p-1.5 rounded-md aria-[selected]:bg-main-gray-hover"
-                                                >
-                                                    <img
-                                                        src="../../../assets/busy.png"
-                                                        alt=""
-                                                        class="w-4 h-4"
-                                                    />
-                                                    <p
-                                                        class="text-gray-400 font-normal text-sm ml-2"
-                                                    >
-                                                        Do Not Disturb
-                                                    </p>
-                                                </div>
-                                                <div
-                                                    [ngClass]="{
-                                                        currentStatus:
-                                                            user.displayedStatus ===
-                                                            'Offline'
-                                                    }"
-                                                    (click)="
-                                                        setDisplayedStatus(
-                                                            'Offline'
-                                                        )
-                                                    "
-                                                    class="mt-1 flex flex-row gap-1 items-center text-center hover:bg-main-gray-hover p-1.5 rounded-md aria-[selected]:bg-main-gray-hover"
-                                                >
-                                                    <img
-                                                        src="../../../assets/offline.png"
-                                                        alt=""
-                                                        class="w-4 h-4"
-                                                    />
-                                                    <p
-                                                        class="text-gray-400 font-normal text-sm ml-2"
-                                                    >
-                                                        Offline
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <h1
-                                class="text-sm ml-2 font-semibold max-w-[7rem] truncate"
-                            >
-                                {{ user.userName }}
-                            </h1>
-                        </div>
-                    </div>
+                    <discord-clone-profile
+                        [user]="user"
+                    ></discord-clone-profile>
                 </div>
             </div>
         </div>

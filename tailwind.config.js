@@ -35,7 +35,8 @@ module.exports = {
     plugins: [
         require("@tailwindcss/forms"),
         require("tailwind-scrollbar-hide"),
-        require("tailwind-scrollbar")
+        require("tailwind-scrollbar"),
+        require("prettier-plugin-tailwindcss")
     ],
     variants: {
         scrollbar: ["rounded"]

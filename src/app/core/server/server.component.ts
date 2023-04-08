@@ -75,7 +75,6 @@ export class ServerComponent implements OnInit, OnDestroy {
         Status.Online
     );
     hideMemberPanel: boolean = false;
-    hideProfilePanel: boolean = false;
     allowScrollToMessage: boolean = true;
     allowScrollToBottom: boolean = false;
     clearMessageInput: number = 0;
@@ -298,15 +297,6 @@ export class ServerComponent implements OnInit, OnDestroy {
         this.modalService.open(content, {
             ariaLabelledBy: "join-modal"
         });
-    }
-
-    setDisplayedStatus(status: string) {
-        const statusEnum = Status[status as keyof typeof Status];
-        this.user.displayedStatus = statusEnum;
-        this.serverService
-            .setUserDisplayedStatus(this.user._id, statusEnum)
-            .subscribe();
-        this.websocketService.setStatus(this.user);
     }
 
     getLastMessage() {

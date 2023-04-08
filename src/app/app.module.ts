@@ -15,6 +15,8 @@ import { LoginComponent } from "./core/auth/login/login.component";
 import { RegisterComponent } from "./core/auth/register/register.component";
 import { HttpClientModule } from "@angular/common/http";
 import { httpInterceptorProviders } from "./core/auth/auth.interceptor";
+import { DirectMessagesComponent } from "./core/direct-messages/direct-messages.component";
+import { ProfileComponent } from "./core/profile/profile.component";
 
 @NgModule({
     declarations: [
@@ -24,7 +26,9 @@ import { httpInterceptorProviders } from "./core/auth/auth.interceptor";
         InputComponent,
         MembersComponent,
         LoginComponent,
-        RegisterComponent
+        RegisterComponent,
+        DirectMessagesComponent,
+        ProfileComponent
     ],
     imports: [
         BrowserModule,
