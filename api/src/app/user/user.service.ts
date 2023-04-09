@@ -7,7 +7,7 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Status } from "../../../../src/app/models/Status";
 import { User as UserModel, UserDocument } from "../auth/user.schema";
 import { FriendStatus } from "src/app/models/FriendStatus";
-import { UserFriendStatus } from "./friendStatus.schema";
+import { UserFriendStatus } from "./FriendStatus.schema";
 
 @Injectable()
 export class UserService {

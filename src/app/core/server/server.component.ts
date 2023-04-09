@@ -139,9 +139,6 @@ export class ServerComponent implements OnInit, OnDestroy {
                         this.user.friendsList.forEach((user) => {
                             if (user._id === data.userId) {
                                 user.status = data.status;
-                                if (data.status === Status.Offline) {
-                                    user.displayedStatus = Status.Offline;
-                                }
                             }
                         });
                     });
@@ -206,14 +203,6 @@ export class ServerComponent implements OnInit, OnDestroy {
                     }
                 });
             });
-
-        this.websocketService.onDisplayStatusChange().subscribe((data) => {
-            this.user.friendsList.forEach((user) => {
-                if (user._id === data._id) {
-                    user.displayedStatus = data.displayedStatus;
-                }
-            });
-        });
     }
 
     createServer() {
