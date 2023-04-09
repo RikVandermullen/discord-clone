@@ -6,6 +6,8 @@ import { InjectModel } from "@nestjs/mongoose";
 
 import { Server as ServerModel, ServerDocument } from "./server.schema";
 import { Status } from "../../../../src/app/models/Status";
+import { User } from "../../../../src/app/models/User";
+import { ServerType } from "../../../../src/app/models/ServerType";
 import { User as UserModel, UserDocument } from "../auth/user.schema";
 import {
     UserMessage,
@@ -20,16 +22,30 @@ export class ServerService {
         private serverModel: Model<ServerDocument>
     ) {}
 
-    async createServer(name: string, owner: string, date_created: Date) {
+    async createServer(
+        name: string,
+        owner: string,
+        date_created: Date,
+        users: User[],
+        type: ServerType
+    ) {
         const ownerId = new mongoose.Types.ObjectId(owner);
+        const usersIds: any = [];
+        users.forEach((user) => {
+            user.displayedStatus = Status.Online;
+            usersIds.push(new mongoose.Types.ObjectId(user._id));
+        });
         const server = new this.serverModel({
             name: name,
             owner: ownerId,
             users: [ownerId],
-            messages: [],
+            messages: [usersIds],
             lastMessageRead: [new UserMessage(owner, "")],
-            date_created: date_created
+            date_created: date_created,
+            type: type
         });
+        console.log("SERVER:", server);
+
         await server.save();
         return server;
     }

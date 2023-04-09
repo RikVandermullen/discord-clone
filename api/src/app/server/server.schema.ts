@@ -5,6 +5,8 @@ import mongoose, {
     Schema as MongooseSchema
 } from "mongoose";
 import { UserMessage } from "./UserMessage.schema";
+// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
+import { ServerType } from "../../../../src/app/models/ServerType";
 
 export type ServerDocument = Server & Document;
 
@@ -29,6 +31,9 @@ export class Server {
 
     @Prop({ required: true, type: Date })
     date_created: Date;
+
+    @Prop({ required: true, type: String, enum: ServerType })
+    type?: ServerType;
 }
 
 export const ServerSchema = SchemaFactory.createForClass(Server);

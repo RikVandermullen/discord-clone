@@ -22,7 +22,9 @@ export class ServerController {
         return this.serverService.createServer(
             server.name,
             server.owner._id,
-            server.date_created
+            server.date_created,
+            server.users,
+            server.type
         );
     }
 

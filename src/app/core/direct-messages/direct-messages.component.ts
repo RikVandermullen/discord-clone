@@ -1,5 +1,8 @@
 import { Component, Input, OnDestroy, OnInit } from "@angular/core";
 import { User } from "../../models/User";
+import { Status } from "../../models/Status";
+import { Server } from "../../models/Server";
+import { ServerType } from "../../models/ServerType";
 import { ServerService } from "../server/server.service";
 import { Subscription } from "rxjs";
 import { WebsocketService } from "../../context/WebsocketService";
@@ -17,6 +20,45 @@ export class DirectMessagesComponent implements OnInit {
     blockedList: User[] = [];
     subscription: Subscription;
     amountOfFriends = 0;
+    showFriends = true;
+    selectedFriend: User = new User(
+        "",
+        "",
+        "",
+        "",
+        new Date(),
+        new Date(),
+        Status.Online,
+        Status.Online,
+        new Map<null, null>(),
+        [],
+        []
+    );
+    allowScrollToBottom = true;
+    newServer: Server = new Server(
+        "",
+        "",
+        new User(
+            "0",
+            "",
+            "",
+            "",
+            new Date(),
+            new Date(),
+            Status.Idle,
+            Status.Idle,
+            new Map<null, null>(),
+            [],
+            []
+        ),
+        new Date(),
+        [],
+        new Map<string, string>(),
+        [],
+        ServerType.DirectMessage
+    );
+    selectedDirectMessage: Server;
+    directMessages: Server[] = [];
 
     constructor(
         private serverService: ServerService,
@@ -98,5 +140,36 @@ export class DirectMessagesComponent implements OnInit {
         } else {
             return this.user.friendsList.length;
         }
+    }
+
+    selectFriend(friendId: string) {
+        this.showFriends = false;
+        this.selectedFriend = this.user.friendsList.filter(
+            (friend: User) => friend._id === friendId
+        )[0];
+        console.log(this.selectedFriend);
+    }
+
+    createDirectMessage() {
+        this.newServer.owner = this.user;
+        this.newServer.name =
+            "Messages" + this.user._id + this.selectedFriend._id;
+        this.newServer.users.push(this.user);
+        this.newServer.users.push(this.selectedFriend);
+        this.serverService
+            .createServer(this.newServer)
+            .subscribe((response) => {
+                this.serverService
+                    .getServerById(response._id)
+                    .subscribe((server) => {
+                        this.websocketService.joinServer(
+                            server._id,
+                            this.user.userName
+                        );
+                        server.messages = [];
+                        this.directMessages.push(server);
+                        this.selectedDirectMessage = server;
+                    });
+            });
     }
 }

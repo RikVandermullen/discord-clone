@@ -1,5 +1,6 @@
 import { Message } from "./Message";
 import { User } from "./User";
+import { ServerType } from "./ServerType";
 
 export class Server {
     _id: string;
@@ -10,6 +11,7 @@ export class Server {
     lastMessageRead: Map<string, string>;
     messages: Message[];
     newMessage: boolean;
+    type: ServerType;
 
     constructor(
         _id: string,
@@ -18,7 +20,8 @@ export class Server {
         date_created: Date,
         users: User[],
         lastMessageRead: Map<string, string>,
-        messages: Message[]
+        messages: Message[],
+        type: ServerType
     ) {
         this._id = _id;
         this.name = name;
@@ -27,5 +30,6 @@ export class Server {
         this.users = users;
         this.lastMessageRead = lastMessageRead;
         this.messages = messages;
+        this.type = type;
     }
 }

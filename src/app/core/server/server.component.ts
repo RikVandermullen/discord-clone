@@ -13,13 +13,13 @@ import { WebsocketService } from "../../context/WebsocketService";
 import { User } from "../../models/User";
 import { Message } from "../../models/Message";
 import { Status } from "../../models/Status";
+import { ServerType } from "../../models/ServerType";
 import { JwtPayload } from "jwt-decode";
 import jwt_decode from "jwt-decode";
 import { ServerService } from "./server.service";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Subscription } from "rxjs";
 import { ActivatedRoute, Router } from "@angular/router";
-import { log } from "console";
 import { FriendStatus } from "src/app/models/FriendStatus";
 
 @Component({
@@ -48,7 +48,8 @@ export class ServerComponent implements OnInit, OnDestroy {
         new Date(),
         [],
         new Map<string, string>(),
-        []
+        [],
+        ServerType.Server
     );
     servers: Server[] = [];
     serverToJoin: Server = new Server(
@@ -70,7 +71,8 @@ export class ServerComponent implements OnInit, OnDestroy {
         new Date(),
         [],
         new Map<string, string>(),
-        []
+        [],
+        ServerType.Server
     );
     selectedServer: Server;
     user: User = new User(
@@ -107,6 +109,7 @@ export class ServerComponent implements OnInit, OnDestroy {
         this.user = JSON.parse(JSON.stringify(decodedToken)).user;
 
         const id = this.route.snapshot.params["id"];
+
         if (id === "@me") {
             this.directMessages = true;
             this.allowScrollToMessage = false;

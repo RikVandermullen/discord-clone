@@ -45,6 +45,7 @@ export class ServerService {
 
     createServer(server: Server): Observable<Server> {
         const url = environment.apiUrl + "/api/servers";
+        server.users.push(server.owner);
         return this.http.post<Server>(url, server).pipe(
             map((response: Server) => response),
             tap((server: Server) => {

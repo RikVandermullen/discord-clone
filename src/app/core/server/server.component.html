@@ -1,4 +1,4 @@
-<div *ngIf="selectedServer" class="flex min-w-[100vw] flex-row">
+<div class="flex min-w-[100vw] flex-row">
     <!-- SERVERS -->
     <div
         class="hidden max-h-screen min-h-screen min-w-[72px] bg-main-gray-darkest md:block"
@@ -285,7 +285,7 @@
         </div>
     </div>
 
-    <ng-container *ngIf="!directMessages">
+    <ng-container *ngIf="!directMessages && selectedServer">
         <!-- SERVER INSIDE -->
         <div
             class="hidden max-h-screen min-h-screen min-w-[240px] bg-main-gray-darker md:block"
