@@ -154,14 +154,15 @@ export class ServerComponent implements OnInit, OnDestroy {
                 servers.forEach((server) => {
                     if (server.type === ServerType.Server) {
                         this.servers.push(server);
-                    } else if (server.type === ServerType.DirectMessage) {
-                        if (server.users[0]._id !== this.user._id) {
-                            const temp = server.users[0];
-                            server.users[0] = this.user;
-                            server.users[1] = temp;
-                        }
-                        this.directMessages.push(server);
                     }
+                    // else if (server.type === ServerType.DirectMessage) {
+                    //     if (server.users[0]._id !== this.user._id) {
+                    //         const temp = server.users[0];
+                    //         server.users[0] = this.user;
+                    //         server.users[1] = temp;
+                    //     }
+                    //     this.directMessages.push(server);
+                    // }
                 });
                 if (!this.directMessages) {
                     this.selectServer(this.servers[0]);

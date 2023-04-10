@@ -419,38 +419,38 @@
     <div class="flex max-h-screen min-h-screen grow flex-col bg-main-gray">
         <div class="flex max-h-[94vh] min-h-[94vh] flex-col justify-between">
             <div
-                #messageContainer
+                #directMessageContainer
                 id="messages"
                 class="mr-1 mt-2 max-h-[85vh] overflow-y-scroll scrollbar-thin scrollbar-track-main-gray-darker scrollbar-thumb-main-gray-darkest scrollbar-track-rounded-full scrollbar-thumb-rounded-full"
             >
-                <!-- <discord-clone-message
+                <discord-clone-message
                     *ngFor="let message of selectedDirectMessage.messages"
                     [message]="message"
                     [lastRead]="message._id === getLastMessage()"
                     (editStatus)="getEditStatus($event)"
                     (scrollable)="getScrollStatus($event)"
                 >
-                </discord-clone-message> -->
+                </discord-clone-message>
             </div>
 
             <div
                 *ngIf="!allowScrollToBottom"
-                class="mr-4 mt-2 flex flex-row justify-end"
+                class="mr-4 mt-2 flex flex-row justify-end hover:cursor-pointer"
             >
                 <img
                     src="../../../assets/down.png"
                     alt=""
-                    placement="top"
+                    placement="left"
                     ngbTooltip="Scroll to bottom"
                     tooltipClass="font-semibold text-md"
-                    class="h-6 w-6 hover:cursor-pointer"
+                    class="h-6 w-6"
                     (click)="allowScrollToBottom = !allowScrollToBottom"
                 />
             </div>
 
             <div class="min-w-full p-3">
                 <discord-clone-input
-                    [currentServer]="selectedFriend._id"
+                    [currentServer]="selectedDirectMessage._id"
                 ></discord-clone-input>
             </div>
         </div>
