@@ -1,6 +1,7 @@
-import { Component, Input, OnDestroy, OnInit } from "@angular/core";
+import { Component, Input, OnInit } from "@angular/core";
 import { User } from "../../models/User";
 import { Status } from "../../models/Status";
+import { FriendStatus } from "../../models/FriendStatus";
 import { Server } from "../../models/Server";
 import { ServerType } from "../../models/ServerType";
 import { ServerService } from "../server/server.service";
@@ -14,6 +15,7 @@ import { WebsocketService } from "../../context/WebsocketService";
 })
 export class DirectMessagesComponent implements OnInit {
     @Input() user: User;
+    @Input() directMessages: Server[];
     listStatus = "All";
     friends: User[] = [];
     pendingList: User[] = [];
@@ -58,7 +60,6 @@ export class DirectMessagesComponent implements OnInit {
         ServerType.DirectMessage
     );
     selectedDirectMessage: Server;
-    directMessages: Server[] = [];
 
     constructor(
         private serverService: ServerService,
@@ -66,37 +67,66 @@ export class DirectMessagesComponent implements OnInit {
     ) {}
 
     ngOnInit() {
-        this.user.friends.forEach((friend: any) => {
-            this.subscription = this.serverService
-                .getUserById(friend.user)
-                .subscribe((user: User) => {
-                    if (friend.status === "Pending") {
-                        this.pendingList.push(user);
-                    } else if (friend.status === "Blocked") {
-                        this.blockedList.push(user);
-                    }
-                });
-
-            this.websocketService.onStatusChange().subscribe((data: any) => {
-                this.user.friendsList.forEach((user) => {
-                    console.log(user);
-
-                    if (user._id === data.userId) {
-                        user.status = data.status;
-                        this.filterFriends(this.listStatus);
-                    }
-                });
-            });
-        });
-
-        this.websocketService.onDisplayStatusChange().subscribe((data) => {
-            this.user.friendsList.forEach((user) => {
-                if (user._id === data._id) {
-                    user.displayedStatus = data.displayedStatus;
+        this.subscription = this.serverService
+            .getUserById(this.user._id)
+            .subscribe((user: User) => {
+                this.user = user;
+                this.newServer.owner = user;
+                this.user.friendsList = [];
+                this.user.friends.forEach((friend: any) => {
+                    this.subscription = this.serverService
+                        .getUserById(friend.user)
+                        .subscribe((user: User) => {
+                            if (friend.status === FriendStatus.Pending) {
+                                this.pendingList.push(user);
+                            } else if (friend.status === FriendStatus.Blocked) {
+                                this.blockedList.push(user);
+                            } else {
+                                this.user.friendsList.push(user);
+                            }
+                        });
+                    this.friends = this.user.friendsList;
+                    this.amountOfFriends = this.filterFriends.length;
                     this.filterFriends(this.listStatus);
-                }
+                });
+
+                this.websocketService
+                    .onStatusChange()
+                    .subscribe((data: any) => {
+                        this.user.friendsList.forEach((user) => {
+                            if (user._id === data.userId) {
+                                user.status = data.status;
+                                this.filterFriends(this.listStatus);
+                            }
+                        });
+                        this.directMessages.forEach((server) => {
+                            server.users.forEach((user) => {
+                                if (user._id === data.userId) {
+                                    user.status = data.status;
+                                }
+                            });
+                        });
+                    });
+
+                this.websocketService
+                    .onDisplayStatusChange()
+                    .subscribe((data) => {
+                        this.user.friendsList.forEach((user) => {
+                            if (user._id === data._id) {
+                                user.displayedStatus = data.displayedStatus;
+                                this.filterFriends(this.listStatus);
+                            }
+                        });
+
+                        this.directMessages.forEach((server) => {
+                            server.users.forEach((user) => {
+                                if (user._id === data._id) {
+                                    user.displayedStatus = data.displayedStatus;
+                                }
+                            });
+                        });
+                    });
             });
-        });
     }
 
     filterFriends(status?: string) {
@@ -142,20 +172,20 @@ export class DirectMessagesComponent implements OnInit {
         }
     }
 
-    selectFriend(friendId: string) {
+    selectFriend(server: Server) {
         this.showFriends = false;
-        this.selectedFriend = this.user.friendsList.filter(
-            (friend: User) => friend._id === friendId
+        this.selectedFriend = server.users.filter(
+            (user) => user._id !== this.user._id
         )[0];
         console.log(this.selectedFriend);
     }
 
-    createDirectMessage() {
+    createDirectMessage(friend: User) {
         this.newServer.owner = this.user;
-        this.newServer.name =
-            "Messages" + this.user._id + this.selectedFriend._id;
+        this.newServer.name = "Messages-" + this.user._id + "-" + friend._id;
         this.newServer.users.push(this.user);
-        this.newServer.users.push(this.selectedFriend);
+        this.newServer.users.push(friend);
+
         this.serverService
             .createServer(this.newServer)
             .subscribe((response) => {

@@ -14,6 +14,10 @@ import { User, UserSchema } from "./auth/user.schema";
 import { UserController } from "./user/user.controller";
 import { UserService } from "./user/user.service";
 import { UserMessage, UserMessageSchema } from "./server/UserMessage.schema";
+import {
+    UserFriendStatus,
+    FriendStatusSchema
+} from "./user/FriendStatus.schema";
 
 @Module({
     imports: [
@@ -22,7 +26,8 @@ import { UserMessage, UserMessageSchema } from "./server/UserMessage.schema";
             { name: Message.name, schema: MessageSchema },
             { name: Server.name, schema: ServerSchema },
             { name: User.name, schema: UserSchema },
-            { name: UserMessage.name, schema: UserMessageSchema }
+            { name: UserMessage.name, schema: UserMessageSchema },
+            { name: UserFriendStatus.name, schema: FriendStatusSchema }
         ])
     ],
     controllers: [MessageController, ServerController, UserController],

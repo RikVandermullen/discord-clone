@@ -48,51 +48,61 @@
                 </h2>
 
                 <div
-                    *ngFor="let friend of user.friendsList"
-                    (click)="selectFriend(friend._id)"
+                    *ngFor="let directMessage of directMessages"
+                    (click)="selectFriend(directMessage)"
                     class="group mx-2 flex flex-row items-center gap-2 rounded-md p-1 hover:cursor-pointer hover:bg-main-gray-hover"
                 >
                     <div class="relative">
                         <img
                             src="https://api.dicebear.com/5.x/identicon/svg?seed={{
-                                friend._id
+                                directMessage.users[1]._id
                             }}"
                             alt="avatar"
                             class="h-8 w-8 rounded-full"
                         />
                         <div
-                            *ngIf="friend.status !== 'Offline'"
+                            *ngIf="directMessage.users[1].status !== 'Offline'"
                             class="absolute bottom-0 right-0 -mr-1 -mb-1 flex h-4 w-4 items-center justify-center rounded-full bg-main-gray-darker group-hover:bg-main-gray-light"
                         >
                             <img
-                                *ngIf="friend.displayedStatus === 'Online'"
+                                *ngIf="
+                                    directMessage.users[1].displayedStatus ===
+                                    'Online'
+                                "
                                 src="../../../assets/online.png"
                                 alt=""
                                 class="h-2.5 w-2.5"
                             />
                             <img
-                                *ngIf="friend.displayedStatus === 'Idle'"
+                                *ngIf="
+                                    directMessage.users[1].displayedStatus ===
+                                    'Idle'
+                                "
                                 src="../../../assets/away.png"
                                 alt=""
                                 class="h-2.5 w-2.5"
                             />
                             <img
                                 *ngIf="
-                                    friend.displayedStatus === 'Do Not Disturb'
+                                    directMessage.users[1].displayedStatus ===
+                                    'Do Not Disturb'
                                 "
                                 src="../../../assets/busy.png"
                                 alt=""
                                 class="h-2.5 w-2.5"
                             />
                             <img
-                                *ngIf="friend.displayedStatus === 'Offline'"
+                                *ngIf="
+                                    directMessage.users[1].displayedStatus ===
+                                    'Offline'
+                                "
                                 src="../../../assets/offline.png"
                                 alt=""
                                 class="h-2.5 w-2.5"
                             />
                         </div>
                         <div
-                            *ngIf="friend.status === 'Offline'"
+                            *ngIf="directMessage.users[1].status === 'Offline'"
                             class="absolute bottom-0 right-0 -mr-1 -mb-1 flex h-4 w-4 items-center justify-center rounded-full bg-main-gray-darker group-hover:bg-main-gray-light"
                         >
                             <img
@@ -103,7 +113,7 @@
                         </div>
                     </div>
                     <h1 class="text-md max-w-[7rem] truncate font-semibold">
-                        {{ friend.userName }}
+                        {{ directMessage.users[1].userName }}
                     </h1>
                 </div>
             </div>
@@ -290,7 +300,7 @@
                             </div>
                         </div>
 
-                        <div class="">
+                        <div (click)="createDirectMessage(friend)" class="">
                             <svg
                                 class="rounded-full bg-main-gray-darker p-2 text-gray-400 hover:text-white"
                                 aria-hidden="true"
@@ -375,7 +385,7 @@
                     </div>
                     <div
                         *ngIf="selectedFriend.status === 'Offline'"
-                        class="absolute bottom-0 right-0 -mr-1 -mb-1 flex h-4 w-4 items-center justify-center rounded-full bg-main-gray"
+                        class="absolute bottom-0 right-0 -mr-3 mb-1 flex h-4 w-4 items-center justify-center rounded-full bg-main-gray"
                     >
                         <img
                             src="../../../assets/offline.png"
@@ -414,7 +424,7 @@
                 class="mr-1 mt-2 max-h-[85vh] overflow-y-scroll scrollbar-thin scrollbar-track-main-gray-darker scrollbar-thumb-main-gray-darkest scrollbar-track-rounded-full scrollbar-thumb-rounded-full"
             >
                 <!-- <discord-clone-message
-                    *ngFor="let message of selectedServer.messages"
+                    *ngFor="let message of selectedDirectMessage.messages"
                     [message]="message"
                     [lastRead]="message._id === getLastMessage()"
                     (editStatus)="getEditStatus($event)"

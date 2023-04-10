@@ -2,7 +2,7 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document, Schema as MongooseSchema } from "mongoose";
 import { Status } from "../../../../src/app/models/Status";
-import { UserFriendStatus } from "../user/friendStatus.schema";
+import { UserFriendStatus } from "../user/FriendStatus.schema";
 
 export type UserDocument = User & Document;
 

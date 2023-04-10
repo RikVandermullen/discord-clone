@@ -32,14 +32,14 @@ export class ServerService {
         const ownerId = new mongoose.Types.ObjectId(owner);
         const usersIds: any = [];
         users.forEach((user) => {
-            user.displayedStatus = Status.Online;
             usersIds.push(new mongoose.Types.ObjectId(user._id));
         });
+
         const server = new this.serverModel({
             name: name,
             owner: ownerId,
-            users: [ownerId],
-            messages: [usersIds],
+            users: [usersIds[0]],
+            messages: [],
             lastMessageRead: [new UserMessage(owner, "")],
             date_created: date_created,
             type: type
@@ -47,6 +47,11 @@ export class ServerService {
         console.log("SERVER:", server);
 
         await server.save();
+
+        if (usersIds.length > 1) {
+            this.addUserToServer(server._id, users[1]._id);
+        }
+
         return server;
     }
 

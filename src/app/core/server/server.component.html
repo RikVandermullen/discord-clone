@@ -27,7 +27,7 @@
                         ></path>
                     </svg>
                     <div
-                        *ngIf="directMessages"
+                        *ngIf="directMessagesOn"
                         class="absolute top-1 -left-3.5 h-[40px] rounded-full bg-white"
                     >
                         *
@@ -53,7 +53,8 @@
                     />
                     <div
                         *ngIf="
-                            server._id === selectedServer._id && !directMessages
+                            server._id === selectedServer._id &&
+                            !directMessagesOn
                         "
                         class="absolute top-1 -left-3.5 h-[40px] rounded-full bg-white"
                     >
@@ -285,7 +286,7 @@
         </div>
     </div>
 
-    <ng-container *ngIf="!directMessages && selectedServer">
+    <ng-container *ngIf="!directMessagesOn && selectedServer">
         <!-- SERVER INSIDE -->
         <div
             class="hidden max-h-screen min-h-screen min-w-[240px] bg-main-gray-darker md:block"
@@ -472,9 +473,10 @@
         </div>
     </ng-container>
 
-    <ng-container *ngIf="directMessages">
+    <ng-container *ngIf="directMessagesOn">
         <discord-clone-direct-messages
             [user]="user"
+            [directMessages]="directMessages"
             class="flex min-w-[calc(100%-72px)] flex-row"
         ></discord-clone-direct-messages>
     </ng-container>

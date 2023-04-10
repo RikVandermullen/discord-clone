@@ -52,6 +52,7 @@ export class ServerComponent implements OnInit, OnDestroy {
         ServerType.Server
     );
     servers: Server[] = [];
+    directMessages: Server[] = [];
     serverToJoin: Server = new Server(
         "",
         "",
@@ -93,7 +94,7 @@ export class ServerComponent implements OnInit, OnDestroy {
     allowScrollToBottom: boolean = false;
     clearMessageInput: number = 0;
     subscription: Subscription;
-    directMessages: boolean = true;
+    directMessagesOn: boolean = true;
 
     constructor(
         private websocketService: WebsocketService,
@@ -111,10 +112,10 @@ export class ServerComponent implements OnInit, OnDestroy {
         const id = this.route.snapshot.params["id"];
 
         if (id === "@me") {
-            this.directMessages = true;
+            this.directMessagesOn = true;
             this.allowScrollToMessage = false;
         } else {
-            this.directMessages = false;
+            this.directMessagesOn = false;
         }
 
         this.subscription = this.serverService
@@ -150,7 +151,18 @@ export class ServerComponent implements OnInit, OnDestroy {
         this.subscription = this.serverService
             .getServerByUserId(this.user._id)
             .subscribe((servers: Server[]) => {
-                this.servers = servers;
+                servers.forEach((server) => {
+                    if (server.type === ServerType.Server) {
+                        this.servers.push(server);
+                    } else if (server.type === ServerType.DirectMessage) {
+                        if (server.users[0]._id !== this.user._id) {
+                            const temp = server.users[0];
+                            server.users[0] = this.user;
+                            server.users[1] = temp;
+                        }
+                        this.directMessages.push(server);
+                    }
+                });
                 if (!this.directMessages) {
                     this.selectServer(this.servers[0]);
                 }
@@ -209,6 +221,7 @@ export class ServerComponent implements OnInit, OnDestroy {
     }
 
     createServer() {
+        this.newServer.users = [this.user];
         this.serverService
             .createServer(this.newServer)
             .subscribe((response) => {
@@ -249,7 +262,7 @@ export class ServerComponent implements OnInit, OnDestroy {
     }
 
     selectServer(server: Server) {
-        this.directMessages = false;
+        this.directMessagesOn = false;
         this.subscription = this.serverService
             .getServerById(server._id)
             .subscribe((server) => {
@@ -355,7 +368,7 @@ export class ServerComponent implements OnInit, OnDestroy {
 
     getScrollStatus(status: boolean) {
         setTimeout(() => {
-            if (status && this.directMessages === false) {
+            if (status && this.directMessagesOn === false) {
                 this.messageContainer.nativeElement.addEventListener(
                     "mousewheel",
                     () => {
@@ -376,8 +389,8 @@ export class ServerComponent implements OnInit, OnDestroy {
     }
 
     selectDirectMessages() {
-        if (this.directMessages) return;
-        this.directMessages = !this.directMessages;
+        if (this.directMessagesOn) return;
+        this.directMessagesOn = !this.directMessagesOn;
         this.selectedServer = this.newServer;
     }
 }
