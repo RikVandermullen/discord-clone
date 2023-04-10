@@ -14,6 +14,7 @@ import { Status } from "../../../../src/app/models/Status";
 import { MessageService } from "../message/message.service";
 import { ServerService } from "../server/server.service";
 import { UserService } from "../user/user.service";
+import { FriendStatus } from "src/app/models/FriendStatus";
 
 @WebSocketGateway({
     cors: {
@@ -40,10 +41,6 @@ export class Gateway implements OnModuleInit {
 
             socket.on("disconnect", () => {
                 console.log("Disconnected: " + socket.id);
-                const data = this.userService.setUserStatus(
-                    userId,
-                    Status.Offline
-                );
                 const body = { userId: userId, status: Status.Offline };
                 this.server?.emit("onStatusChange", body);
             });
@@ -147,5 +144,37 @@ export class Gateway implements OnModuleInit {
             data.displayedStatus
         );
         this.server?.emit("onDisplayStatusChange", data);
+    }
+
+    @SubscribeMessage("sendFriendRequest")
+    sendFriendRequest(@MessageBody() data: any): WsResponse<unknown> {
+        console.log("Friend request sent: ", data);
+        this.userService.addUserFriend(
+            data.user,
+            data.friend,
+            FriendStatus.Pending
+        );
+        this.server?.emit("onFriendRequest", data);
+        return { event: "onFriendRequest", data: data };
+    }
+
+    @SubscribeMessage("updateFriendRequest")
+    updateFriendRequest(@MessageBody() data: any): WsResponse<unknown> {
+        console.log("Friend request updated: ", data);
+        this.userService.updateUserFriendStatus(
+            data.user,
+            data.friend,
+            data.status
+        );
+        this.server?.emit("onFriendRequestUpdate", data);
+        return { event: "onFriendRequestUpdate", data: data };
+    }
+
+    @SubscribeMessage("cancelFriendRequest")
+    cancelFriendRequest(@MessageBody() data: any): WsResponse<unknown> {
+        console.log("Friend request cancelled: ", data);
+        this.userService.removeUserFriend(data.user, data.friend);
+        this.server?.emit("onFriendRequestCancel", data);
+        return { event: "onFriendRequestCancel", data: data };
     }
 }

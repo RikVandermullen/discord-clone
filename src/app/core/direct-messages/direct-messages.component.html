@@ -14,6 +14,9 @@
             </div>
 
             <div
+                [ngClass]="{
+                    current: showFriends
+                }"
                 (click)="showFriends = !showFriends"
                 class="m-2 flex flex-row items-center gap-3 rounded-md p-2 hover:cursor-pointer hover:bg-main-gray-hover"
             >
@@ -50,6 +53,12 @@
                 <div
                     *ngFor="let directMessage of directMessages"
                     (click)="selectFriend(directMessage)"
+                    [ngClass]="{
+                        current:
+                            selectedDirectMessage &&
+                            selectedDirectMessage._id === directMessage._id &&
+                            !showFriends
+                    }"
                     class="group mx-2 flex flex-row items-center gap-2 rounded-md p-1 hover:cursor-pointer hover:bg-main-gray-hover"
                 >
                     <div class="relative">
@@ -130,8 +139,8 @@
         class="flex max-h-[48px] min-h-[48px] flex-row items-center border-b border-b-main-gray-darkest"
     >
         <div class="flex grow flex-row justify-between">
-            <div class="flex flex-row gap-4">
-                <div class="ml-3 flex flex-row gap-0 md:gap-0.5">
+            <div class="flex flex-row gap-3 sm:gap-0 md:gap-1">
+                <div class="ml-3 flex flex-row gap-0">
                     <svg
                         class="text-gray-400"
                         aria-hidden="true"
@@ -157,30 +166,43 @@
                     </h2>
                 </div>
                 <h2
+                    [ngClass]="{
+                        currentList: listStatus === 'Online'
+                    }"
                     (click)="filterFriends('Online')"
                     class="text-md ml-2 rounded-md px-2 py-1 font-semibold text-gray-400 hover:cursor-pointer hover:bg-main-gray-light hover:text-white"
                 >
                     Online
                 </h2>
                 <h2
+                    [ngClass]="{
+                        currentList: listStatus === 'All'
+                    }"
                     (click)="filterFriends()"
                     class="text-md ml-2 rounded-md px-2 py-1 font-semibold text-gray-400 hover:cursor-pointer hover:bg-main-gray-light hover:text-white"
                 >
                     All
                 </h2>
                 <h2
+                    [ngClass]="{
+                        currentList: listStatus === 'Pending'
+                    }"
                     (click)="filterFriends('Pending')"
                     class="text-md ml-2 rounded-md px-2 py-1 font-semibold text-gray-400 hover:cursor-pointer hover:bg-main-gray-light hover:text-white"
                 >
                     Pending
                 </h2>
                 <h2
+                    [ngClass]="{
+                        currentList: listStatus === 'Blocked'
+                    }"
                     (click)="filterFriends('Blocked')"
                     class="text-md ml-2 rounded-md px-2 py-1 font-semibold text-gray-400 hover:cursor-pointer hover:bg-main-gray-light hover:text-white"
                 >
                     Blocked
                 </h2>
                 <h2
+                    (click)="sendFriendRequest('64331971f7539a75d569b952')"
                     class="text-md ml-2 rounded-md bg-green-700 px-2 py-1 font-semibold text-white hover:cursor-pointer"
                 >
                     Add Friend
@@ -190,13 +212,15 @@
                 <svg
                     x="0"
                     y="0"
-                    class="icon-2xnN2Y"
+                    class="text-gray-400 hover:cursor-pointer hover:text-white"
                     aria-hidden="true"
                     role="img"
                     width="24"
                     height="24"
                     viewBox="0 0 24 24"
                     fill="none"
+                    ngbTooltip="Inbox"
+                    placement="left"
                 >
                     <path
                         d="M19 3H4.99C3.88 3 3.01 3.89 3.01 5L3 19C3 20.1 3.88 21 4.99 21H19C20.1 21 21 20.1 21 19V5C21 3.89 20.1 3 19 3ZM19 15H15C15 16.66 13.65 18 12 18C10.35 18 9 16.66 9 15H4.99V5H19V15Z"
@@ -217,7 +241,8 @@
         </div>
         <div>
             <h3 class="mb-3 text-sm font-semibold text-gray-400">
-                {{ listStatus }} Friends - {{ amountOfFriends }}
+                {{ listStatus }} Friends -
+                {{ amountOfFriends + receivedList.length }}
             </h3>
 
             <div
@@ -238,7 +263,11 @@
                                     class="h-8 w-8 rounded-full"
                                 />
                                 <div
-                                    *ngIf="friend.status !== 'Offline'"
+                                    *ngIf="
+                                        friend.status !== 'Offline' &&
+                                        listStatus !== 'Pending' &&
+                                        listStatus !== 'Blocked'
+                                    "
                                     class="absolute bottom-0 right-0 -mr-1 -mb-1 flex h-4 w-4 items-center justify-center rounded-full bg-main-gray group-hover:bg-main-gray-light"
                                 >
                                     <img
@@ -276,7 +305,11 @@
                                     />
                                 </div>
                                 <div
-                                    *ngIf="friend.status === 'Offline'"
+                                    *ngIf="
+                                        friend.status === 'Offline' &&
+                                        listStatus !== 'Pending' &&
+                                        listStatus !== 'Blocked'
+                                    "
                                     class="absolute bottom-0 right-0 -mr-1 flex h-4 w-4 items-center justify-center rounded-full bg-main-gray group-hover:bg-main-gray-light"
                                 >
                                     <img
@@ -293,14 +326,36 @@
                                     {{ friend.userName }}
                                 </h1>
                                 <h2
-                                    class="max-w-[7rem] truncate text-sm font-semibold text-gray-400"
+                                    *ngIf="
+                                        listStatus !== 'Pending' &&
+                                        listStatus !== 'Blocked'
+                                    "
+                                    class="max-w-[15rem] truncate text-sm font-semibold text-gray-400"
                                 >
                                     {{ friend.displayedStatus }}
+                                </h2>
+                                <h2
+                                    *ngIf="listStatus === 'Pending'"
+                                    class="max-w-[15rem] text-xs font-semibold text-gray-400"
+                                >
+                                    Outgoing Friend Request
+                                </h2>
+                                <h2
+                                    *ngIf="listStatus === 'Blocked'"
+                                    class="max-w-[15rem] text-xs font-semibold text-gray-400"
+                                >
+                                    Blocked
                                 </h2>
                             </div>
                         </div>
 
-                        <div (click)="createDirectMessage(friend)" class="">
+                        <div
+                            *ngIf="
+                                listStatus === 'Online' || listStatus === 'All'
+                            "
+                            (click)="createDirectMessage(friend)"
+                            class=""
+                        >
                             <svg
                                 class="rounded-full bg-main-gray-darker p-2 text-gray-400 hover:text-white"
                                 aria-hidden="true"
@@ -318,9 +373,115 @@
                                 ></path>
                             </svg>
                         </div>
+                        <div
+                            *ngIf="listStatus === 'Pending'"
+                            (click)="cancelFriendRequest(friend._id)"
+                            class=""
+                        >
+                            <svg
+                                aria-hidden="true"
+                                role="img"
+                                class="rounded-full bg-main-gray-darker p-2 text-gray-400 hover:text-white"
+                                width="38"
+                                height="38"
+                                viewBox="0 0 24 24"
+                                ngbTooltip="Cancel"
+                                placement="top"
+                            >
+                                <path
+                                    fill="currentColor"
+                                    d="M18.4 4L12 10.4L5.6 4L4 5.6L10.4 12L4 18.4L5.6 20L12 13.6L18.4 20L20 18.4L13.6 12L20 5.6L18.4 4Z"
+                                ></path>
+                            </svg>
+                        </div>
                     </div>
                 </div>
             </div>
+            <ng-container *ngIf="listStatus === 'Pending'">
+                <div
+                    *ngFor="let friend of receivedList"
+                    class="mb-3 flex flex-row gap-4"
+                >
+                    <div
+                        class="group flex min-w-full flex-row gap-2 border-t border-t-main-gray-light p-1 py-3 hover:cursor-pointer hover:rounded-md hover:bg-main-gray-light"
+                    >
+                        <div class="flex min-w-full flex-row justify-between">
+                            <div class="flex flex-row">
+                                <div class="relative">
+                                    <img
+                                        src="https://api.dicebear.com/5.x/identicon/svg?seed={{
+                                            friend._id
+                                        }}"
+                                        alt=""
+                                        class="h-8 w-8 rounded-full"
+                                    />
+                                </div>
+                                <div class="ml-2 flex flex-col">
+                                    <h1
+                                        class="text-md max-w-[7rem] truncate font-semibold"
+                                    >
+                                        {{ friend.userName }}
+                                    </h1>
+                                    <h2
+                                        class="max-w-[15rem] text-xs font-semibold text-gray-400"
+                                    >
+                                        Incoming Friend Request
+                                    </h2>
+                                </div>
+                            </div>
+                            <div class="flex flex-row gap-1">
+                                <div
+                                    (click)="acceptFriendRequest(friend._id)"
+                                    class=""
+                                >
+                                    <svg
+                                        class="rounded-full bg-main-gray-darker p-2 text-gray-400 hover:text-white"
+                                        aria-hidden="true"
+                                        role="img"
+                                        width="38"
+                                        height="38"
+                                        viewBox="0 0 24 24"
+                                        ngbTooltip="Accept"
+                                        placement="top"
+                                    >
+                                        <path
+                                            fill="currentColor"
+                                            fill-rule="evenodd"
+                                            clip-rule="evenodd"
+                                            d="M8.99991 16.17L4.82991 12L3.40991 13.41L8.99991 19L20.9999 7.00003L19.5899 5.59003L8.99991 16.17Z"
+                                        ></path>
+                                    </svg>
+                                </div>
+
+                                <div
+                                    (click)="
+                                        cancelFriendRequest(
+                                            '64331971f7539a75d569b952'
+                                        )
+                                    "
+                                    class=""
+                                >
+                                    <svg
+                                        aria-hidden="true"
+                                        role="img"
+                                        class="rounded-full bg-main-gray-darker p-2 text-gray-400 hover:text-white"
+                                        width="38"
+                                        height="38"
+                                        viewBox="0 0 24 24"
+                                        ngbTooltip="Cancel"
+                                        placement="top"
+                                    >
+                                        <path
+                                            fill="currentColor"
+                                            d="M18.4 4L12 10.4L5.6 4L4 5.6L10.4 12L4 18.4L5.6 20L12 13.6L18.4 20L20 18.4L13.6 12L20 5.6L18.4 4Z"
+                                        ></path>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </ng-container>
         </div>
     </div>
 </div>

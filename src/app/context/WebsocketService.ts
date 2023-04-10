@@ -62,6 +62,30 @@ export class WebsocketService {
         });
     }
 
+    onSendFriendRequest(): Observable<User> {
+        return new Observable((observer) => {
+            this.socket.on("onFriendRequest", (data: User) => {
+                observer.next(data);
+            });
+        });
+    }
+
+    onCancelFriendRequest(): Observable<User> {
+        return new Observable((observer) => {
+            this.socket.on("onFriendRequestCancel", (data: User) => {
+                observer.next(data);
+            });
+        });
+    }
+
+    onUpdateFriendRequest(): Observable<User> {
+        return new Observable((observer) => {
+            this.socket.on("onFriendRequestUpdate", (data: User) => {
+                observer.next(data);
+            });
+        });
+    }
+
     sendMessage(message: Message) {
         this.socket.emit("newMessage", message);
     }
@@ -101,5 +125,28 @@ export class WebsocketService {
 
     disconnect() {
         this.socket.disconnect();
+    }
+
+    sendFriendRequest(user: string, friend: string) {
+        this.socket.emit("sendFriendRequest", {
+            user: user,
+            friend: friend,
+            status: "Pending"
+        });
+    }
+
+    updateFriendRequest(user: string, friend: string, status: string) {
+        this.socket.emit("updateFriendRequest", {
+            user: user,
+            friend: friend,
+            status: status
+        });
+    }
+
+    cancelFriendRequest(user: string, friend: string) {
+        this.socket.emit("cancelFriendRequest", {
+            user: user,
+            friend: friend
+        });
     }
 }

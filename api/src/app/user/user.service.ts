@@ -53,6 +53,55 @@ export class UserService {
             { $push: { friends: userFriendStatus } }
         );
 
+        const friendFriendStatus = new UserFriendStatus(
+            userId,
+            FriendStatus.Received
+        );
+        await this.userModel.updateOne(
+            { _id: new mongoose.Types.ObjectId(friendId) },
+            { $push: { friends: friendFriendStatus } }
+        );
+
         return this.getUserById(userId);
+    }
+
+    async updateUserFriendStatus(
+        user: string,
+        friend: string,
+        friendStatus: FriendStatus
+    ) {
+        console.log(user, friend, friendStatus);
+
+        await this.userModel.updateOne(
+            {
+                _id: new mongoose.Types.ObjectId(user),
+                "friends.user": friend
+            },
+            { $set: { "friends.$.status": friendStatus } }
+        );
+
+        await this.userModel.updateOne(
+            {
+                _id: new mongoose.Types.ObjectId(friend),
+                "friends.user": user
+            },
+            { $set: { "friends.$.status": friendStatus } }
+        );
+
+        return this.getUserById(user);
+    }
+
+    async removeUserFriend(user: string, friend: string) {
+        await this.userModel.updateOne(
+            { _id: new mongoose.Types.ObjectId(user) },
+            { $pull: { friends: { user: friend } } }
+        );
+
+        await this.userModel.updateOne(
+            { _id: new mongoose.Types.ObjectId(friend) },
+            { $pull: { friends: { user: user } } }
+        );
+
+        return this.getUserById(user);
     }
 }

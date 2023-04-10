@@ -22,6 +22,7 @@ export class DirectMessagesComponent implements OnInit {
     listStatus = "All";
     friends: User[] = [];
     pendingList: User[] = [];
+    receivedList: User[] = [];
     blockedList: User[] = [];
     subscription: Subscription;
     amountOfFriends = 0;
@@ -66,6 +67,7 @@ export class DirectMessagesComponent implements OnInit {
     allowScrollToBottom: boolean = false;
     clearMessageInput: number = 0;
     directMessagesOn: boolean = true;
+    friendsMap: Map<string, string> = new Map();
 
     constructor(
         private serverService: ServerService,
@@ -80,6 +82,7 @@ export class DirectMessagesComponent implements OnInit {
                 this.newServer.owner = user;
                 this.user.friendsList = [];
                 this.user.friends.forEach((friend: any) => {
+                    this.friendsMap.set(friend.user, friend.status);
                     this.subscription = this.serverService
                         .getUserById(friend.user)
                         .subscribe((user: User) => {
@@ -87,6 +90,10 @@ export class DirectMessagesComponent implements OnInit {
                                 this.pendingList.push(user);
                             } else if (friend.status === FriendStatus.Blocked) {
                                 this.blockedList.push(user);
+                            } else if (
+                                friend.status === FriendStatus.Received
+                            ) {
+                                this.receivedList.push(user);
                             } else {
                                 this.user.friendsList.push(user);
                             }
@@ -205,6 +212,91 @@ export class DirectMessagesComponent implements OnInit {
                     }
                 });
             });
+
+        this.subscription = this.websocketService
+            .onSendFriendRequest()
+            .subscribe((data: any) => {
+                if (data.friend === this.user._id) {
+                    this.subscription = this.serverService
+                        .getUserById(data.user)
+                        .subscribe((user: User) => {
+                            this.receivedList.push(user);
+                            this.friendsMap.set(user._id, FriendStatus.Pending);
+                        });
+                }
+            });
+
+        this.subscription = this.websocketService
+            .onUpdateFriendRequest()
+            .subscribe((data: any) => {
+                console.log("Updating friend request: " + data);
+
+                if (data.friend === this.user._id) {
+                    this.subscription = this.serverService
+                        .getUserById(data.user)
+                        .subscribe((user: User) => {
+                            this.user.friendsList.push(user);
+                            this.friendsMap.set(user._id, data.status);
+                            if (data.status === FriendStatus.Accepted) {
+                                this.pendingList = this.pendingList.filter(
+                                    (user) => user._id !== data.user
+                                );
+                                this.filterFriends(this.listStatus);
+                            }
+                        });
+                }
+
+                if (data.user === this.user._id) {
+                    if (data.status === FriendStatus.Accepted) {
+                        this.receivedList = this.receivedList.filter(
+                            (user) => user._id !== data.friend
+                        );
+                        this.subscription = this.serverService
+                            .getUserById(data.friend)
+                            .subscribe((user: User) => {
+                                /**
+                                @todo: bug with getting friends double shown after accepting friend request 
+                                */
+                                this.user.friendsList.push(user);
+                                this.friendsMap.set(user._id, data.status);
+                                this.filterFriends(this.listStatus);
+                            });
+                    }
+                }
+            });
+    }
+
+    sendFriendRequest(friendId: string) {
+        if (this.friendsMap.has(friendId)) {
+            console.log("Already friends with: " + friendId);
+            return;
+        } else {
+            this.friendsMap.set(friendId, FriendStatus.Pending);
+            console.log("Sending friend request to: " + friendId);
+            this.websocketService.sendFriendRequest(this.user._id, friendId);
+        }
+    }
+
+    cancelFriendRequest(friendId: string) {
+        this.friendsMap.delete(friendId);
+        console.log("Cancelling friend request to: " + friendId);
+        this.websocketService.cancelFriendRequest(this.user._id, friendId);
+    }
+
+    acceptFriendRequest(friendId: string) {
+        this.friendsMap.set(friendId, FriendStatus.Accepted);
+        console.log(
+            "Accepting friend request from: " +
+                friendId +
+                " By: " +
+                this.user._id
+        );
+
+        this.websocketService.updateFriendRequest(
+            this.user._id,
+            friendId,
+            FriendStatus.Accepted
+        );
     }
 
     filterFriends(status?: string) {
