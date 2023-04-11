@@ -19,7 +19,7 @@ export class DirectMessagesComponent implements OnInit {
     @Input() user: User;
     @Input() directMessages: Server[];
     @ViewChild("directMessageContainer") private messageContainer: ElementRef;
-    listStatus = "All";
+    listStatus = "Online";
     friends: User[] = [];
     pendingList: User[] = [];
     receivedList: User[] = [];
@@ -27,6 +27,19 @@ export class DirectMessagesComponent implements OnInit {
     subscription: Subscription;
     amountOfFriends = 0;
     showFriends = true;
+    friend: User = new User(
+        "",
+        "",
+        "",
+        "",
+        new Date(),
+        new Date(),
+        Status.Online,
+        Status.Online,
+        new Map<null, null>(),
+        [],
+        []
+    );
     selectedFriend: User = new User(
         "",
         "",
@@ -96,11 +109,10 @@ export class DirectMessagesComponent implements OnInit {
                                 this.receivedList.push(user);
                             } else {
                                 this.user.friendsList.push(user);
+                                this.amountOfFriends++;
+                                this.filterFriends(this.listStatus);
                             }
                         });
-                    this.friends = this.user.friendsList;
-                    this.amountOfFriends = this.filterFriends.length;
-                    this.filterFriends(this.listStatus);
                 });
 
                 this.websocketService
@@ -244,18 +256,31 @@ export class DirectMessagesComponent implements OnInit {
                                     (user) => user._id !== data.user
                                 );
                                 this.user.friendsList.push(user);
-                                this.filterFriends(this.listStatus);
+                                this.filterFriends("Online");
                             }
                         });
                 }
             });
+
+        this.subscription = this.websocketService
+            .onCancelFriendRequest()
+            .subscribe((data: any) => {
+                if (data.friend === this.user._id) {
+                    console.log("Received Cancelled Friend Request", data.user);
+                    this.pendingList = this.pendingList.filter(
+                        (user) => user._id !== data.user
+                    );
+                    this.filterFriends(this.listStatus);
+                }
+            });
     }
 
-    sendFriendRequest(friendId: string) {
+    sendFriendRequest() {
+        const friendId = this.friend._id;
         if (this.friendsMap.has(friendId) || friendId === this.user._id) {
             console.log("Already friends with: " + friendId);
             return;
-        } else {
+        } else if (this.isValidId(friendId)) {
             this.subscription = this.serverService
                 .getUserById(friendId)
                 .subscribe((user: User) => {
@@ -265,11 +290,18 @@ export class DirectMessagesComponent implements OnInit {
             this.friendsMap.set(friendId, FriendStatus.Pending);
             console.log("Sending friend request to: " + friendId);
             this.websocketService.sendFriendRequest(this.user._id, friendId);
+            this.friend._id = "";
+        } else {
+            console.log("Invalid friend id: " + friendId);
         }
     }
 
     cancelFriendRequest(friendId: string) {
         this.friendsMap.delete(friendId);
+
+        this.receivedList = this.receivedList.filter(
+            (user) => user._id !== friendId
+        );
         console.log("Cancelling friend request to: " + friendId);
         this.websocketService.cancelFriendRequest(this.user._id, friendId);
     }
@@ -286,9 +318,6 @@ export class DirectMessagesComponent implements OnInit {
         this.subscription = this.serverService
             .getUserById(friendId)
             .subscribe((user: User) => {
-                /**
-                @todo: bug with getting friends double shown after accepting friend request 
-                */
                 this.receivedList = this.receivedList.filter(
                     (user) => user._id !== friendId
                 );
@@ -306,6 +335,8 @@ export class DirectMessagesComponent implements OnInit {
     filterFriends(status?: string) {
         if (!status) {
             this.listStatus = "All";
+            console.log(this.user.friendsList.length);
+
             this.amountOfFriends = this.user.friendsList.length;
             this.friends = this.user.friendsList;
             return;
@@ -348,6 +379,7 @@ export class DirectMessagesComponent implements OnInit {
 
     selectFriend(server: Server) {
         this.showFriends = false;
+        this.selectedDirectMessage = server;
         this.selectedFriend = server.users.filter(
             (user) => user._id !== this.user._id
         )[0];
@@ -496,5 +528,12 @@ export class DirectMessagesComponent implements OnInit {
                 );
             }
         }, 100);
+    }
+
+    isValidId(id: string) {
+        console.log(id.length);
+
+        if (id.length !== 24) return false;
+        return true;
     }
 }

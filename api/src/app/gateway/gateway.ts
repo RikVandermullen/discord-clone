@@ -41,6 +41,7 @@ export class Gateway implements OnModuleInit {
 
             socket.on("disconnect", () => {
                 console.log("Disconnected: " + socket.id);
+                this.userService.setUserStatus(userId, Status.Offline);
                 const body = { userId: userId, status: Status.Offline };
                 this.server?.emit("onStatusChange", body);
             });

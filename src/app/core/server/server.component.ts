@@ -155,14 +155,6 @@ export class ServerComponent implements OnInit, OnDestroy {
                     if (server.type === ServerType.Server) {
                         this.servers.push(server);
                     }
-                    // else if (server.type === ServerType.DirectMessage) {
-                    //     if (server.users[0]._id !== this.user._id) {
-                    //         const temp = server.users[0];
-                    //         server.users[0] = this.user;
-                    //         server.users[1] = temp;
-                    //     }
-                    //     this.directMessages.push(server);
-                    // }
                 });
                 if (!this.directMessages) {
                     this.selectServer(this.servers[0]);
@@ -188,6 +180,15 @@ export class ServerComponent implements OnInit, OnDestroy {
                     if (server._id === data.server) {
                         server.messages.push(data);
                         server.newMessage = true;
+                        /**
+                         @todo: Bug with new message not shown with starting at dm screen
+                         */
+                        console.log(
+                            "New message: " +
+                                server.name +
+                                " " +
+                                server.newMessage
+                        );
                     }
                 });
             });
@@ -284,6 +285,9 @@ export class ServerComponent implements OnInit, OnDestroy {
     }
 
     ngAfterViewChecked() {
+        if (this.directMessagesOn) {
+            return;
+        }
         if (this.allowScrollToMessage) {
             this.scrollToMessage();
         } else if (this.allowScrollToBottom) {
