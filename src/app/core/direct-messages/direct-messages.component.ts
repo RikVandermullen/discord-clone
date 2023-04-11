@@ -229,48 +229,39 @@ export class DirectMessagesComponent implements OnInit {
         this.subscription = this.websocketService
             .onUpdateFriendRequest()
             .subscribe((data: any) => {
-                console.log("Updating friend request: " + data);
-
                 if (data.friend === this.user._id) {
+                    console.log(
+                        "Received Accepted Friend Request",
+                        data.friend
+                    );
+
                     this.subscription = this.serverService
                         .getUserById(data.user)
                         .subscribe((user: User) => {
-                            this.user.friendsList.push(user);
                             this.friendsMap.set(user._id, data.status);
                             if (data.status === FriendStatus.Accepted) {
                                 this.pendingList = this.pendingList.filter(
                                     (user) => user._id !== data.user
                                 );
+                                this.user.friendsList.push(user);
                                 this.filterFriends(this.listStatus);
                             }
                         });
-                }
-
-                if (data.user === this.user._id) {
-                    if (data.status === FriendStatus.Accepted) {
-                        this.receivedList = this.receivedList.filter(
-                            (user) => user._id !== data.friend
-                        );
-                        this.subscription = this.serverService
-                            .getUserById(data.friend)
-                            .subscribe((user: User) => {
-                                /**
-                                @todo: bug with getting friends double shown after accepting friend request 
-                                */
-                                this.user.friendsList.push(user);
-                                this.friendsMap.set(user._id, data.status);
-                                this.filterFriends(this.listStatus);
-                            });
-                    }
                 }
             });
     }
 
     sendFriendRequest(friendId: string) {
-        if (this.friendsMap.has(friendId)) {
+        if (this.friendsMap.has(friendId) || friendId === this.user._id) {
             console.log("Already friends with: " + friendId);
             return;
         } else {
+            this.subscription = this.serverService
+                .getUserById(friendId)
+                .subscribe((user: User) => {
+                    this.pendingList.push(user);
+                });
+
             this.friendsMap.set(friendId, FriendStatus.Pending);
             console.log("Sending friend request to: " + friendId);
             this.websocketService.sendFriendRequest(this.user._id, friendId);
@@ -291,6 +282,19 @@ export class DirectMessagesComponent implements OnInit {
                 " By: " +
                 this.user._id
         );
+
+        this.subscription = this.serverService
+            .getUserById(friendId)
+            .subscribe((user: User) => {
+                /**
+                @todo: bug with getting friends double shown after accepting friend request 
+                */
+                this.receivedList = this.receivedList.filter(
+                    (user) => user._id !== friendId
+                );
+                this.user.friendsList.push(user);
+                this.filterFriends(this.listStatus);
+            });
 
         this.websocketService.updateFriendRequest(
             this.user._id,
