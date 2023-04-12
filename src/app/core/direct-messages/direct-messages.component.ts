@@ -37,7 +37,6 @@ export class DirectMessagesComponent implements OnInit {
         Status.Online,
         Status.Online,
         new Map<null, null>(),
-        [],
         []
     );
     selectedFriend: User = new User(
@@ -50,7 +49,6 @@ export class DirectMessagesComponent implements OnInit {
         Status.Online,
         Status.Online,
         new Map<null, null>(),
-        [],
         []
     );
     newServer: Server = new Server(
@@ -66,7 +64,6 @@ export class DirectMessagesComponent implements OnInit {
             Status.Idle,
             Status.Idle,
             new Map<null, null>(),
-            [],
             []
         ),
         new Date(),

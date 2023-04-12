@@ -12,7 +12,6 @@ export class User {
     displayedStatus: Status;
     friends: Map<string | null, FriendStatus | null>;
     friendsList: User[];
-    chatRooms: string[];
 
     constructor(
         _id: string,
@@ -24,8 +23,7 @@ export class User {
         status: Status,
         displayedStatus: Status,
         friends: Map<string | null, FriendStatus | null>,
-        friendsList: User[],
-        chatRooms: string[]
+        friendsList: User[]
     ) {
         this._id = _id;
         this.emailAddress = emailAddress;
@@ -37,7 +35,6 @@ export class User {
         this.displayedStatus = displayedStatus;
         this.friends = friends;
         this.friendsList = friendsList;
-        this.chatRooms = chatRooms;
     }
 }
 

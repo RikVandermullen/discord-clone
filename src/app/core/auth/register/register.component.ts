@@ -54,7 +54,6 @@ export class RegisterComponent {
         Status.Online,
         Status.Online,
         new Map<null, null>(),
-        [],
         []
     );
     birthday: any = { day: 0, month: 0, year: 0 };

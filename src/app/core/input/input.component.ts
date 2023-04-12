@@ -31,7 +31,6 @@ export class InputComponent implements OnInit, OnChanges {
             Status.Online,
             Status.Online,
             new Map<null, null>(),
-            [],
             []
         ),
         false

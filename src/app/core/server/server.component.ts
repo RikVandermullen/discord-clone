@@ -42,7 +42,6 @@ export class ServerComponent implements OnInit, OnDestroy {
             Status.Idle,
             Status.Idle,
             new Map<null, null>(),
-            [],
             []
         ),
         new Date(),
@@ -66,7 +65,6 @@ export class ServerComponent implements OnInit, OnDestroy {
             Status.Idle,
             Status.Idle,
             new Map<null, null>(),
-            [],
             []
         ),
         new Date(),
@@ -86,7 +84,6 @@ export class ServerComponent implements OnInit, OnDestroy {
         Status.Online,
         Status.Online,
         new Map<null, null>(),
-        [],
         []
     );
     hideMemberPanel: boolean = false;
