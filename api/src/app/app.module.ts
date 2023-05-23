@@ -7,6 +7,7 @@ import { MongooseModule } from "@nestjs/mongoose";
 import { DataModule } from "./data.module";
 import { AuthModule } from "./auth/auth.module";
 
+// test MongoDB connection, will be changed
 @Module({
     imports: [
         GatewayModule,

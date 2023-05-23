@@ -27,6 +27,9 @@ export class AuthGuard implements CanActivate {
         );
     }
 
+    /**
+     * @todo: implement this method if roles are added
+     */
     isAllowed(route: ActivatedRouteSnapshot) {
         return true;
     }

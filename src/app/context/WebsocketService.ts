@@ -6,6 +6,9 @@ import { User } from "../models/User";
 import { JwtPayload } from "jwt-decode";
 import jwt_decode from "jwt-decode";
 
+/**
+ * @todo: add security
+ */
 @Injectable()
 export class WebsocketService {
     private socket: Socket;
