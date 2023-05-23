@@ -8,10 +8,12 @@ Made with:
 
 Functionality:
 - Group messages
-![image](https://github.com/RikVandermullen/discord-clone/assets/94074147/66307ec9-786e-4f48-b419-f6e144af239c)
+![image](https://github.com/RikVandermullen/discord-clone/assets/94074147/25e8001c-2963-4f04-aecf-50026f35adeb)
+
 
 - Private messages
-![image](https://github.com/RikVandermullen/discord-clone/assets/94074147/9138f0c3-e67c-40e8-82a0-c78edf71eec6)
+![image](https://github.com/RikVandermullen/discord-clone/assets/94074147/dfb4eb5f-0549-4d11-847b-d026a749424b)
+
 
 - Joining / Creating a server
 - Displayed status
